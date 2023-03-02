@@ -12,6 +12,7 @@ Depends:
     R(>= 4.0.0)
 Imports:
     madrat(>= 3.0.0),
+    terra,
     withr
 Suggests:
     covr,
