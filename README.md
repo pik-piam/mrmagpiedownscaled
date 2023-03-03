@@ -1,8 +1,8 @@
 # Downscale and harmonize MAgPIE output using LUH2 as reference data
 
-R package **mrmagpiedownscaled**, version **0.1.0**
+R package **mrdownscale**, version **0.1.0**
 
-[![CRAN status](https://www.r-pkg.org/badges/version/mrmagpiedownscaled)](https://cran.r-project.org/package=mrmagpiedownscaled)  [![R build status](https://github.com/pik-piam/mrmagpiedownscaled/workflows/check/badge.svg)](https://github.com/pik-piam/mrmagpiedownscaled/actions) [![codecov](https://codecov.io/gh/pik-piam/mrmagpiedownscaled/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/mrmagpiedownscaled) 
+[![CRAN status](https://www.r-pkg.org/badges/version/mrdownscale)](https://cran.r-project.org/package=mrdownscale)  [![R build status](https://github.com/pik-piam/mrdownscale/workflows/check/badge.svg)](https://github.com/pik-piam/mrdownscale/actions) [![codecov](https://codecov.io/gh/pik-piam/mrdownscale/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/mrdownscale) 
 
 ## Purpose and Functionality
 
@@ -21,7 +21,7 @@ The additional repository can be made available permanently by adding the line a
 After that the most recent version of the package can be installed using `install.packages`:
 
 ```r 
-install.packages("mrmagpiedownscaled")
+install.packages("mrdownscale")
 ```
 
 Package updates can be installed using `update.packages` (make sure that the additional repository has been added before running that command):
@@ -36,18 +36,18 @@ In case of questions / problems please contact Pascal Führlich <pascal.fuehrlic
 
 ## Citation
 
-To cite package **mrmagpiedownscaled** in publications use:
+To cite package **mrdownscale** in publications use:
 
-Führlich P (2023). _mrmagpiedownscaled: Downscale and harmonize MAgPIE output using LUH2 as reference data_. R package version 0.1.0, <https://github.com/pik-piam/mrmagpiedownscaled>.
+Führlich P (2023). _mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference data_. R package version 0.1.0, <https://github.com/pik-piam/mrdownscale>.
 
 A BibTeX entry for LaTeX users is
 
  ```latex
 @Manual{,
-  title = {mrmagpiedownscaled: Downscale and harmonize MAgPIE output using LUH2 as reference data},
+  title = {mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference data},
   author = {Pascal Führlich},
   year = {2023},
   note = {R package version 0.1.0},
-  url = {https://github.com/pik-piam/mrmagpiedownscaled},
+  url = {https://github.com/pik-piam/mrdownscale},
 }
 ```

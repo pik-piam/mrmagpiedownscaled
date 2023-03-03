@@ -1,6 +1,6 @@
 calcHarmonizedCategories <- function() {
   magpie <- madrat::readSource("Magpie")
-  mapping <- madrat::toolGetMapping("TODO", where = "mrmagpiedownscaled")
+  mapping <- madrat::toolGetMapping("TODO", where = "mrdownscale")
   stop("TODO apply mapping to magpie")
   stop("TODO consistency checks")
   stop("TODO cache = FALSE?")
@@ -9,4 +9,3 @@ calcHarmonizedCategories <- function() {
               unit = "TODO",
               class = "SpatRaster"))
 }
-# TODO rename package to mrdownscale

@@ -1,5 +1,5 @@
 {
-  "title": "mrmagpiedownscaled: Downscale and harmonize MAgPIE output using LUH2 as reference data",
+  "title": "mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference data",
   "version": "0.1.0",
   "description": "<p>Downscale and harmonize MAgPIE output using LUH2 as reference data.<\/p>",
   "creators": [
