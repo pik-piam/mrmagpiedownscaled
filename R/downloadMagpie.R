@@ -1,9 +1,9 @@
 downloadMagpie <- function() {
-  madrat::toolManualDownload("Run magpie to get a fulldata.gdx.",
-                             "Currently magpie data has to be created manually",
-                             "Enter full path to the created fulldata.gdx:")
-  stopifnot(file.exists("fulldata.gdx"))
-  madrat::toolManualDownload(NULL, NULL, "Enter full path to the created clustermap_*.rds:")
-  file.rename(Sys.glob("clustermap_*.rds"), "clustermap.rds")
-  stopifnot(all(file.exists(c("clustermap.rds"))))
+  sourceFolder <- sub("-downloadInProgress", "", normalizePath("."))
+  dir.create(sourceFolder)
+  stop("Please put the following output files of a magpie run into '", sourceFolder, "':\n",
+       "fulldata.gdx\n",
+       "cell.land_0.5.mz\n",
+       "avl_land_full_t_0.5.mz\n",
+       "clustermap.rds (needs to be renamed from something like clustermap_rev4.81_c200_h12.rds)")
 }
