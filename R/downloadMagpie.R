@@ -5,5 +5,5 @@ downloadMagpie <- function() {
        "fulldata.gdx\n",
        "cell.land_0.5.mz\n",
        "avl_land_full_t_0.5.mz\n",
-       "clustermap.rds (needs to be renamed from something like clustermap_rev4.81_c200_h12.rds)")
+       "clustermap_*.rds")
 }
