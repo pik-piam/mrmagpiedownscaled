@@ -3,8 +3,6 @@ calcHarmonizedCategories <- function() {
   clustermap <- attr(x, "clustermap")
   attr(x, "clustermap") <- NULL
 
-  x <- x[, , c("crop", "other"), invert = TRUE]
-
   # map cluster to country
   # TODO this is wrong because a cluster contains cells of multiple countries
   clusterToCountry <- mappingVector(clustermap, "cluster", "country")
@@ -16,7 +14,7 @@ calcHarmonizedCategories <- function() {
   magpie2luh <- magpie2luh # magpie2luh is defined via R/sysdata.rda
 
   crops <- x[, , magclass::getItems(magpie2luh, dim = 3.2)]
-  x <- x[, , magclass::getItems(magpie2luh, dim = 3.2), invert = TRUE]
+  x <- x[, , c("crop", magclass::getItems(magpie2luh, dim = 3.2)), invert = TRUE]
 
   magpie2luh <- magpie2luh[magclass::getItems(crops, dim = 1.3), , ]
   crops <- crops * magpie2luh
