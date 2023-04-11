@@ -8,4 +8,4 @@ withr::with_package("mrcommons", {
 magpie2luh <- magpie2luh[, 2010, ]
 magclass::getYears(magpie2luh) <- NULL
 
-usethis::use_data(magpie2luh, overwrite = TRUE)
+usethis::use_data(magpie2luh, internal = TRUE, overwrite = TRUE)
