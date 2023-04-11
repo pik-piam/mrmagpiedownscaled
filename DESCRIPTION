@@ -12,10 +12,14 @@ Depends:
     R(>= 4.0.0)
 Imports:
     madrat(>= 3.0.0),
+    magclass,
+    magpie4,
     terra,
     withr
 Suggests:
     covr,
-    testthat
+    testthat,
+    usethis,
+    mrcommons
 Encoding: UTF-8
 RoxygenNote: 7.2.3

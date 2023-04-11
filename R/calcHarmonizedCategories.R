@@ -11,17 +11,13 @@ calcHarmonizedCategories <- function() {
   magclass::getItems(x, dim = 1.3, full = TRUE) <- countries
 
   # map magpie crops to LUH2 croptypes
-  # magclass::write.magpie(calcOutput(type = "LUH2MAgPIE", aggregate = FALSE, share = "LUHofMAG",
-  #                                   bioenergy = "fix", missing = "fill", rice = "total"), 'LUHofMAG.cs5')
-  # TODO this is just a rough approximation, also using shares from 2010 is arbitrary
-  mapping <- magclass::read.magpie(system.file("extdata", "LUHofMAG.cs5", package = "mrdownscale"))[, 2010, ]
-  magclass::getYears(mapping) <- NULL
+  magpie2luh <- magpie2luh # magpie2luh is defined via R/sysdata.rda
 
-  crops <- x[, , magclass::getItems(mapping, dim = 3.2)]
-  x <- x[, , c("crop", magclass::getItems(mapping, dim = 3.2)), invert = TRUE]
+  crops <- x[, , magclass::getItems(magpie2luh, dim = 3.2)]
+  x <- x[, , c("crop", magclass::getItems(magpie2luh, dim = 3.2)), invert = TRUE]
 
-  mapping <- mapping[magclass::getItems(crops, dim = 1.3), , ]
-  crops <- crops * mapping
+  magpie2luh <- magpie2luh[magclass::getItems(crops, dim = 1.3), , ]
+  crops <- crops * magpie2luh
   crops <- magclass::dimSums(crops, dim = 3.1)
 
   x <- magclass::mbind(x, crops)
