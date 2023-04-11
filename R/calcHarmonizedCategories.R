@@ -40,7 +40,10 @@ calcHarmonizedCategories <- function() {
   # TODO consistency checks
   # luhCategories <- terra::varnames(madrat::readSource("LUH2v2h"))
 
-  return(x)
+  # TODO weights, unit, description
+  return(list(x = x,
+              weight = x,
+              isocountries = FALSE))
 }
 
 mappingVector <- function(mapping, namesColumn, valueColumn) {
