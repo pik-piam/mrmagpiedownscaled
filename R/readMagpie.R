@@ -1,6 +1,6 @@
 readMagpie <- function() {
   stopifnot(file.exists("fulldata.gdx"),
-            file.exists("avl_land_full_t_c200.mz"),
+            file.exists("avl_land_full_t_c200.mz"), # from magpiemodel/magpie/input/avl_land_full_t_c200.mz
             length(Sys.glob("clustermap_*.rds")) == 1)
 
   landUse <- magpie4::land("fulldata.gdx", level = "cell")
@@ -13,5 +13,6 @@ readMagpie <- function() {
 
   x <- magclass::mbind(landUse, cropArea)
   attr(x, "clustermap") <- readRDS(Sys.glob("clustermap_*.rds"))
+  attr(x, "historic") <- magclass::read.magpie("avl_land_full_t_c200.mz")
   return(x)
 }
