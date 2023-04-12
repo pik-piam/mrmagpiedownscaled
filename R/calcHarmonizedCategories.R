@@ -13,43 +13,40 @@ calcHarmonizedCategories <- function() {
   magclass::getItems(x, dim = 1.3, full = TRUE) <- countries
 
   # map magpie crops to LUH2 croptypes
-  magpie2luh <- magpie2luh # magpie2luh is defined via R/sysdata.rda
+  magpieCropsToLuh <- magpieCropsToLuh # magpieCropsToLuh is defined via R/sysdata.rda
 
-  crops <- x[, , magclass::getItems(magpie2luh, dim = 3.2)]
-  x <- x[, , c("crop", magclass::getItems(magpie2luh, dim = 3.2)), invert = TRUE]
+  crops <- x[, , magclass::getItems(magpieCropsToLuh, dim = 3.2)]
+  x <- x[, , c("crop", magclass::getItems(magpieCropsToLuh, dim = 3.2)), invert = TRUE]
 
-  magpie2luh <- magpie2luh[magclass::getItems(crops, dim = 1.3), , ]
-  crops <- crops * magpie2luh
+  magpieCropsToLuh <- magpieCropsToLuh[magclass::getItems(crops, dim = 1.3), , ]
+  crops <- crops * magpieCropsToLuh
   crops <- magclass::dimSums(crops, dim = 3.1)
 
   x <- magclass::mbind(x, crops)
 
-  # rename primforest -> primf
-  stopifnot("primforest" %in% dimnames(x)[[3]])
-  dimnames(x)[[3]][dimnames(x)[[3]] == "primforest"] <- "primf"
-
   # sum up secdforest + forestry -> secdf
   x[, , "secdforest"] <- x[, , "secdforest"] + x[, , "forestry"]
-  dimnames(x)[[3]][dimnames(x)[[3]] == "secdforest"] <- "secdf"
   x <- x[, , "forestry", invert = TRUE]
-
-  # rename primother -> primn
-  stopifnot("primother" %in% dimnames(x)[[3]])
-  dimnames(x)[[3]][dimnames(x)[[3]] == "primother"] <- "primn"
-
-  # rename secdother -> secdn
-  stopifnot("secdother" %in% dimnames(x)[[3]])
-  dimnames(x)[[3]][dimnames(x)[[3]] == "secdother"] <- "secdn"
 
   # split past -> past & range
   x <- toolSplitPasture(x, historic)
 
-  # rename past -> pastr
-  stopifnot("past" %in% dimnames(x)[[3]])
-  dimnames(x)[[3]][dimnames(x)[[3]] == "past"] <- "pastr"
+  # rename magpie to LUH2 categories
+  luhCategoryMapping <- c(primforest = "primf",
+                          secdforest = "secdf",
+                          primother = "primn",
+                          secdother = "secdn",
+                          past = "pastr")
+  categoryMapper <- function(category) {
+    if (category %in% names(luhCategoryMapping)) luhCategoryMapping[[category]] else category
+  }
+  dimnames(x)[[3]] <- vapply(dimnames(x)[[3]], categoryMapper, character(1), USE.NAMES = FALSE)
 
-  # TODO consistency checks
-  # luhCategories <- terra::varnames(madrat::readSource("LUH2v2h"))
+  # check differences between categories in x and LUH2
+  luhCategories <- terra::varnames(madrat::readSource("LUH2v2h"))
+  stopifnot(setequal(setdiff(luhCategories, dimnames(x)[[3]]),
+                     c("secma", "secmb")),
+            length(setdiff(dimnames(x)[[3]], luhCategories)) == 0)
 
   # TODO weights, unit, description
   return(list(x = x,
