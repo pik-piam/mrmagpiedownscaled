@@ -5,7 +5,7 @@ calcHarmonizedCategories <- function() {
   historic <- attr(x, "historic")
   attr(x, "historic") <- NULL
 
-  # map cluster to country
+  # add country based on cluster
   # TODO this is wrong because a cluster contains cells of multiple countries
   clusterToCountry <- toolMappingVector(clustermap, "cluster", "country")
   countries <- as.character(clusterToCountry[magclass::getItems(x, 1, full = TRUE)])
@@ -24,25 +24,29 @@ calcHarmonizedCategories <- function() {
 
   x <- magclass::mbind(x, crops)
 
-  # map primforest -> primf
+  # rename primforest -> primf
   stopifnot("primforest" %in% dimnames(x)[[3]])
   dimnames(x)[[3]][dimnames(x)[[3]] == "primforest"] <- "primf"
 
-  # map secdforest + forestry -> secdf
+  # sum up secdforest + forestry -> secdf
   x[, , "secdforest"] <- x[, , "secdforest"] + x[, , "forestry"]
   dimnames(x)[[3]][dimnames(x)[[3]] == "secdforest"] <- "secdf"
   x <- x[, , "forestry", invert = TRUE]
 
-  # map primother -> primn
+  # rename primother -> primn
   stopifnot("primother" %in% dimnames(x)[[3]])
   dimnames(x)[[3]][dimnames(x)[[3]] == "primother"] <- "primn"
 
-  # map secdother -> secdn
+  # rename secdother -> secdn
   stopifnot("secdother" %in% dimnames(x)[[3]])
   dimnames(x)[[3]][dimnames(x)[[3]] == "secdother"] <- "secdn"
 
-  # map past -> pastr & range
+  # split past -> past & range
   x <- toolSplitPasture(x, historic)
+
+  # rename past -> pastr
+  stopifnot("past" %in% dimnames(x)[[3]])
+  dimnames(x)[[3]][dimnames(x)[[3]] == "past"] <- "pastr"
 
   # TODO consistency checks
   # luhCategories <- terra::varnames(madrat::readSource("LUH2v2h"))
