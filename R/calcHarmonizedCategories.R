@@ -48,10 +48,11 @@ calcHarmonizedCategories <- function() {
                      c("secma", "secmb")),
             length(setdiff(dimnames(x)[[3]], luhCategories)) == 0)
 
-  # TODO weights, unit, description
   return(list(x = x,
-              weight = x,
-              isocountries = FALSE))
+              isocountries = FALSE,
+              unit = "Mha",
+              min = 0,
+              description = "magpie output mapped to LUH2 categories"))
 }
 
 toolMappingVector <- function(mapping, namesColumn, valueColumn) {
