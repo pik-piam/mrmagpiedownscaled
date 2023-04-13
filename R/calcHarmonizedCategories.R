@@ -13,6 +13,7 @@ calcHarmonizedCategories <- function() {
   magclass::getItems(x, dim = 1.3, full = TRUE) <- countries
 
   # map magpie crops to LUH2 croptypes
+  # TODO move magpieCropsToLuh data to inst/extdata as .mz or .rds
   magpieCropsToLuh <- magpieCropsToLuh # magpieCropsToLuh is defined via R/sysdata.rda
 
   crops <- x[, , magclass::getItems(magpieCropsToLuh, dim = 3.2)]
