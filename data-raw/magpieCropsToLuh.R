@@ -3,7 +3,7 @@
 withr::with_package("mrcommons", {
   # TODO this is just a rough approximation, also using shares from 2010 is arbitrary
   magpieCropsToLuh <- madrat::calcOutput(type = "LUH2MAgPIE", aggregate = FALSE, share = "LUHofMAG",
-                                   bioenergy = "fix", missing = "fill", rice = "total")
+                                         bioenergy = "fix", missing = "fill", rice = "total")
 })
 magpieCropsToLuh <- magpieCropsToLuh[, 2010, ]
 magclass::getYears(magpieCropsToLuh) <- NULL

@@ -1,10 +1,12 @@
 readMagpie <- function() {
+  # TODO use downscaling reference dataset (LUH2) instead of avl_land_full_t_c200.mz
   stopifnot(file.exists("fulldata.gdx"),
             file.exists("avl_land_full_t_c200.mz"), # from magpiemodel/magpie/input/avl_land_full_t_c200.mz
             length(Sys.glob("clustermap_*.rds")) == 1)
 
   landUse <- magpie4::land("fulldata.gdx", level = "cell")
 
+  # TODO move to calc
   # disaggregate other to primother and secdother
   landUse <- magpie4::PrimSecdOtherLand(x = landUse,
                                         ini_file = "avl_land_full_t_c200.mz",
