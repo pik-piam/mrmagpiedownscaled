@@ -8,3 +8,5 @@
 ^\.github$
 ^.*\.zenodo.json$
 ^data-raw$
+^.*\.Rproj$
+^\.Rproj\.user$
