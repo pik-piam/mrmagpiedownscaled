@@ -1,0 +1,176 @@
+reference,data
+122|Sweet potatoes,cassav_sp
+125|Cassava,cassav_sp
+135|Yautia (cocoyam),cassav_sp
+136|Taro (cocoyam),cassav_sp
+137|Yams,cassav_sp
+149|Roots and tubers, nes,cassav_sp
+328|Seed cotton,cottn_pro
+638|Forage and silage, rye grass,foddr
+639|Forage and silage, grasses nes,foddr
+642|Forage and silage, green oilseeds,foddr
+644|Cabbage for fodder,foddr
+645|Pumpkins for Fodder,foddr
+646|Turnips for fodder,foddr
+647|Beets for fodder,foddr
+648|Carrots for fodder,foddr
+649|Swedes for fodder,foddr
+651|Forage products,foddr
+655|Vegetables and roots fodder,foddr
+358|Cabbages and other brassicas,others
+366|Artichokes,others
+367|Asparagus,others
+372|Lettuce and chicory,others
+373|Spinach,others
+378|Cassava leaves,others
+388|Tomatoes,others
+393|Cauliflowers and broccoli,others
+394|Pumpkins, squash and gourds,others
+397|Cucumbers and gherkins,others
+399|Eggplants (aubergines),others
+401|Chillies and peppers, green,others
+402|Onions, shallots, green,others
+403|Onions, dry,others
+406|Garlic,others
+407|Leeks, other alliaceous vegetables,others
+426|Carrots and turnips,others
+430|Okra,others
+449|Mushrooms and truffles,others
+459|Chicory roots,others
+463|Vegetables, fresh nes,others
+544|Strawberries,others
+567|Watermelons,others
+568|Melons, other (inccantaloupes),others
+689|Chillies and peppers, dry,others
+711|Anise, badian, fennel, coriander,others
+720|Ginger,others
+723|Spices, nes,others
+116|Potatoes,potato
+265|Castor oil seed,rapeseed
+270|Rapeseed,rapeseed
+280|Safflower seed,rapeseed
+289|Sesame seed,rapeseed
+292|Mustard seed,rapeseed
+296|Poppy seed,rapeseed
+299|Melonseed,rapeseed
+333|Linseed,rapeseed
+336|Hempseed,rapeseed
+27|Rice, paddy,rice_pro
+157|Sugar beet,sugr_beet
+267|Sunflower seed,sunflower
+15|Wheat,tece
+44|Barley,tece
+71|Rye,tece
+75|Oats,tece
+89|Buckwheat,tece
+92|Quinoa,tece
+94|Fonio,tece
+97|Triticale,tece
+101|Canary seed,tece
+103|Grain, mixed,tece
+108|Cereals, nes,tece
+216|Brazil nuts, with shell,others
+217|Cashew nuts, with shell,others
+220|Chestnut,others
+221|Almonds, with shell,others
+222|Walnuts, with shell,others
+223|Pistachios,others
+224|Kola nuts,others
+225|Hazelnuts, with shell,others
+226|Areca nuts,others
+234|Nuts, nes,others
+461|Carobs,others
+486|Bananas,cassav_sp
+489|Plantains,cassav_sp
+490|Oranges,others
+495|Tangerines, mandarins, clementines, satsumas,others
+497|Lemons and limes,others
+507|Grapefruit (inc pomelos),others
+512|Fruit, citrus nes,others
+515|Apples,others
+521|Pears,others
+523|Quinces,others
+526|Apricots,others
+530|Cherries, sour,others
+531|Cherries,others
+534|Peaches and nectarines,others
+536|Plums and sloes,others
+541|Fruit, stone nes,others
+542|Fruit, pome nes,others
+547|Raspberries,others
+549|Gooseberries,others
+550|Currants,others
+552|Blueberries,others
+554|Cranberries,others
+558|Berries nes,others
+560|Grapes,others
+569|Figs,others
+571|Mangoes, mangosteens, guavas,others
+572|Avocados,others
+574|Pineapples,others
+577|Dates,others
+587|Persimmons,others
+591|Cashewapple,others
+592|Kiwi fruit,others
+600|Papayas,others
+603|Fruit, tropical fresh nes,others
+619|Fruit, fresh nes,others
+656|Coffee, green,others
+661|Cocoa, beans,others
+667|Tea,others
+671|Mate,others
+687|Pepper (piper spp),others
+692|Vanilla,others
+693|Cinnamon (canella),others
+698|Cloves,others
+702|Nutmeg, mace and cardamoms,others
+249|Coconuts,rapeseed
+260|Olives,rapeseed
+263|Karite nuts (sheanuts),rapeseed
+275|Tung nuts,rapeseed
+277|Jojoba seed,rapeseed
+305|Tallowtree seed,rapeseed
+310|Kapok fruit,rapeseed
+311|Kapokseed in shell,rapeseed
+339|Oilseeds nes,rapeseed
+636|Forage and silage, maize,foddr
+637|Forage and silage, sorghum,foddr
+446|Maize, green,others
+68|Popcorn,tece
+640|Forage and silage, clover,foddr
+641|Forage and silage, alfalfa,foddr
+643|Forage and silage, legumes,foddr
+414|Beans, green,others
+417|Peas, green,others
+420|Vegetables, leguminous nes,others
+423|String beans,others
+254|Oil, palm fruit,oilpalm
+254|Oil palm fruit,oilpalm
+56|Maize,maiz
+79|Millet,trce
+83|Sorghum,trce
+156|Sugar cane,sugr_cane
+242|Groundnuts, with shell,groundnut
+176|Beans, dry,puls_pro
+181|Broad beans, horse beans, dry,puls_pro
+187|Peas, dry,puls_pro
+191|Chick peas,puls_pro
+195|Cow peas, dry,puls_pro
+197|Pigeon peas,puls_pro
+201|Lentils,puls_pro
+203|Bambara beans,puls_pro
+205|Vetches,puls_pro
+210|Lupins,puls_pro
+211|Pulses, nes,puls_pro
+236|Soybeans,soybean
+677|Hops,others
+748|Peppermint,others
+primf,primforest
+secdf,secdforest
+secdf,forestry
+primn,other
+secdn,other
+pastr,past
+range,past
+urban,urban
+
