@@ -14,7 +14,17 @@ readMagpie <- function() {
   cropArea <- magpie4::croparea("fulldata.gdx", level = "cell", product_aggr = FALSE)
 
   x <- magclass::mbind(landUse, cropArea)
-  attr(x, "clustermap") <- readRDS(Sys.glob("clustermap_*.rds"))
+
+  clustermap <- readRDS(Sys.glob("clustermap_*.rds"))
+  returnSpatVector <- FALSE
+  if (returnSpatVector) {
+    x <- magpie4::clusterOutputToTerraVector(x, clustermap)
+  }
+  attr(x, "clustermap") <- clustermap
   attr(x, "historic") <- magclass::read.magpie("avl_land_full_t_c200.mz")
-  return(x)
+  if (returnSpatVector) {
+    return(list(x = x, class = "SpatVector"))
+  } else {
+    return(x)
+  }
 }

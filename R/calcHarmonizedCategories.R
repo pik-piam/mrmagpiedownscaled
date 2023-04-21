@@ -43,11 +43,11 @@ calcHarmonizedCategories <- function() {
   }
   dimnames(x)[[3]] <- vapply(dimnames(x)[[3]], categoryMapper, character(1), USE.NAMES = FALSE)
 
+  names(dimnames(x)) <- c("region.cluster.country", "year", "category")
+
   # check differences between categories in x and LUH2
   luhCategories <- terra::varnames(madrat::readSource("LUH2v2h"))
-  stopifnot(setequal(setdiff(luhCategories, dimnames(x)[[3]]),
-                     c("secma", "secmb")),
-            length(setdiff(dimnames(x)[[3]], luhCategories)) == 0)
+  stopifnot(setequal(luhCategories, c(dimnames(x)$category, "secma", "secmb")))
 
   return(list(x = x,
               isocountries = FALSE,
