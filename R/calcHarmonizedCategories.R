@@ -46,8 +46,8 @@ calcHarmonizedCategories <- function() {
   names(dimnames(x)) <- c("region.cluster.country", "year", "category")
 
   # check differences between categories in x and LUH2
-  luhCategories <- terra::varnames(madrat::readSource("LUH2v2h"))
-  stopifnot(setequal(luhCategories, c(dimnames(x)$category, "secma", "secmb")))
+  luhCategories <- unique(sub("_[0-9]+$", "", names(madrat::readSource("LUH2v2h"))))
+  stopifnot(setequal(luhCategories, c(dimnames(x)$category, "residual")))
 
   return(list(x = x,
               isocountries = FALSE,
