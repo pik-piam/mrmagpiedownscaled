@@ -1,7 +1,7 @@
 # following the workflow proposed by https://r-pkgs.org/data.html#sec-data-sysdata
 # code to prepare the internal datasets for category mapping
 withr::with_package("mrcommons", {
-  fao <- collapseDim(madrat::readSource("FAO_online", "Crop")[,2019 , "area_harvested"])
+  fao <- collapseDim(madrat::readSource("FAO_online", "Crop")[, 2019, "area_harvested"])
 })
 
 saveRDS(fao, file = "inst/extdata/faoAreaHarvested2019.rds")
@@ -13,5 +13,3 @@ withr::with_package("mrorganic", {
 })
 
 saveRDS(geometryCountries, file = "inst/extdata/geometryCountries.rds")
-
-
