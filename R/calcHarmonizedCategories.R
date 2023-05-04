@@ -1,13 +1,13 @@
 calcHarmonizedCategories <- function(input = "magpie", output = "luh2") {
   if (input == "magpie") {
     x <- madrat::readSource("Magpie")
-    input2fao <- read.csv(system.file("extdata/magpie2ref.csv", package = "mrdownscale"))
+    input2fao <- toolGetMapping("magpie2ref.csv", where = "mrdownscale")
   } else {
     stop("Unsupported input type \"", input, "\"")
   }
 
   if (output == "luh2") {
-    output2fao <- read.csv(system.file("extdata/luh2ref.csv", package = "mrdownscale"))
+    output2fao <- toolGetMapping("luh2ref.csv", where = "mrdownscale")
   } else {
     stop("Unsupported output type \"", output, "\"")
   }
