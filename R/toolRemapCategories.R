@@ -1,6 +1,6 @@
 
 
-toolRemapCategories <- function(data, input2fao, output2fao, faoArea) {
+toolRemapCategories <- function(data, input2fao, output2fao) {
 
   # temporary data to get test data (will be moved somewhere else later on)
   data <- readSource("Magpie")
@@ -13,7 +13,7 @@ toolRemapCategories <- function(data, input2fao, output2fao, faoArea) {
   vFao <- as.SpatVector(fao)
 
 
-  #dataFao <- toolAggregate(data, input2fao, weight = faoArea)
-  #dataOut <- toolAggregate(dataFao, output2fao)
+  # dataFao <- toolAggregate(data, input2fao, weight = faoArea)
+  # dataOut <- toolAggregate(dataFao, output2fao)
   return(dataOut)
 }
