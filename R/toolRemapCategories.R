@@ -1,10 +1,6 @@
 
 
-toolRemapCategories <- function(data, input2fao, output2fao) {
-
-  # temporary data to get test data (will be moved somewhere else later on)
-  data <- readSource("Magpie")
-  data <- magpie4::clusterOutputToTerraVector(data, attr(data, "clustermap"))
+toolRemapCategories <- function(x, input2fao, output2fao) {
 
   # prepare FAO reference data
   fao <- readRDS(system.file("extdata/faoAreaHarvested2019.rds", package = "mrdownscale"))
@@ -13,7 +9,7 @@ toolRemapCategories <- function(data, input2fao, output2fao) {
   vFao <- as.SpatVector(fao)
 
 
-  # dataFao <- toolAggregate(data, input2fao, weight = faoArea)
+  # dataFao <- toolAggregate(x, input2fao, weight = faoArea)
   # dataOut <- toolAggregate(dataFao, output2fao)
   return(dataOut)
 }

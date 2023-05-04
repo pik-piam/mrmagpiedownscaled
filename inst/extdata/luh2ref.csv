@@ -1,174 +1,174 @@
-reference,data
-122|Sweet potatoes,c3ann
-125|Cassava,c3ann
-135|Yautia (cocoyam),c3ann
-136|Taro (cocoyam),c3ann
-137|Yams,c3ann
-149|Roots and tubers, nes,c3ann
-328|Seed cotton,c3ann
-638|Forage and silage, rye grass,c3ann
-639|Forage and silage, grasses nes,c3ann
-642|Forage and silage, green oilseeds,c3ann
-644|Cabbage for fodder,c3ann
-645|Pumpkins for Fodder,c3ann
-646|Turnips for fodder,c3ann
-647|Beets for fodder,c3ann
-648|Carrots for fodder,c3ann
-649|Swedes for fodder,c3ann
-651|Forage products,c3ann
-655|Vegetables and roots fodder,c3ann
-358|Cabbages and other brassicas,c3ann
-366|Artichokes,c3ann
-367|Asparagus,c3ann
-372|Lettuce and chicory,c3ann
-373|Spinach,c3ann
-378|Cassava leaves,c3ann
-388|Tomatoes,c3ann
-393|Cauliflowers and broccoli,c3ann
-394|Pumpkins, squash and gourds,c3ann
-397|Cucumbers and gherkins,c3ann
-399|Eggplants (aubergines),c3ann
-401|Chillies and peppers, green,c3ann
-402|Onions, shallots, green,c3ann
-403|Onions, dry,c3ann
-406|Garlic,c3ann
-407|Leeks, other alliaceous vegetables,c3ann
-426|Carrots and turnips,c3ann
-430|Okra,c3ann
-449|Mushrooms and truffles,c3ann
-459|Chicory roots,c3ann
-463|Vegetables, fresh nes,c3ann
-544|Strawberries,c3ann
-567|Watermelons,c3ann
-568|Melons, other (inccantaloupes),c3ann
-689|Chillies and peppers, dry,c3ann
-711|Anise, badian, fennel, coriander,c3ann
-720|Ginger,c3ann
-723|Spices, nes,c3ann
-116|Potatoes,c3ann
-265|Castor oil seed,c3ann
-270|Rapeseed,c3ann
-280|Safflower seed,c3ann
-289|Sesame seed,c3ann
-292|Mustard seed,c3ann
-296|Poppy seed,c3ann
-299|Melonseed,c3ann
-333|Linseed,c3ann
-336|Hempseed,c3ann
-27|Rice, paddy,c3ann
-157|Sugar beet,c3ann
-267|Sunflower seed,c3ann
-15|Wheat,c3ann
-44|Barley,c3ann
-71|Rye,c3ann
-75|Oats,c3ann
-89|Buckwheat,c3ann
-92|Quinoa,c3ann
-94|Fonio,c3ann
-97|Triticale,c3ann
-101|Canary seed,c3ann
-103|Grain, mixed,c3ann
-108|Cereals, nes,c3ann
-216|Brazil nuts, with shell,c3per
-217|Cashew nuts, with shell,c3per
-220|Chestnut,c3per
-221|Almonds, with shell,c3per
-222|Walnuts, with shell,c3per
-223|Pistachios,c3per
-224|Kola nuts,c3per
-225|Hazelnuts, with shell,c3per
-226|Areca nuts,c3per
-234|Nuts, nes,c3per
-461|Carobs,c3per
-486|Bananas,c3per
-489|Plantains,c3per
-490|Oranges,c3per
-495|Tangerines, mandarins, clementines, satsumas,c3per
-497|Lemons and limes,c3per
-507|Grapefruit (inc pomelos),c3per
-512|Fruit, citrus nes,c3per
-515|Apples,c3per
-521|Pears,c3per
-523|Quinces,c3per
-526|Apricots,c3per
-530|Cherries, sour,c3per
-531|Cherries,c3per
-534|Peaches and nectarines,c3per
-536|Plums and sloes,c3per
-541|Fruit, stone nes,c3per
-542|Fruit, pome nes,c3per
-547|Raspberries,c3per
-549|Gooseberries,c3per
-550|Currants,c3per
-552|Blueberries,c3per
-554|Cranberries,c3per
-558|Berries nes,c3per
-560|Grapes,c3per
-569|Figs,c3per
-571|Mangoes, mangosteens, guavas,c3per
-572|Avocados,c3per
-574|Pineapples,c3per
-577|Dates,c3per
-587|Persimmons,c3per
-591|Cashewapple,c3per
-592|Kiwi fruit,c3per
-600|Papayas,c3per
-603|Fruit, tropical fresh nes,c3per
-619|Fruit, fresh nes,c3per
-656|Coffee, green,c3per
-661|Cocoa, beans,c3per
-667|Tea,c3per
-671|Mate,c3per
-687|Pepper (piper spp),c3per
-692|Vanilla,c3per
-693|Cinnamon (canella),c3per
-698|Cloves,c3per
-702|Nutmeg, mace and cardamoms,c3per
-249|Coconuts,c3per
-260|Olives,c3per
-263|Karite nuts (sheanuts),c3per
-275|Tung nuts,c3per
-277|Jojoba seed,c3per
-305|Tallowtree seed,c3per
-310|Kapok fruit,c3per
-311|Kapokseed in shell,c3per
-339|Oilseeds nes,c3per
-636|Forage and silage, maize,c4ann
-637|Forage and silage, sorghum,c4ann
-446|Maize, green,c4ann
-68|Popcorn,c4ann
-640|Forage and silage, clover,c3nfx
-641|Forage and silage, alfalfa,c3nfx
-643|Forage and silage, legumes,c3nfx
-414|Beans, green,c3nfx
-417|Peas, green,c3nfx
-420|Vegetables, leguminous nes,c3nfx
-423|String beans,c3nfx
-254|Oil, palm fruit,c3per
-254|Oil palm fruit,c3per
-56|Maize,c4ann
-79|Millet,c4ann
-83|Sorghum,c4ann
-156|Sugar cane,c4per
-242|Groundnuts, with shell,c3nfx
-176|Beans, dry,c3nfx
-181|Broad beans, horse beans, dry,c3nfx
-187|Peas, dry,c3nfx
-191|Chick peas,c3nfx
-195|Cow peas, dry,c3nfx
-197|Pigeon peas,c3nfx
-201|Lentils,c3nfx
-203|Bambara beans,c3nfx
-205|Vetches,c3nfx
-210|Lupins,c3nfx
-211|Pulses, nes,c3nfx
-236|Soybeans,c3nfx
-677|Hops,c3ann
-748|Peppermint,c3ann
-primf,primf
-secdf,secdf
-primn,primn
-secdn,secdn
-pastr,pastr
-range,range
-urban,urban
+reference;data
+122|Sweet potatoes;c3ann
+125|Cassava;c3ann
+135|Yautia (cocoyam);c3ann
+136|Taro (cocoyam);c3ann
+137|Yams;c3ann
+149|Roots and tubers, nes;c3ann
+328|Seed cotton;c3ann
+638|Forage and silage, rye grass;c3ann
+639|Forage and silage, grasses nes;c3ann
+642|Forage and silage, green oilseeds;c3ann
+644|Cabbage for fodder;c3ann
+645|Pumpkins for Fodder;c3ann
+646|Turnips for fodder;c3ann
+647|Beets for fodder;c3ann
+648|Carrots for fodder;c3ann
+649|Swedes for fodder;c3ann
+651|Forage products;c3ann
+655|Vegetables and roots fodder;c3ann
+358|Cabbages and other brassicas;c3ann
+366|Artichokes;c3ann
+367|Asparagus;c3ann
+372|Lettuce and chicory;c3ann
+373|Spinach;c3ann
+378|Cassava leaves;c3ann
+388|Tomatoes;c3ann
+393|Cauliflowers and broccoli;c3ann
+394|Pumpkins, squash and gourds;c3ann
+397|Cucumbers and gherkins;c3ann
+399|Eggplants (aubergines);c3ann
+401|Chillies and peppers, green;c3ann
+402|Onions, shallots, green;c3ann
+403|Onions, dry;c3ann
+406|Garlic;c3ann
+407|Leeks, other alliaceous vegetables;c3ann
+426|Carrots and turnips;c3ann
+430|Okra;c3ann
+449|Mushrooms and truffles;c3ann
+459|Chicory roots;c3ann
+463|Vegetables, fresh nes;c3ann
+544|Strawberries;c3ann
+567|Watermelons;c3ann
+568|Melons, other (inccantaloupes);c3ann
+689|Chillies and peppers, dry;c3ann
+711|Anise, badian, fennel, coriander;c3ann
+720|Ginger;c3ann
+723|Spices, nes;c3ann
+116|Potatoes;c3ann
+265|Castor oil seed;c3ann
+270|Rapeseed;c3ann
+280|Safflower seed;c3ann
+289|Sesame seed;c3ann
+292|Mustard seed;c3ann
+296|Poppy seed;c3ann
+299|Melonseed;c3ann
+333|Linseed;c3ann
+336|Hempseed;c3ann
+27|Rice, paddy;c3ann
+157|Sugar beet;c3ann
+267|Sunflower seed;c3ann
+15|Wheat;c3ann
+44|Barley;c3ann
+71|Rye;c3ann
+75|Oats;c3ann
+89|Buckwheat;c3ann
+92|Quinoa;c3ann
+94|Fonio;c3ann
+97|Triticale;c3ann
+101|Canary seed;c3ann
+103|Grain, mixed;c3ann
+108|Cereals, nes;c3ann
+216|Brazil nuts, with shell;c3per
+217|Cashew nuts, with shell;c3per
+220|Chestnut;c3per
+221|Almonds, with shell;c3per
+222|Walnuts, with shell;c3per
+223|Pistachios;c3per
+224|Kola nuts;c3per
+225|Hazelnuts, with shell;c3per
+226|Areca nuts;c3per
+234|Nuts, nes;c3per
+461|Carobs;c3per
+486|Bananas;c3per
+489|Plantains;c3per
+490|Oranges;c3per
+495|Tangerines, mandarins, clementines, satsumas;c3per
+497|Lemons and limes;c3per
+507|Grapefruit (inc pomelos);c3per
+512|Fruit, citrus nes;c3per
+515|Apples;c3per
+521|Pears;c3per
+523|Quinces;c3per
+526|Apricots;c3per
+530|Cherries, sour;c3per
+531|Cherries;c3per
+534|Peaches and nectarines;c3per
+536|Plums and sloes;c3per
+541|Fruit, stone nes;c3per
+542|Fruit, pome nes;c3per
+547|Raspberries;c3per
+549|Gooseberries;c3per
+550|Currants;c3per
+552|Blueberries;c3per
+554|Cranberries;c3per
+558|Berries nes;c3per
+560|Grapes;c3per
+569|Figs;c3per
+571|Mangoes, mangosteens, guavas;c3per
+572|Avocados;c3per
+574|Pineapples;c3per
+577|Dates;c3per
+587|Persimmons;c3per
+591|Cashewapple;c3per
+592|Kiwi fruit;c3per
+600|Papayas;c3per
+603|Fruit, tropical fresh nes;c3per
+619|Fruit, fresh nes;c3per
+656|Coffee, green;c3per
+661|Cocoa, beans;c3per
+667|Tea;c3per
+671|Mate;c3per
+687|Pepper (piper spp);c3per
+692|Vanilla;c3per
+693|Cinnamon (canella);c3per
+698|Cloves;c3per
+702|Nutmeg, mace and cardamoms;c3per
+249|Coconuts;c3per
+260|Olives;c3per
+263|Karite nuts (sheanuts);c3per
+275|Tung nuts;c3per
+277|Jojoba seed;c3per
+305|Tallowtree seed;c3per
+310|Kapok fruit;c3per
+311|Kapokseed in shell;c3per
+339|Oilseeds nes;c3per
+636|Forage and silage, maize;c4ann
+637|Forage and silage, sorghum;c4ann
+446|Maize, green;c4ann
+68|Popcorn;c4ann
+640|Forage and silage, clover;c3nfx
+641|Forage and silage, alfalfa;c3nfx
+643|Forage and silage, legumes;c3nfx
+414|Beans, green;c3nfx
+417|Peas, green;c3nfx
+420|Vegetables, leguminous nes;c3nfx
+423|String beans;c3nfx
+254|Oil, palm fruit;c3per
+254|Oil palm fruit;c3per
+56|Maize;c4ann
+79|Millet;c4ann
+83|Sorghum;c4ann
+156|Sugar cane;c4per
+242|Groundnuts, with shell;c3nfx
+176|Beans, dry;c3nfx
+181|Broad beans, horse beans, dry;c3nfx
+187|Peas, dry;c3nfx
+191|Chick peas;c3nfx
+195|Cow peas, dry;c3nfx
+197|Pigeon peas;c3nfx
+201|Lentils;c3nfx
+203|Bambara beans;c3nfx
+205|Vetches;c3nfx
+210|Lupins;c3nfx
+211|Pulses, nes;c3nfx
+236|Soybeans;c3nfx
+677|Hops;c3ann
+748|Peppermint;c3ann
+primf;primf
+secdf;secdf
+primn;primn
+secdn;secdn
+pastr;pastr
+range;range
+urban;urban
