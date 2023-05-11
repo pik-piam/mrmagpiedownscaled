@@ -12,7 +12,7 @@ toolRemapCategories <- function(x, input2fao, output2fao) {
   }
   fao      <- .getFaoSpatVector()
   fao[[1]] <- NULL # remove country column
-  luh2 <- readRDS(system.file("extdata/faoAreaHarvested2019.rds", package = "mrdownscale"))
+  luh2 <- as.SpatRaster(read.magpie(system.file("extdata/luh2015.mz", package = "mrdownscale")))
 
   # project fao and luh2 data on x
   # ToDo write projectData function
@@ -31,19 +31,23 @@ toolRemapCategories <- function(x, input2fao, output2fao) {
 }
 
 projectData <- function(x, target) {
-  elementSize <- terra::expanse(x, unit = "ha")
-  for(i in which(terra::datatype(x) == "double")) {
-    x[[i]] <- x[[i]]/elementSize
+  if(inherits(x, "SpatVector")) {
+      elementSize <- terra::expanse(x, unit = "ha")
+      for(i in which(terra::datatype(x) == "double")) {
+        x[[i]] <- x[[i]]/elementSize
+      }
+      out <- list()
+      for(i in seq_len(dim(target)[1])) {
+        out[[i]] <- terra::intersect(target[i,], x)
+      }
+      out <- do.call(rbind, out)
+      elementSize <- terra::expanse(out, unit = "ha")
+      for(i in which(terra::datatype(out) == "double")) {
+        out[[i]] <- out[[i]] * elementSize
+      }
+      out <- terra::aggregate(out, by ="clusterId", fun = "sum", count = FALSE)
+  } else if(inherits(x, "SpatRaster")) {
+    out  <- terra::extract(x, target, "sum", bind = TRUE, na.rm=TRUE)
   }
-  out <- list()
-  for(i in seq_len(dim(target)[1])) {
-    out[[i]] <- terra::intersect(target[i,], x)
-  }
-  out <- do.call(rbind, out)
-  elementSize <- terra::expanse(out, unit = "ha")
-  for(i in which(terra::datatype(out) == "double")) {
-    out[[i]] <- out[[i]] * elementSize
-  }
-  out <- terra::aggregate(out, by ="clusterId", fun = "sum", count = FALSE)
   return(out)
 }
