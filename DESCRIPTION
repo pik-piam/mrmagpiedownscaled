@@ -14,6 +14,7 @@ Depends:
 Imports:
     magclass,
     magpie4,
+    mip,
     terra,
     withr
 Suggests:
