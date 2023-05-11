@@ -1,10 +1,10 @@
 calcLowResLUH2v2h <- function() {
   x <- madrat::readSource("LUH2v2h", supplementary = TRUE)
-  unit <- x$unit
+  stopifnot(x$unit == "Mha")
   x <- x$x
 
   # create cluster polygons
-  clustermap <- attr(madrat::readSource("Magpie"), "clustermap")
+  clustermap <- attr(madrat::readSource("MagpieOld"), "clustermap")
   clustermap <- clustermap[, c("cell", "cluster")]
   clustermap$cluster <- as.integer(sub("[A-Z]{3}\\.", "", clustermap$cluster))
   clustermap <- magclass::as.magpie(clustermap, filter = FALSE)
@@ -18,6 +18,6 @@ calcLowResLUH2v2h <- function() {
 
   return(list(x = x,
               class = "SpatVector",
-              unit = unit,
+              unit = "Mha",
               description = "LUH2v2h data on cluster resolution"))
 }
