@@ -10,16 +10,17 @@ toolRemapCategories <- function(x, input2fao, output2fao) {
     attr(fao, "crs") <- "+proj=longlat +datum=WGS84 +no_defs"
     return(as.SpatVector(fao))
   }
-  fao  <- .getFaoSpatVector()
+  fao      <- .getFaoSpatVector()
+  fao[[1]] <- NULL # remove country column
   luh2 <- readRDS(system.file("extdata/faoAreaHarvested2019.rds", package = "mrdownscale"))
 
   # project fao and luh2 data on x
   # ToDo write projectData function
-  fao  <- projectData(fao, x)
-  luh2 <- projectData(luh2, x)
+  pfao  <- projectData(fao, x[,1:2])
+  pluh2 <- projectData(luh2, x[,1:2])
 
-  mluh2 <- as.magpie(luh2)
-  mfao <- as.magpie(fao)
+  mluh2 <- as.magpie(pluh2,  spatial = which(terra::datatype(mluh2) != "double"))
+  mfao <- as.magpie(pfao, spatial = which(terra::datatype(pfao) != "double"))
   ref <- mbind(mfao, mluh2)
 
   mx   <- as.magpie(x)
@@ -43,6 +44,6 @@ projectData <- function(x, target) {
   for(i in which(terra::datatype(out) == "double")) {
     out[[i]] <- out[[i]] * elementSize
   }
-  out <- terra::aggregate(out, by ="clusterId", fun = "sum")
+  out <- terra::aggregate(out, by ="clusterId", fun = "sum", count = FALSE)
   return(out)
 }
