@@ -11,5 +11,6 @@ readLUH2v2h <- function(subset = "1995|2000|2005|2010|2015") {
 
   return(list(x = x,
               class = "SpatRaster",
-              unit = "1"))
+              unit = "1",
+              cache = FALSE))
 }
