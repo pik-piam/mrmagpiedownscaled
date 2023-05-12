@@ -10,7 +10,6 @@ reference;data
 639|Forage and silage, grasses nes;c3ann
 642|Forage and silage, green oilseeds;c3ann
 644|Cabbage for fodder;c3ann
-645|Pumpkins for Fodder;c3ann
 646|Turnips for fodder;c3ann
 647|Beets for fodder;c3ann
 648|Carrots for fodder;c3ann
@@ -131,12 +130,10 @@ reference;data
 277|Jojoba seed;c3per
 305|Tallowtree seed;c3per
 310|Kapok fruit;c3per
-311|Kapokseed in shell;c3per
 339|Oilseeds nes;c3per
 636|Forage and silage, maize;c4ann
 637|Forage and silage, sorghum;c4ann
 446|Maize, green;c4ann
-68|Popcorn;c4ann
 640|Forage and silage, clover;c3nfx
 641|Forage and silage, alfalfa;c3nfx
 643|Forage and silage, legumes;c3nfx
@@ -144,7 +141,6 @@ reference;data
 417|Peas, green;c3nfx
 420|Vegetables, leguminous nes;c3nfx
 423|String beans;c3nfx
-254|Oil, palm fruit;c3per
 254|Oil palm fruit;c3per
 56|Maize;c4ann
 79|Millet;c4ann
