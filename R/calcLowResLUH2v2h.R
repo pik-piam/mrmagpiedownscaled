@@ -3,18 +3,11 @@ calcLowResLUH2v2h <- function() {
   stopifnot(x$unit == "Mha")
   x <- x$x
 
-  # create cluster polygons
-  clustermap <- attr(madrat::readSource("MagpieOld"), "clustermap")
-  clustermap <- clustermap[, c("cell", "cluster")]
-  clustermap$cluster <- as.integer(sub("[A-Z]{3}\\.", "", clustermap$cluster))
-  clustermap <- magclass::as.magpie(clustermap, filter = FALSE)
-  clustermap <- magclass::as.SpatRaster(clustermap) # this adds coordinates
-  clusterPolygons <- terra::as.polygons(clustermap)
+  clusters <- madrat::readSource("Magpie")["clusterId"]
+  clusters <- clusters[!duplicated(clusters$clusterId), ]
 
   # calc category shares for each cluster
-  clusterData <- terra::extract(x, clusterPolygons, sum, na.rm = TRUE)
-  names(clusterData)[1] <- "cluster"
-  x <- terra::merge(clusterPolygons, clusterData)
+  x <- terra::extract(x, clusters, sum, na.rm = TRUE, bind = TRUE)
 
   return(list(x = x,
               class = "SpatVector",
