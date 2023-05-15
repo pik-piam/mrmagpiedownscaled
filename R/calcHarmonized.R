@@ -1,37 +1,33 @@
-calcHarmonized <- function(harmonizationStart = 1995, harmonizationEnd = 2040) {
-  magpie <- readSource("Magpie") # TODO change to calcOutput("HarmonizedCategories")
-  # TODO reformat magpie to fit harmonized interface
+calcHarmonized <- function() {
+  # magpie <- calcOutput("HarmonizedCategories", aggregate = FALSE)
+  magpieMag <- read.magpie("calcHarmonizedCategories.mz")
+  magpie <- as.data.frame(magpieMag, rev = 3)
+  magpie$j <- NULL
+  stopifnot(identical(names(magpie), c("clusterId", "year", "data", ".value")))
+  names(magpie) <- c("region", "period", "variable", "value")
+  magpie$region <- as.character(magpie$region)
+  magpie$scenario <- "scenario"
+  magpie$model <- "MAgPIE"
+  magpie$dummy <- "dummy" # mip::harmonize expects exactly 7 columns
 
   luhVector <- calcOutput("LowResLUH2v2h", aggregate = FALSE)
-  stopifnot(identical(luhVector[["cluster", drop = TRUE]], 1:200))
-  luh <- NULL
-  for (colName in grep("cluster", names(luhVector), value = TRUE, invert = TRUE)) {
-    year <- as.integer(strsplit(colName, "..", fixed = TRUE)[[1]][[1]])
-    category <- strsplit(colName, "..", fixed = TRUE)[[1]][[2]]
-    luh <- rbind(luh, data.frame(region = 1:200, period = year, variable = category,
-                                 value = luhVector[[colName, drop = TRUE]]))
-  }
+  luhMag <- as.magpie(luhVector, spatial = which(terra::datatype(luhVector) != "double"))
+  luh <- as.data.frame(luhMag, rev = 3)
+  stopifnot(identical(names(luh), c("clusterId", "year", "data", ".value")))
+  names(luh) <- c("region", "period", "variable", "value")
   luh$region <- as.character(luh$region)
   luh$scenario <- "scenario"
   luh$model <- "LUH"
+  luh$dummy <- "dummy" # mip::harmonize expects exactly 7 columns
 
-  harmonized <- mip::harmonize(magpie, luh, harmonizeYear = harmonizationStart,
-                               finalYear = harmonizationEnd, method = "ratio")
+  harmonized <- mip::harmonize(magpie, luh, harmonizeYear = "1995",
+                               finalYear = "2040", method = "ratio")
 
-  years <- unique(harmonized$period)
-  repeatedVariables <- rep(unique(harmonized$variable), length(years))
-  namesHarmonized <- paste0(years, "..", repeatedVariables)
-  columns <- Map(function(year, variable) {
-    stopifnot(identical(
-      harmonized[harmonized$period == year & harmonized$variable == variable, "region", drop = TRUE],
-      as.character(1:200)
-    ))
-    return(harmonized[harmonized$period == year & harmonized$variable == variable, "value", drop = TRUE])
-  }, years, repeatedVariables)
-  harmonizedDataframe <- as.data.frame(columns)
-  names(harmonizedDataframe) <- namesHarmonized
-  harmonizedDataframe$cluster <- 1:200
-
-  out <- terra::merge(luhVector["cluster"], harmonizedDataframe)
+  harmonized <- harmonized[, c("region", "period", "variable", "value")]
+  names(harmonized) <- c("clusterId", "year", "category", "value")
+  harmonizedMag <- as.magpie(harmonized, spatial = "clusterId", temporal = "year")
+  attr(harmonizedMag, "geometry") <- attr(luhMag, "geometry")
+  out <- magclass::as.SpatVector(harmonizedMag)
+  terra::crs(out) <- terra::crs(luhVector)
   return(out)
 }
