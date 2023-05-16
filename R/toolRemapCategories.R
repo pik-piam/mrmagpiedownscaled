@@ -46,7 +46,7 @@ toolRemapCategories <- function(x, input2ref, output2ref) {
   pluh2 <- .projectData(luh2, x[, 1:2])
 
   # convert to magclass
-  mluh2 <- as.magpie(pluh2,  spatial = which(terra::datatype(pluh2) != "double"))
+  mluh2 <- as.magpie(pluh2, spatial = which(terra::datatype(pluh2) != "double"))
   mfao  <- as.magpie(pfao, spatial = which(terra::datatype(pfao) != "double"))
   mx    <- as.magpie(x, spatial = which(terra::datatype(x) != "double"))
   # harmonize reference data to million ha and merge
