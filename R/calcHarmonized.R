@@ -1,6 +1,5 @@
 calcHarmonized <- function() {
-  # magpie <- calcOutput("HarmonizedCategories", aggregate = FALSE)
-  magpieMag <- read.magpie("calcHarmonizedCategories.mz")
+  magpieMag <- calcOutput("HarmonizedCategories", aggregate = FALSE)
   magpie <- as.data.frame(magpieMag, rev = 3)
   magpie$j <- NULL
   stopifnot(identical(names(magpie), c("clusterId", "year", "data", ".value")))
@@ -15,19 +14,44 @@ calcHarmonized <- function() {
   luh <- as.data.frame(luhMag, rev = 3)
   stopifnot(identical(names(luh), c("clusterId", "year", "data", ".value")))
   names(luh) <- c("region", "period", "variable", "value")
+  luh <- luh[luh$variable != "residual", ]
   luh$region <- as.character(luh$region)
   luh$scenario <- "scenario"
   luh$model <- "LUH"
   luh$dummy <- "dummy" # mip::harmonize expects exactly 7 columns
 
   harmonized <- mip::harmonize(magpie, luh, harmonizeYear = "1995",
-                               finalYear = "2040", method = "ratio")
+                               finalYear = "2040", method = "offset")
 
   harmonized <- harmonized[, c("region", "period", "variable", "value")]
+
+  # TODO check if areas are conserved
+
+
   names(harmonized) <- c("clusterId", "year", "category", "value")
   harmonizedMag <- as.magpie(harmonized, spatial = "clusterId", temporal = "year")
   attr(harmonizedMag, "geometry") <- attr(luhMag, "geometry")
   out <- magclass::as.SpatVector(harmonizedMag)
   terra::crs(out) <- terra::crs(luhVector)
   return(out)
+}
+
+toolClusterAreas <- function(x) {
+  areas <- lapply(unique(x$region), function(clusterId) {
+    area <- toolArea(x, clusterId, year = unique(x$period)[1])
+    for (year in unique(x$period)[-1]) {
+      if (abs(toolArea(x, clusterId, year) - area) > 0.05) {
+        message("clusterId: ", clusterId, ", year: ", year, ", diff: ",
+                abs(toolArea(x, clusterId, year) - area), " - ",
+                toolArea(x, clusterId, year), " != ", area)
+      }
+    }
+    return(area)
+  })
+  names(areas) <- unique(x$region)
+  return(unlist(areas[as.character(1:200)]))
+}
+
+toolArea <- function(x, clusterId, year) {
+  sum(x[x$region == clusterId & x$period == year, "value"], na.rm = TRUE)
 }
