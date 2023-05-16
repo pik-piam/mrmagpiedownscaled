@@ -51,11 +51,21 @@ toolRemapCategories <- function(x, input2ref, output2ref) {
   mx    <- as.magpie(x, spatial = which(terra::datatype(x) != "double"))
   # harmonize reference data to million ha and merge
   getItems(mfao, dim = 3) <- sub("^sum_", "", getItems(mfao, dim = 3))
-  ref <- mbind(mluh2, mfao * 10^-6)
 
-  xRef <- toolAggregate(mx[, , c("crop", "begr", "betr"), invert = TRUE], input2ref, dim = 3, weight = ref + 10^-10)
+  .bioenergDummy <- function(x) {
+    # generate empty bioenergy dummy to
+    # represent 2nd gen bioenergy production
+    bioDummy <- x[,,1:2]
+    bioDummy[,,] <- 0
+    getItems(bioDummy, dim = 3) <- c("begr", "betr")
+    return(bioDummy)
+  }
+
+  ref <- mbind(mluh2, mfao * 10^-6, .bioenergDummy(mfao))
+
+  xRef <- toolAggregate(mx[, , "crop", invert = TRUE], input2ref, dim = 3, weight = ref + 10^-10)
   xOut <- toolAggregate(xRef, dim = 3, output2ref)
   attr(xOut, "crs") <- attr(mx, "crs")
   attr(xOut, "geometry") <- attr(mx, "geometry")
-  return(as.SpatVector(xOut))
+  return(xOut)
 }
