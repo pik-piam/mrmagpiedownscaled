@@ -20,13 +20,17 @@ calcHarmonized <- function() {
   luh$model <- "LUH"
   luh$dummy <- "dummy" # mip::harmonize expects exactly 7 columns
 
+  magpieClusterAreas <- toolClusterAreas(magpie)
+  luhClusterAreas <- toolClusterAreas(luh)
+  stopifnot(isTRUE(all.equal(magpieClusterAreas, luhClusterAreas)))
+
   harmonized <- mip::harmonize(magpie, luh, harmonizeYear = "1995",
                                finalYear = "2040", method = "offset")
 
   harmonized <- harmonized[, c("region", "period", "variable", "value")]
 
-  # TODO check if areas are conserved
-
+  harmonizedClusterAreas <- toolClusterAreas(harmonized)
+  stopifnot(isTRUE(all.equal(magpieClusterAreas, harmonizedClusterAreas)))
 
   names(harmonized) <- c("clusterId", "year", "category", "value")
   harmonizedMag <- as.magpie(harmonized, spatial = "clusterId", temporal = "year")
@@ -36,22 +40,22 @@ calcHarmonized <- function() {
   return(out)
 }
 
+# get the area of each cluster by summing up all land types
 toolClusterAreas <- function(x) {
+  .area <- function(x, clusterId, year) {
+    sum(x[x$region == clusterId & x$period == year, "value"], na.rm = TRUE)
+  }
   areas <- lapply(unique(x$region), function(clusterId) {
-    area <- toolArea(x, clusterId, year = unique(x$period)[1])
+    area <- .area(x, clusterId, year = unique(x$period)[1])
     for (year in unique(x$period)[-1]) {
-      if (abs(toolArea(x, clusterId, year) - area) > 0.05) {
-        message("clusterId: ", clusterId, ", year: ", year, ", diff: ",
-                abs(toolArea(x, clusterId, year) - area), " - ",
-                toolArea(x, clusterId, year), " != ", area)
+      areaOtherYear <- .area(x, clusterId, year)
+      if (abs(areaOtherYear - area) > 0.05) {
+        warning("clusterId: ", clusterId, ", year: ", year, ", diff: ",
+                abs(areaOtherYear - area), " - ", areaOtherYear, " != ", area)
       }
     }
     return(area)
   })
   names(areas) <- unique(x$region)
   return(unlist(areas[as.character(1:200)]))
-}
-
-toolArea <- function(x, clusterId, year) {
-  sum(x[x$region == clusterId & x$period == year, "value"], na.rm = TRUE)
 }
