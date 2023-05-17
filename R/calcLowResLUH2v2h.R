@@ -4,7 +4,6 @@ calcLowResLUH2v2h <- function() {
   x <- x$x
 
   clusters <- madrat::readSource("Magpie")["clusterId"]
-  clusters <- clusters[!duplicated(clusters$clusterId), ]
 
   # calc category shares for each cluster
   x <- terra::extract(x, clusters, sum, na.rm = TRUE, bind = TRUE)
