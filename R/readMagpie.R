@@ -1,4 +1,5 @@
 readMagpie <- function() {
+  "!# @monitor magpie4::clusterOutputToTerraVector"
   stopifnot(file.exists("fulldata.gdx"),
             length(Sys.glob("clustermap_*.rds")) == 1)
 
