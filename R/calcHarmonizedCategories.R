@@ -15,7 +15,6 @@ calcHarmonizedCategories <- function(input = "magpie", output = "luh2") {
   x <- toolRemapCategories(x, input2ref, output2ref)
 
   return(list(x = x,
-              class = "SpatVector",
               isocountries = FALSE,
               unit = "Mha",
               description = "Input data with land categories remapped to categories of output target data set"))
