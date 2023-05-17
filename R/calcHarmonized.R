@@ -20,18 +20,19 @@ calcHarmonized <- function() {
   luh$model <- "LUH"
   luh$dummy <- "dummy" # mip::harmonize expects exactly 7 columns
 
-  magpieClusterAreas <- toolClusterAreas(magpie)
-  luhClusterAreas <- toolClusterAreas(luh)
+  tolerance <- 0.05 # for deciding if clusters have equal area
+  magpieClusterAreas <- toolClusterAreas(magpie, tolerance)
+  luhClusterAreas <- toolClusterAreas(luh, tolerance)
 
-  stopifnot(isTRUE(all.equal(magpieClusterAreas, luhClusterAreas, tolerance = 0.05)))
+  stopifnot(isTRUE(all.equal(magpieClusterAreas, luhClusterAreas, tolerance = tolerance)))
 
   harmonized <- mip::harmonize(magpie, luh, harmonizeYear = "1995",
                                finalYear = "2040", method = "offset")
 
   harmonized <- harmonized[, c("region", "period", "variable", "value")]
 
-  harmonizedClusterAreas <- toolClusterAreas(harmonized)
-  stopifnot(isTRUE(all.equal(magpieClusterAreas, harmonizedClusterAreas, tolerance = 0.05)))
+  harmonizedClusterAreas <- toolClusterAreas(harmonized, tolerance)
+  stopifnot(isTRUE(all.equal(magpieClusterAreas, harmonizedClusterAreas, tolerance = tolerance)))
 
   names(harmonized) <- c("clusterId", "year", "category", "value")
   harmonizedMag <- as.magpie(harmonized, spatial = "clusterId", temporal = "year")
@@ -42,11 +43,11 @@ calcHarmonized <- function() {
 }
 
 # get the area of each cluster by summing up all land types
-toolClusterAreas <- function(x) {
+toolClusterAreas <- function(x, tolerance) {
   # sum up value col aggregated by region + period cols
   areas <- aggregate(value ~ region + period, data = x, FUN = sum)
 
-  allEqual <- function(a) as.character(all.equal(rep(a[[1]], length(a)), a, tolerance = 0.05))
+  allEqual <- function(a) as.character(all.equal(rep(a[[1]], length(a)), a, tolerance = tolerance))
   consistent <- aggregate(value ~ region, data = areas, FUN = allEqual)
   if (!all(consistent$value == "TRUE")) {
     print(consistent[consistent$value != "TRUE", ])
