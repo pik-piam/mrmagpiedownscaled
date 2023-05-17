@@ -67,8 +67,8 @@ toolRemapCategories <- function(x, input2ref, output2ref) {
   luh2     <- .getLUH2SpatRaster(map)
 
   # project fao and luh2 data on x
-  pfao  <- .projectData(fao, x[, 1:2])
-  pluh2 <- .projectData(luh2, x[, 1:2])
+  pfao  <- .projectData(fao, x[, 1])
+  pluh2 <- .projectData(luh2, x[, 1])
 
   # convert to magclass
   mluh2 <- as.magpie(pluh2, spatial = which(terra::datatype(pluh2) != "double"))
@@ -78,8 +78,8 @@ toolRemapCategories <- function(x, input2ref, output2ref) {
   .bioenergDummy <- function(x, map) {
     # generate empty bioenergy dummy to
     # represent 2nd gen bioenergy production
-    bioDummy <- x[,,rep(1,2)]
-    bioDummy[,,] <- 0
+    bioDummy <- x[, , c(1, 1)]
+    bioDummy[, , ] <- 0
     getItems(bioDummy, dim = 3) <- c("begr", "betr")
     bioDummy <- .remap(bioDummy, map)
     return(bioDummy)
