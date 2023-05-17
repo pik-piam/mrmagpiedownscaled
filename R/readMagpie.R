@@ -9,6 +9,8 @@ readMagpie <- function() {
 
   x <- magclass::mbind(landUse, cropArea)
   x <- magpie4::clusterOutputToTerraVector(x, clustermap)
+  stopifnot(names(x)[2] == "j")
+  x <- x[, -2]
 
   return(list(x = x, class = "SpatVector"))
 }

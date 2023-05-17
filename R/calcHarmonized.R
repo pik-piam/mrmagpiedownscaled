@@ -1,7 +1,6 @@
 calcHarmonized <- function() {
   magpieMag <- calcOutput("HarmonizedCategories", aggregate = FALSE)
-  magpie <- as.data.frame(magpieMag, rev = 3)
-  magpie$j <- NULL
+  magpie <- magclass::as.data.frame(magpieMag, rev = 3)
   stopifnot(identical(names(magpie), c("clusterId", "year", "data", ".value")))
   names(magpie) <- c("region", "period", "variable", "value")
   magpie$region <- as.character(magpie$region)
@@ -11,7 +10,7 @@ calcHarmonized <- function() {
 
   luhVector <- calcOutput("LowResLUH2v2h", aggregate = FALSE)
   luhMag <- as.magpie(luhVector, spatial = which(terra::datatype(luhVector) != "double"))
-  luh <- as.data.frame(luhMag, rev = 3)
+  luh <- magclass::as.data.frame(luhMag, rev = 3)
   stopifnot(identical(names(luh), c("clusterId", "year", "data", ".value")))
   names(luh) <- c("region", "period", "variable", "value")
   luh <- luh[luh$variable != "residual", ]
@@ -39,7 +38,10 @@ calcHarmonized <- function() {
   attr(harmonizedMag, "geometry") <- attr(luhMag, "geometry")
   out <- magclass::as.SpatVector(harmonizedMag)
   terra::crs(out) <- terra::crs(luhVector)
-  return(out)
+  return(return(list(x = out,
+                     class = "SpatVector",
+                     unit = "Mha",
+                     description = "Harmonized data")))
 }
 
 # get the area of each cluster by summing up all land types
