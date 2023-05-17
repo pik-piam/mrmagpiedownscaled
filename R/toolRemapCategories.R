@@ -88,7 +88,7 @@ toolRemapCategories <- function(x, input2ref, output2ref) {
   ref <- mbind(mluh2, mfao, .bioenergDummy(mfao, map))
 
   xRef <- toolAggregate(mx[, , "crop", invert = TRUE], map, dim = 3, from = "dataInput", to = "merge",
-                        weight = ref + 10^-10)
+                        wdim = 3, weight = ref + 10^-10)
   xOut <- toolAggregate(xRef, dim = 3, map, from = "merge", to = "dataOutput")
   attr(xOut, "crs") <- attr(mx, "crs")
   attr(xOut, "geometry") <- attr(mx, "geometry")

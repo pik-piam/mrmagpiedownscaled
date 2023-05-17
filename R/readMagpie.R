@@ -1,4 +1,8 @@
+
 readMagpie <- function() {
+
+  "!# @monitor magpie4:::addGeometry"
+
   stopifnot(file.exists("fulldata.gdx"),
             length(Sys.glob("clustermap_*.rds")) == 1)
 
@@ -7,16 +11,10 @@ readMagpie <- function() {
   cropArea   <- magpie4::croparea("fulldata.gdx", level = "cell", product_aggr = FALSE)
 
   x <- magclass::mbind(landUse, cropArea)
-
-  # TODO get geom without using magpie4::clusterOutputToTerraVector
-  longFormat <- magpie4::clusterOutputToTerraVector(x, clustermap)
-  longFormat <- longFormat[!duplicated(longFormat$clusterId), ]
-  attr(x, "geometry") <- terra::geom(longFormat, wkt = TRUE)
-
+  x <- magpie4::addGeometry(x, clustermap)
   x <- as.SpatVector(x)
   stopifnot(identical(names(x)[1:2], c(".j", ".region")))
-  x <- x[, -1]
+  x <- x[,c(2,1,seq_len(dim(x)[2])[-1:-2])]
   names(x)[1] <- "clusterId"
-  terra::crs(x) <- terra::crs(longFormat)
   return(list(x = x, class = "SpatVector"))
 }

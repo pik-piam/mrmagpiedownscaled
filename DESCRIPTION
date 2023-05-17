@@ -13,7 +13,7 @@ Depends:
     madrat(>= 3.0.0)
 Imports:
     magclass,
-    magpie4,
+    magpie4(>= 1.188.0),
     mip,
     terra,
     withr
