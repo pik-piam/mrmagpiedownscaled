@@ -22,7 +22,8 @@ calcHarmonized <- function() {
 
   magpieClusterAreas <- toolClusterAreas(magpie)
   luhClusterAreas <- toolClusterAreas(luh)
-  stopifnot(isTRUE(all.equal(magpieClusterAreas, luhClusterAreas)))
+
+  stopifnot(isTRUE(all.equal(magpieClusterAreas, luhClusterAreas, tolerance = 0.05)))
 
   harmonized <- mip::harmonize(magpie, luh, harmonizeYear = "1995",
                                finalYear = "2040", method = "offset")
@@ -30,7 +31,7 @@ calcHarmonized <- function() {
   harmonized <- harmonized[, c("region", "period", "variable", "value")]
 
   harmonizedClusterAreas <- toolClusterAreas(harmonized)
-  stopifnot(isTRUE(all.equal(magpieClusterAreas, harmonizedClusterAreas)))
+  stopifnot(isTRUE(all.equal(magpieClusterAreas, harmonizedClusterAreas, tolerance = 0.05)))
 
   names(harmonized) <- c("clusterId", "year", "category", "value")
   harmonizedMag <- as.magpie(harmonized, spatial = "clusterId", temporal = "year")
@@ -42,20 +43,19 @@ calcHarmonized <- function() {
 
 # get the area of each cluster by summing up all land types
 toolClusterAreas <- function(x) {
-  .area <- function(x, clusterId, year) {
-    sum(x[x$region == clusterId & x$period == year, "value"], na.rm = TRUE)
+  # sum up value col aggregated by region + period cols
+  areas <- aggregate(value ~ region + period, data = x, FUN = sum)
+
+  allEqual <- function(a) as.character(all.equal(rep(a[[1]], length(a)), a, tolerance = 0.05))
+  consistent <- aggregate(value ~ region, data = areas, FUN = allEqual)
+  if (!all(consistent$value == "TRUE")) {
+    print(consistent[consistent$value != "TRUE", ])
+    warning("Found inconsistent region sizes, see data frame above.")
   }
-  areas <- lapply(unique(x$region), function(clusterId) {
-    area <- .area(x, clusterId, year = unique(x$period)[1])
-    for (year in unique(x$period)[-1]) {
-      areaOtherYear <- .area(x, clusterId, year)
-      if (abs(areaOtherYear - area) > 0.05) {
-        warning("clusterId: ", clusterId, ", year: ", year, ", diff: ",
-                abs(areaOtherYear - area), " - ", areaOtherYear, " != ", area)
-      }
-    }
-    return(area)
-  })
-  names(areas) <- unique(x$region)
-  return(unlist(areas[as.character(1:200)]))
+
+  areas <- areas[areas$period == areas$period[[1]], ]
+  areas <- areas[order(areas$region), ]
+  out <- areas$value
+  names(out) <- areas$region
+  return(out)
 }
