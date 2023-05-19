@@ -11,10 +11,27 @@ readMagpie <- function() {
   cropArea   <- magpie4::croparea("fulldata.gdx", level = "cell", product_aggr = FALSE)
 
   x <- magclass::mbind(landUse, cropArea)
+  x <- x[,,"crop", invert = TRUE] # remove crop to avoid double counting of areas
   x <- magpie4::addGeometry(x, clustermap)
-  x <- as.SpatVector(x)
-  stopifnot(identical(names(x)[1:2], c(".j", ".region")))
-  x <- x[,c(2,1,seq_len(dim(x)[2])[-1:-2])]
-  names(x)[1] <- "clusterId"
-  return(list(x = x, class = "SpatVector"))
+  # fix spatial set names
+  getSets(x)[1:2] <- c("region","id")
+
+  # tests
+  testthat::test_that("data fullfills format requirement", {
+    testthat::expect_identical(unname(getSets(x)[2]), "id")
+    testthat::expect_true(all(x >= 0))
+
+    # check for expected land categories
+    mag2ref <- toolGetMapping("magpie2ref.csv", where = "mrdownscale")
+    testthat::expect_setequal(getItems(x, dim = 3), mag2ref$data)
+
+    # check for constant total areas
+    xSum <- dimSums(x, dim = 3)
+    testthat::expect_lt(max(abs(xSum-xSum[,1,])), 10^-6)
+  })
+
+  return(list(x = x,
+              class = "magpie",
+              unit = "Mha",
+              description = "Land cover information computed by MAgPIE"))
 }
