@@ -9,14 +9,14 @@ calcHarmonized <- function(input = "magpie", target = "luh2") {
   }
 
   # bring target data to spatial resolution of input data
-  ref    <- as.SpatVector(input[,,1])[,1:2]
+  ref    <- as.SpatVector(input[, , 1])[, 1:2]
   target <- terra::extract(target, ref, sum, na.rm = TRUE, bind = TRUE)
   target <- as.magpie(target)
 
   .df <- function(input) {
     df <- magclass::as.data.frame(input, rev = 3)
     stopifnot(identical(names(df), c("region", "id", "year", "data", ".value")))
-    df <- df[,-1]
+    df <- df[, -1]
     names(df) <- c("region", "period", "variable", "value")
     df$region <- as.character(df$region)
     df$scenario <- "scenario"
@@ -33,7 +33,7 @@ calcHarmonized <- function(input = "magpie", target = "luh2") {
   out <- as.magpie(out, spatial = "region", temporal = "period")
   getSets(out)[1] <- "id"
   spatElems <- getItems(input, dim = 1.1, full = TRUE)
-  names(spatElems) <- getItems(input, dim = "id", full =TRUE)
+  names(spatElems) <- getItems(input, dim = "id", full = TRUE)
   getItems(out, dim = "region", maindim = 1) <-  unname(spatElems[getItems(out, dim = 1)])
   out <- collapseDim(magpiesort(dimOrder(out, 2:1, dim = 1)))
   getSets(out) <- c("region", "id", "year", "data")
@@ -41,7 +41,7 @@ calcHarmonized <- function(input = "magpie", target = "luh2") {
   attr(out, "crs")      <- attr(input, "crs")
 
   testthat::test_that("data fullfills format requirement", {
-    testthat::expect_identical(unname(getSets(out)), c("region","id", "year", "data"))
+    testthat::expect_identical(unname(getSets(out)), c("region", "id", "year", "data"))
     # testthat::expect_true(all(out >= 0)) <-- currently not fullfilled!
 
     # check for expected land categories

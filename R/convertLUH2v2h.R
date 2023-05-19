@@ -14,7 +14,6 @@ convertLUH2v2h <- function(x) {
   stopifnot(terra::units(cellArea) == "km2",
             all(terra::units(x) == "1"))
   x <- x * cellArea / 10000 # multiply shares by area, / 10000 for km2 -> Mha
-  # TODO check sum of all categories from e.g. 1995 sum up to cellArea again
   unit <- "Mha"
   terra::units(x) <- unit
 
