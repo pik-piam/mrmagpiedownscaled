@@ -27,14 +27,14 @@ toolRemapCategories <- function(x, input2ref, output2ref) {
 
   .getMap <- function(input2ref, output2ref) {
     map <- merge(input2ref, output2ref, by = "reference", suffixes = c("Input", "Output"))
-    map$merge <- paste(map$dataInput,map$dataOutput, sep = "_")
+    map$merge <- paste(map$dataInput, map$dataOutput, sep = "_")
     return(map)
   }
   map <- .getMap(input2ref, output2ref)
 
   .remap <- function(x, map) {
     # reduce categories to minimum based on supplied mappings
-    map <- map[map$reference %in% getItems(x, dim = 3),]
+    map <- map[map$reference %in% getItems(x, dim = 3), ]
     x <- toolAggregate(x, map, from = "reference", to = "merge", dim = 3)
     return(x)
   }

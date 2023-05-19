@@ -14,7 +14,7 @@ calcHarmonizedCategories <- function(input = "magpie", output = "luh2") {
   # merge input and output map
   .getMap <- function(input2ref, output2ref) {
     map <- merge(input2ref, output2ref, by = "reference", suffixes = c("Input", "Output"))
-    map$merge <- paste(map$dataInput,map$dataOutput, sep = "_")
+    map$merge <- paste(map$dataInput, map$dataOutput, sep = "_")
     return(map)
   }
   map <- .getMap(input2ref, output2ref)

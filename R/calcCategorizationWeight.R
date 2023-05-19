@@ -3,10 +3,10 @@
 calcCategorizationWeight <- function(map, geometry, crs) {
 
   .getTarget <- function(geometry, crs) {
-    target <- new.magpie(names(geometry), sets = c("id","temporal","data"))
+    target <- new.magpie(names(geometry), sets = c("id", "temporal", "data"))
     attr(target, "geometry") <- geometry
     attr(target, "crs")      <- crs
-    return(as.SpatVector(target)[,1])
+    return(as.SpatVector(target)[, 1])
   }
 
   .projectData <- function(x, target) {
@@ -34,7 +34,7 @@ calcCategorizationWeight <- function(map, geometry, crs) {
 
   .remap <- function(x, map) {
     # reduce categories to minimum based on supplied mappings
-    map <- map[map$reference %in% getItems(x, dim = 3),]
+    map <- map[map$reference %in% getItems(x, dim = 3), ]
     x <- toolAggregate(x, map, from = "reference", to = "merge", dim = 3)
     return(x)
   }
