@@ -11,10 +11,10 @@ readMagpie <- function() {
   cropArea   <- magpie4::croparea("fulldata.gdx", level = "cell", product_aggr = FALSE)
 
   x <- magclass::mbind(landUse, cropArea)
-  x <- x[,,"crop", invert = TRUE] # remove crop to avoid double counting of areas
+  x <- x[, , "crop", invert = TRUE] # remove crop to avoid double counting of areas
   x <- magpie4::addGeometry(x, clustermap)
   # fix spatial set names
-  getSets(x)[1:2] <- c("region","id")
+  getSets(x)[1:2] <- c("region", "id")
 
   # tests
   testthat::test_that("data fullfills format requirement", {
@@ -27,7 +27,7 @@ readMagpie <- function() {
 
     # check for constant total areas
     xSum <- dimSums(x, dim = 3)
-    testthat::expect_lt(max(abs(xSum-xSum[,1,])), 10^-6)
+    testthat::expect_lt(max(abs(xSum - xSum[, 1, ])), 10^-6)
   })
 
   return(list(x = x,
