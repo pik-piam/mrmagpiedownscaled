@@ -17,7 +17,7 @@ toolRemapCategories <- function(x, input2ref, output2ref) {
       for (i in which(terra::datatype(out) == "double")) {
         out[[i]] <- out[[i]] * elementSize
       }
-      out <- terra::aggregate(out, by = "clusterId", fun = "sum", count = FALSE)
+      out <- terra::aggregate(out, by = ".id", fun = "sum", count = FALSE)
       names(out) <- sub("^sum\\_", "", names(out))
     } else if (inherits(x, "SpatRaster")) {
       out  <- terra::extract(x, target, "sum", bind = TRUE, na.rm = TRUE)
