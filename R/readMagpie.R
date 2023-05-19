@@ -14,11 +14,11 @@ readMagpie <- function() {
   x <- x[, , "crop", invert = TRUE] # remove crop to avoid double counting of areas
   x <- magpie4::addGeometry(x, clustermap)
   # fix spatial set names
-  getSets(x)[1:2] <- c("region", "id")
+  getSets(x) <- c("region", "id", "year", "data")
 
   # tests
   testthat::test_that("data fullfills format requirement", {
-    testthat::expect_identical(unname(getSets(x)[2]), "id")
+    testthat::expect_identical(unname(getSets(x)), c("region","id", "year", "data"))
     testthat::expect_true(all(x >= 0))
 
     # check for expected land categories
