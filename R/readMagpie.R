@@ -18,7 +18,7 @@ readMagpie <- function() {
 
   # tests
   testthat::test_that("data fullfills format requirement", {
-    testthat::expect_identical(unname(getSets(x)), c("region","id", "year", "data"))
+    testthat::expect_identical(unname(getSets(x)), c("region", "id", "year", "data"))
     testthat::expect_true(all(x >= 0))
 
     # check for expected land categories
