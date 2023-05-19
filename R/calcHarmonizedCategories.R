@@ -29,6 +29,21 @@ calcHarmonizedCategories <- function(input = "magpie", output = "luh2") {
   attr(out, "crs") <- attr(x, "crs")
   attr(out, "geometry") <- attr(x, "geometry")
 
+  # tests
+  testthat::test_that("data fullfills format requirement", {
+    testthat::expect_identical(unname(getSets(out)[2]), "id")
+    testthat::expect_true(all(out >= 0))
+
+    # check for expected land categories
+    testthat::expect_setequal(getItems(out, dim = 3), map$dataOutput)
+
+    # check for constant total areas
+    outSum <- dimSums(out, dim = 3)
+    testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 10^-6)
+    xSum <- dimSums(x, dim = 3)
+    testthat::expect_lt(max(abs(outSum - xSum)), 10^-6)
+  })
+
   return(list(x = out,
               isocountries = FALSE,
               unit = "Mha",
