@@ -31,7 +31,7 @@ calcHarmonizedCategories <- function(input = "magpie", target = "luh2") {
 
   # tests
   testthat::test_that("data fullfills format requirement", {
-    testthat::expect_identical(unname(getSets(out)), c("region","id", "year", "data"))
+    testthat::expect_identical(unname(getSets(out)), c("region", "id", "year", "data"))
     testthat::expect_true(all(out >= 0))
 
     # check for expected land categories
