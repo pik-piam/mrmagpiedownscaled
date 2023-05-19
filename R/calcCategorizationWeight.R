@@ -85,10 +85,24 @@ calcCategorizationWeight <- function(map, geometry, crs) {
     return(bioDummy)
   }
 
-  ref <- mbind(mluh2, mfao, .bioenergDummy(mfao, map)) + 10^-10
-  attr(ref, "crs") <- crs
-  attr(ref, "geometry") <- geometry
-  return(list(x = ref,
+  out <- mbind(mluh2, mfao, .bioenergDummy(mfao, map)) + 10^-10
+  attr(out, "crs") <- crs
+  attr(out, "geometry") <- geometry
+
+  # tests
+  testthat::test_that("data fullfills format requirement", {
+    testthat::expect_identical(unname(getSets(out)[1]), "id")
+    testthat::expect_true(all(out >= 10^-10))
+
+    # check for expected land categories
+    testthat::expect_setequal(getItems(out, dim = 3), map$merge)
+
+    # check for constant total areas
+    outSum <- dimSums(out, dim = 3)
+    testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 10^-6)
+  })
+
+  return(list(x = out,
               isocountries = FALSE,
               unit = "ha",
               min = 10^-10,
