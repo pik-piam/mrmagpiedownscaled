@@ -1,14 +1,14 @@
-calcHarmonizedCategories <- function(input = "magpie", output = "luh2") {
+calcHarmonizedCategories <- function(input = "magpie", target = "luh2") {
   if (input == "magpie") {
     x <- madrat::readSource("Magpie")
     input2ref <- toolGetMapping("magpie2ref.csv", where = "mrdownscale")
   } else {
     stop("Unsupported input type \"", input, "\"")
   }
-  if (output == "luh2") {
+  if (target == "luh2") {
     output2ref <- toolGetMapping("luh2ref.csv", where = "mrdownscale")
   } else {
-    stop("Unsupported output type \"", output, "\"")
+    stop("Unsupported output type \"", target, "\"")
   }
 
   # merge input and output map
@@ -31,7 +31,7 @@ calcHarmonizedCategories <- function(input = "magpie", output = "luh2") {
 
   # tests
   testthat::test_that("data fullfills format requirement", {
-    testthat::expect_identical(unname(getSets(out)[2]), "id")
+    testthat::expect_identical(unname(getSets(out)), c("region","id", "year", "data"))
     testthat::expect_true(all(out >= 0))
 
     # check for expected land categories

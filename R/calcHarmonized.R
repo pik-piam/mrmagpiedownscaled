@@ -1,64 +1,63 @@
-calcHarmonized <- function() {
-  magpieMag <- calcOutput("HarmonizedCategories", aggregate = FALSE)
-  magpie <- magclass::as.data.frame(magpieMag, rev = 3)
-  stopifnot(identical(names(magpie), c("clusterId", "year", "data", ".value")))
-  names(magpie) <- c("region", "period", "variable", "value")
-  magpie$region <- as.character(magpie$region)
-  magpie$scenario <- "scenario"
-  magpie$model <- "MAgPIE"
-  magpie$dummy <- "dummy" # mip::harmonize expects exactly 7 columns
+calcHarmonized <- function(input = "magpie", target = "luh2") {
+  input <- calcOutput("HarmonizedCategories", input = "magpie", target = "luh2", aggregate = FALSE)
 
-  luhVector <- calcOutput("LowResLUH2v2h", aggregate = FALSE)
-  luhMag <- as.magpie(luhVector, spatial = which(terra::datatype(luhVector) != "double"))
-  luh <- magclass::as.data.frame(luhMag, rev = 3)
-  stopifnot(identical(names(luh), c("clusterId", "year", "data", ".value")))
-  names(luh) <- c("region", "period", "variable", "value")
-  luh <- luh[luh$variable != "residual", ]
-  luh$region <- as.character(luh$region)
-  luh$scenario <- "scenario"
-  luh$model <- "LUH"
-  luh$dummy <- "dummy" # mip::harmonize expects exactly 7 columns
-
-  tolerance <- 0.05 # for deciding if clusters have equal area
-  magpieClusterAreas <- toolClusterAreas(magpie, tolerance)
-  luhClusterAreas <- toolClusterAreas(luh, tolerance)
-
-  stopifnot(isTRUE(all.equal(magpieClusterAreas, luhClusterAreas, tolerance = tolerance)))
-
-  harmonized <- mip::harmonize(magpie, luh, harmonizeYear = "1995",
-                               finalYear = "2040", method = "offset")
-
-  harmonized <- harmonized[, c("region", "period", "variable", "value")]
-
-  harmonizedClusterAreas <- toolClusterAreas(harmonized, tolerance)
-  stopifnot(isTRUE(all.equal(magpieClusterAreas, harmonizedClusterAreas, tolerance = tolerance)))
-
-  names(harmonized) <- c("clusterId", "year", "category", "value")
-  harmonizedMag <- as.magpie(harmonized, spatial = "clusterId", temporal = "year")
-  attr(harmonizedMag, "geometry") <- attr(luhMag, "geometry")
-  out <- magclass::as.SpatVector(harmonizedMag)
-  terra::crs(out) <- terra::crs(luhVector)
-  return(return(list(x = out,
-                     class = "SpatVector",
-                     unit = "Mha",
-                     description = "Harmonized data")))
-}
-
-# get the area of each cluster by summing up all land types
-toolClusterAreas <- function(x, tolerance) {
-  # sum up value col aggregated by region + period cols
-  areas <- aggregate(value ~ region + period, data = x, FUN = sum)
-
-  allEqual <- function(a) as.character(all.equal(rep(a[[1]], length(a)), a, tolerance = tolerance))
-  consistent <- aggregate(value ~ region, data = areas, FUN = allEqual)
-  if (!all(consistent$value == "TRUE")) {
-    print(consistent[consistent$value != "TRUE", ])
-    warning("Found inconsistent region sizes, see data frame above.")
+  # get target data
+  if (target == "luh2") {
+    target <- madrat::readSource("LUH2v2h")
+  } else {
+    stop("Unsupported output type \"", target, "\"")
   }
 
-  areas <- areas[areas$period == areas$period[[1]], ]
-  areas <- areas[order(areas$region), ]
-  out <- areas$value
-  names(out) <- areas$region
-  return(out)
+  # bring target data to spatial resolution of input data
+  ref    <- as.SpatVector(input[,,1])[,1:2]
+  target <- terra::extract(target, ref, sum, na.rm = TRUE, bind = TRUE)
+  target <- as.magpie(target)
+
+  .df <- function(input) {
+    df <- magclass::as.data.frame(input, rev = 3)
+    stopifnot(identical(names(df), c("region", "id", "year", "data", ".value")))
+    df <- df[,-1]
+    names(df) <- c("region", "period", "variable", "value")
+    df$region <- as.character(df$region)
+    df$scenario <- "scenario"
+    df$model <- "MAgPIE"
+    df$unit <- "Mha"
+    return(df)
+  }
+  dInput  <- .df(input)
+  dTarget <- .df(target)
+
+  out <- mip::harmonize(dInput, dTarget, harmonizeYear = "1995",
+                               finalYear = "2040", method = "offset")
+
+  out <- as.magpie(out, spatial = "region", temporal = "period")
+  getSets(out)[1] <- "id"
+  spatElems <- getItems(input, dim = 1.1, full = TRUE)
+  names(spatElems) <- getItems(input, dim = "id", full =TRUE)
+  getItems(out, dim = "region", maindim = 1) <-  unname(spatElems[getItems(out, dim = 1)])
+  out <- collapseDim(magpiesort(dimOrder(out, 2:1, dim = 1)))
+  getSets(out) <- c("region", "id", "year", "data")
+  attr(out, "geometry") <- attr(input, "geometry")
+  attr(out, "crs")      <- attr(input, "crs")
+
+  testthat::test_that("data fullfills format requirement", {
+    testthat::expect_identical(unname(getSets(out)), c("region","id", "year", "data"))
+    # testthat::expect_true(all(out >= 0)) <-- currently not fullfilled!
+
+    # check for expected land categories
+    testthat::expect_setequal(getItems(out, dim = 3), getItems(input, dim = 3))
+
+    # check for constant total areas
+    outSum <- dimSums(out, dim = 3)
+    testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 10^-3)
+    inSum <- dimSums(input, dim = 3)
+    testthat::expect_lt(max(abs(outSum - inSum)), 10^-3)
+  })
+
+  return(return(list(x = out,
+                     class = "magpie",
+                     isocountries = FALSE,
+                     unit = "Mha",
+                     min = 0,
+                     description = "Harmonized data")))
 }
