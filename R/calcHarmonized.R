@@ -1,5 +1,5 @@
 calcHarmonized <- function(input = "magpie", target = "luh2") {
-  input <- calcOutput("HarmonizedCategories", input = "magpie", target = "luh2", aggregate = FALSE)
+  input <- calcOutput("HarmonizedCategories", input = input, target = target, aggregate = FALSE)
 
   # get target data
   if (target == "luh2") {
@@ -27,8 +27,7 @@ calcHarmonized <- function(input = "magpie", target = "luh2") {
   dInput  <- .df(input)
   dTarget <- .df(target)
 
-  out <- mip::harmonize(dInput, dTarget, harmonizeYear = "1995",
-                               finalYear = "2040", method = "offset")
+  out <- mip::harmonize(dInput, dTarget, harmonizeYear = "1995", finalYear = "2040", method = "offset")
 
   out <- as.magpie(out, spatial = "region", temporal = "period")
   getSets(out)[1] <- "id"

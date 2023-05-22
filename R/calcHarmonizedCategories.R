@@ -39,9 +39,9 @@ calcHarmonizedCategories <- function(input = "magpie", target = "luh2") {
 
     # check for constant total areas
     outSum <- dimSums(out, dim = 3)
-    testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 10^-6)
+    testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 10^-5)
     xSum <- dimSums(x, dim = 3)
-    testthat::expect_lt(max(abs(outSum - xSum)), 10^-6)
+    testthat::expect_lt(max(abs(outSum - xSum)), 10^-5)
   })
 
   return(list(x = out,

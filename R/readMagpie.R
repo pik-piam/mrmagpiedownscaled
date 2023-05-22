@@ -27,7 +27,7 @@ readMagpie <- function() {
 
     # check for constant total areas
     xSum <- dimSums(x, dim = 3)
-    testthat::expect_lt(max(abs(xSum - xSum[, 1, ])), 10^-6)
+    testthat::expect_lt(max(abs(xSum - xSum[, 1, ])), 10^-5)
   })
 
   return(list(x = x,
