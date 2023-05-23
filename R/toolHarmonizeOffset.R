@@ -1,4 +1,6 @@
 toolHarmonizeOffset <- function(input, target, harmonizeYear, finalYear) {
+  "!# @monitor mip::harmonize"
+
   .df <- function(input) {
     df <- magclass::as.data.frame(input, rev = 3)
     stopifnot(identical(names(df), c("region", "id", "year", "data", ".value")))
