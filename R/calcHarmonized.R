@@ -16,6 +16,15 @@ calcHarmonized <- function(input = "magpie", target = "luh2",
   stopifnot(setequal(getItems(input, 3), getItems(target, 3)))
   target <- target[, , getItems(input, 3)] # harmonize order of dim 3
 
+  testthat::test_that("input fullfills requirements", {
+    inSum <- dimSums(input, dim = 3)
+    testthat::expect_lt(max(abs(inSum - inSum[, 1, ])), 10^-3)
+    tSum <- dimSums(target, dim = 3)
+    testthat::expect_lt(max(abs(tSum - tSum[, 1, ])), 10^-3)
+
+    testthat::expect_equal(inSum[, 1, ], tSum[, 1, ], tolerance = 10^-3)
+  })
+
   if (method == "offset") {
     out <- toolHarmonizeOffset(input, target, harmonizeYear = harmonizeYear, finalYear = finalYear)
   } else if (method == "fade") {
@@ -27,9 +36,9 @@ calcHarmonized <- function(input = "magpie", target = "luh2",
   attr(out, "geometry") <- attr(input, "geometry")
   attr(out, "crs")      <- attr(input, "crs")
 
-  testthat::test_that("data fullfills format requirement", {
+  testthat::test_that("output fullfills requirements", {
     testthat::expect_identical(unname(getSets(out)), c("region", "id", "year", "data"))
-    testthat::expect_true(all(out >= 0))
+    testthat::expect_gte(min(out), 0)
 
     # check for expected land categories
     testthat::expect_setequal(getItems(out, dim = 3), getItems(input, dim = 3))
