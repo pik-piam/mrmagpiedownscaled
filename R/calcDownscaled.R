@@ -1,5 +1,5 @@
 calcDownscaled <- function(input = "magpie", target = "luh2") {
-  input <- calcOutput("Harmonized", input = "magpie", target = "luh2", aggregate = FALSE)
+  input <- calcOutput("Harmonized", input = input, target = target, aggregate = FALSE)
 
   # get target data
   if (target == "luh2") {
@@ -19,7 +19,7 @@ calcDownscaled <- function(input = "magpie", target = "luh2") {
   }
 
   map <- .getDownscaleMap(input, target)
-  length(intersect(getItems(mt, dim = 1), map$cell))
+  length(intersect(getItems(input, dim = 1), map$cell))
 
   return(return(list(x = out,
                      class = "magpie",
