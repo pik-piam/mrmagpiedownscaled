@@ -1,13 +1,4 @@
 convertLUH2v2h <- function(x) {
-  # add residual category (e.g. ocean)
-  years <- unique(terra::time(x))
-  residual <- lapply(years, function(year) max(1 - sum(x[as.character(year)]), 0))
-  residual <- terra::tighten(do.call(c, residual))
-  names(residual) <- paste0(years, "..residual")
-  terra::units(residual) <- "1"
-  terra::varnames(residual) <- "residual"
-  x <- c(x, residual)
-
   stopifnot(max(terra::values(x), na.rm = TRUE) <= 1.0001)
 
   cellArea <- terra::rast("staticData_quarterdeg.nc", "carea")
