@@ -9,19 +9,19 @@ calcDownscaled <- function(input = "magpie", target = "luh2") {
   }
 
   .getDownscaleMap <- function(x, target) {
-    tmp <- as.SpatVector(x[,1,1])[,".id"]
+    tmp <- as.SpatVector(x[, 1, 1])[, ".id"]
     tmp[[1]]$.id <- as.integer(tmp[[1]]$.id)
     tmp <- terra::rasterize(tmp, target, ".id", touches = TRUE)
     names(tmp) <- "id"
     tmp <- as.magpie(tmp)
-    map <-data.frame(cell=getItems(tmp, dim = 1), cluster=as.vector(tmp))
+    map <- data.frame(cell = getItems(tmp, dim = 1), cluster = as.vector(tmp))
     return(map)
   }
 
   map <- .getDownscaleMap(input, target)
   length(intersect(getItems(input, dim = 1), map$cell))
 
-  return(return(list(x = out,
+  return(return(list(x = NULL,
                      class = "magpie",
                      isocountries = FALSE,
                      unit = "Mha",

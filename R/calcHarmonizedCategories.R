@@ -13,6 +13,9 @@ calcHarmonizedCategories <- function(input = "magpie", target = "luh2") {
 
   # merge input and output map
   .getMap <- function(input2ref, output2ref) {
+    if (!setequal(input2ref$reference, output2ref$reference)) {
+      warning("Input map and output map contain inconsistent reference information")
+    }
     map <- merge(input2ref, output2ref, by = "reference", suffixes = c("Input", "Output"))
     map$merge <- paste(map$dataInput, map$dataOutput, sep = "_")
     if (anyDuplicated(map$reference)) {
