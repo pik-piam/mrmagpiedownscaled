@@ -16,6 +16,13 @@ calcHarmonized <- function(input = "magpie", target = "luh2",
   stopifnot(setequal(getItems(input, 3), getItems(target, 3)))
   target <- target[, , getItems(input, 3)] # harmonize order of dim 3
 
+  # correct for differences in areas
+  corr <- setYears(dimSums(target[, 1, ], dim = 3) / dimSums(input[, 1, ], dim = 3), NULL)
+  if (max(corr) > 1.01) warning("Total areas differ significantly. (max ratio = ", round(max(corr), 2), ")")
+  if (min(corr) < 0.99) warning("Total areas differ significantly. (min ratio = ", round(min(corr), 2), ")")
+  input <- input * corr
+  message("Inputs have been multiplied by area correction factor to match total target areas")
+
   testthat::test_that("input fullfills requirements", {
     inSum <- dimSums(input, dim = 3)
     testthat::expect_lt(max(abs(inSum - inSum[, 1, ])), 10^-3)
