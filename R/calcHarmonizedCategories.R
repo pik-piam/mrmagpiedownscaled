@@ -15,6 +15,10 @@ calcHarmonizedCategories <- function(input = "magpie", target = "luh2") {
   .getMap <- function(input2ref, output2ref) {
     map <- merge(input2ref, output2ref, by = "reference", suffixes = c("Input", "Output"))
     map$merge <- paste(map$dataInput, map$dataOutput, sep = "_")
+    if (anyDuplicated(map$reference)) {
+      warning("Insuficient granularity of reference categories, as a reference category is mapped more than once (\"",
+              paste(unique(map$reference[duplicated(map$reference)]), collapse = "\", \""), "\").")
+    }
     return(map)
   }
   map <- .getMap(input2ref, output2ref)
