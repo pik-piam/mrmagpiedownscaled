@@ -3,7 +3,7 @@ toolDownscaleMagpieClassic <- function(x, xTarget) {
   .getDownscaleMap <- function(x, xTarget) {
     tmp <- as.SpatVector(x[, 1, 1])[, ".id"]
     tmp[[1]]$.id <- as.integer(tmp[[1]]$.id)
-    tmp <- terra::rasterize(tmp, xTarget, ".id", touches = TRUE)
+    tmp <- terra::rasterize(tmp, xTarget, ".id", touches = FALSE)
     names(tmp) <- "id"
     tmp <- as.magpie(tmp)
     map <- data.frame(cell = getItems(tmp, dim = 1), cluster = as.vector(tmp))
