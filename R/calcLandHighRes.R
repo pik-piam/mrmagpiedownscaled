@@ -35,10 +35,10 @@ calcLandHighRes <- function(input = "magpie", target = "luh2") {
   out <- luscale::interpolate2(x[, -1, ], mTarget[, 1, ], map)
   getSets(out)[1:2] <- c("x", "y")
 
-  return(return(list(out = NULL,
-                     class = "magpie",
-                     isocountries = FALSE,
-                     unit = "Mha",
-                     min = 0,
-                     description = "Downscaled and harmonized land use data")))
+  return(list(x = out,
+              class = "magpie",
+              isocountries = FALSE,
+              unit = "Mha",
+              min = 0,
+              description = "Downscaled and harmonized land use data"))
 }
