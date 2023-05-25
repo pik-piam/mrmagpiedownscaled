@@ -10,7 +10,7 @@ calcHarmonized <- function(input = "magpie", target = "luh2",
   }
 
   # bring target data to spatial resolution of input data
-  ref    <- as.SpatVector(input[, , 1])[, 1:2]
+  ref    <- as.SpatVector(input[, 1, 1])[, c(".region", ".id")]
   target <- terra::extract(target, ref, sum, na.rm = TRUE, bind = TRUE)
   target <- as.magpie(target)
   stopifnot(setequal(getItems(input, 3), getItems(target, 3)))
@@ -18,11 +18,16 @@ calcHarmonized <- function(input = "magpie", target = "luh2",
 
   testthat::test_that("input fullfills requirements", {
     inSum <- dimSums(input, dim = 3)
-    testthat::expect_lt(max(abs(inSum - inSum[, 1, ])), 10^-3)
     tSum <- dimSums(target, dim = 3)
-    testthat::expect_lt(max(abs(tSum - tSum[, 1, ])), 10^-3)
 
-    testthat::expect_equal(inSum[, 1, ], tSum[, 1, ], tolerance = 10^-3)
+    # ensure cluster areas in input are consistent over the years
+    testthat::expect_lt(max(abs(inSum - inSum[, 1, ])), 0.001)
+
+    # # ensure cluster areas in target are consistent over the years
+    testthat::expect_lt(max(abs(tSum - tSum[, 1, ])), 0.001)
+
+    # ensure cluster areas in input are equal to those in target
+    testthat::expect_equal(inSum[, 1, ], tSum[, 1, ], tolerance = 0.001)
   })
 
   if (method == "offset") {
@@ -45,15 +50,15 @@ calcHarmonized <- function(input = "magpie", target = "luh2",
 
     # check for constant total areas
     outSum <- dimSums(out, dim = 3)
-    testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 10^-3)
+    testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 0.001)
     inSum <- dimSums(input, dim = 3)
-    testthat::expect_lt(max(abs(outSum - inSum)), 10^-3)
+    testthat::expect_lt(max(abs(outSum - inSum)), 0.001)
   })
 
-  return(return(list(x = out,
-                     class = "magpie",
-                     isocountries = FALSE,
-                     unit = "Mha",
-                     min = 0,
-                     description = "Harmonized data")))
+  return(list(x = out,
+              class = "magpie",
+              isocountries = FALSE,
+              unit = "Mha",
+              min = 0,
+              description = "Harmonized data"))
 }
