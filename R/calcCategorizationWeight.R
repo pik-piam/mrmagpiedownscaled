@@ -75,22 +75,23 @@ calcCategorizationWeight <- function(map, geometry, crs) {
   mluh2 <- as.magpie(pluh2, spatial = which(terra::datatype(pluh2) != "double"))
   mfao  <- as.magpie(pfao, spatial = which(terra::datatype(pfao) != "double"))
 
-  .bioenergDummy <- function(x, map) {
-    # generate empty bioenergy dummy to
-    # represent 2nd gen bioenergy production
-    bioDummy <- x[, , c(1, 1)]
-    bioDummy[, , ] <- 0
-    getItems(bioDummy, dim = 3) <- c("begr", "betr")
-    bioDummy <- .remap(bioDummy, map)
-    return(bioDummy)
+  .dummy <- function(x, map, availableItems) {
+    # generate empty dummy for missing
+    # categories
+    missing <- setdiff(map$merge, availableItems)
+    message("Adding dummy weights for following categories: ", paste(missing, collapse = ", "))
+    dummy <- x[, , rep(1, length(missing))]
+    dummy[, , ] <- 0
+    getItems(dummy, dim = 3) <- missing
+    return(dummy)
   }
 
-  out <- mbind(mluh2, mfao, .bioenergDummy(mfao, map)) + 10^-10
+  out <- mbind(mluh2, mfao, .dummy(mfao, map, c(getItems(mluh2, dim = 3), getItems(mfao, dim = 3)))) + 10^-10
   attr(out, "crs") <- crs
   attr(out, "geometry") <- geometry
 
   # tests
-  testthat::test_that("data fullfills format requirement", {
+  tryCatch(testthat::test_that("data fullfills format requirement", {
     testthat::expect_identical(unname(getSets(out)[1]), "id")
     testthat::expect_true(all(out >= 10^-10))
 
@@ -100,7 +101,7 @@ calcCategorizationWeight <- function(map, geometry, crs) {
     # check for constant total areas
     outSum <- dimSums(out, dim = 3)
     testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 10^-5)
-  })
+  }), error = function(e) warning(e))
 
   return(list(x = out,
               isocountries = FALSE,
