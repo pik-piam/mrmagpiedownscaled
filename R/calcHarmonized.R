@@ -37,7 +37,7 @@ calcHarmonized <- function(input = "magpie", target = "luh2",
 
     # ensure cluster areas in input are equal to those in target
     testthat::expect_equal(inSum[, 1, ], tSum[, 1, ], tolerance = 0.001)
-  }), error = function(e) warning(e))
+  }), error = warning)
 
   if (method == "offset") {
     out <- toolHarmonizeOffset(input, target, harmonizeYear = harmonizeYear, finalYear = finalYear)
@@ -66,7 +66,7 @@ calcHarmonized <- function(input = "magpie", target = "luh2",
     testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 0.001)
     inSum <- dimSums(input, dim = 3)
     testthat::expect_lt(max(abs(outSum - inSum)), 0.001)
-  }), error = function(e) warning(e))
+  }), error = warning)
 
   return(list(x = out,
               class = "magpie",

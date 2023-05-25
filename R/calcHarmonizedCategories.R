@@ -49,7 +49,7 @@ calcHarmonizedCategories <- function(input = "magpie", target = "luh2") {
     testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 10^-5)
     xSum <- dimSums(x, dim = 3)
     testthat::expect_lt(max(abs(outSum - xSum)), 10^-5)
-  }), error = function(e) warning(e))
+  }), error = warning)
 
   return(list(x = out,
               isocountries = FALSE,
