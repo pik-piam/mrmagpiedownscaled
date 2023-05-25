@@ -13,10 +13,8 @@ readMagpie <- function() {
   x <- magclass::mbind(landUse, cropArea)
   x <- x[, , "crop", invert = TRUE] # remove crop to avoid double counting of areas
   x <- magpie4::addGeometry(x, clustermap)
-  # fix spatial set names
-  getSets(x) <- c("region", "id", "year", "data")
+  getSets(x) <- c("region", "id", "year", "data") # fix spatial set names
 
-  # tests
   testthat::test_that("data fullfills format requirement", {
     testthat::expect_identical(unname(getSets(x)), c("region", "id", "year", "data"))
     testthat::expect_true(all(x >= 0))
