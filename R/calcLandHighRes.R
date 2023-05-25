@@ -1,5 +1,5 @@
 calcLandHighRes <- function(input = "magpie", target = "luh2") {
-  x <- calcOutput("Harmonized", input = input, target = target, aggregate = FALSE)
+  x <- calcOutput("LandHarmonized", input = input, target = target, aggregate = FALSE)
 
   # get target data
   if (target == "luh2") {

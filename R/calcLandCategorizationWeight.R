@@ -1,6 +1,13 @@
 
 
-toolRemapCategories <- function(x, input2ref, output2ref) {
+calcLandCategorizationWeight <- function(map, geometry, crs) {
+
+  .getTarget <- function(geometry, crs) {
+    target <- new.magpie(names(geometry), sets = c("id", "temporal", "data"))
+    attr(target, "geometry") <- geometry
+    attr(target, "crs")      <- crs
+    return(as.SpatVector(target)[, 1])
+  }
 
   .projectData <- function(x, target) {
     if (inherits(x, "SpatVector")) {
@@ -24,13 +31,6 @@ toolRemapCategories <- function(x, input2ref, output2ref) {
     }
     return(out)
   }
-
-  .getMap <- function(input2ref, output2ref) {
-    map <- merge(input2ref, output2ref, by = "reference", suffixes = c("Input", "Output"))
-    map$merge <- paste(map$dataInput, map$dataOutput, sep = "_")
-    return(map)
-  }
-  map <- .getMap(input2ref, output2ref)
 
   .remap <- function(x, map) {
     # reduce categories to minimum based on supplied mappings
@@ -67,30 +67,46 @@ toolRemapCategories <- function(x, input2ref, output2ref) {
   luh2     <- .getLUH2SpatRaster(map)
 
   # project fao and luh2 data on x
-  pfao  <- .projectData(fao, x[, 1])
-  pluh2 <- .projectData(luh2, x[, 1])
+  target <- .getTarget(geometry, crs)
+  pfao  <- .projectData(fao, target)
+  pluh2 <- .projectData(luh2, target)
 
   # convert to magclass
   mluh2 <- as.magpie(pluh2, spatial = which(terra::datatype(pluh2) != "double"))
   mfao  <- as.magpie(pfao, spatial = which(terra::datatype(pfao) != "double"))
-  mx    <- as.magpie(x, spatial = which(terra::datatype(x) != "double"))
 
-  .bioenergDummy <- function(x, map) {
-    # generate empty bioenergy dummy to
-    # represent 2nd gen bioenergy production
-    bioDummy <- x[, , c(1, 1)]
-    bioDummy[, , ] <- 0
-    getItems(bioDummy, dim = 3) <- c("begr", "betr")
-    bioDummy <- .remap(bioDummy, map)
-    return(bioDummy)
+  .dummy <- function(x, map, availableItems) {
+    # generate empty dummy for missing
+    # categories
+    missing <- setdiff(map$merge, availableItems)
+    message("Adding dummy weights for following categories: ", paste(missing, collapse = ", "))
+    dummy <- x[, , rep(1, length(missing))]
+    dummy[, , ] <- 0
+    getItems(dummy, dim = 3) <- missing
+    return(dummy)
   }
 
-  ref <- mbind(mluh2, mfao, .bioenergDummy(mfao, map))
+  out <- mbind(mluh2, mfao, .dummy(mfao, map, c(getItems(mluh2, dim = 3), getItems(mfao, dim = 3)))) + 10^-10
+  attr(out, "crs") <- crs
+  attr(out, "geometry") <- geometry
 
-  xRef <- toolAggregate(mx[, , "crop", invert = TRUE], map, dim = 3, from = "dataInput", to = "merge",
-                        wdim = 3, weight = ref + 10^-10)
-  xOut <- toolAggregate(xRef, dim = 3, map, from = "merge", to = "dataOutput")
-  attr(xOut, "crs") <- attr(mx, "crs")
-  attr(xOut, "geometry") <- attr(mx, "geometry")
-  return(xOut)
+  # tests
+  tryCatch(testthat::test_that("data fullfills format requirement", {
+    testthat::expect_identical(unname(getSets(out)[1]), "id")
+    testthat::expect_true(all(out >= 10^-10))
+
+    # check for expected land categories
+    testthat::expect_setequal(getItems(out, dim = 3), map$merge)
+
+    # check for constant total areas
+    outSum <- dimSums(out, dim = 3)
+    testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 10^-5)
+  }), error = warning)
+
+  return(list(x = out,
+              isocountries = FALSE,
+              unit = "ha",
+              min = 10^-10,
+              description = "Weights for dissagregation inputs to reference categories"))
+
 }

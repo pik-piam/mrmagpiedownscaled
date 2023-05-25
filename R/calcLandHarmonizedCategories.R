@@ -1,4 +1,4 @@
-calcHarmonizedCategories <- function(input = "magpie", target = "luh2") {
+calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
   if (input == "magpie") {
     x <- madrat::readSource("Magpie")
     input2ref <- toolGetMapping("magpie2ref.csv", where = "mrdownscale")
@@ -27,7 +27,7 @@ calcHarmonizedCategories <- function(input = "magpie", target = "luh2") {
   map <- .getMap(input2ref, output2ref)
 
   # get weights for disaggregation to reference categories
-  ref <- calcOutput("CategorizationWeight", map = map, geometry = attr(x, "geometry"),
+  ref <- calcOutput("LandCategorizationWeight", map = map, geometry = attr(x, "geometry"),
                     crs = attr(x, "crs"), aggregate = FALSE)
 
   y   <- toolAggregate(x, map, dim = 3, from = "dataInput", to = "merge", weight = ref)
