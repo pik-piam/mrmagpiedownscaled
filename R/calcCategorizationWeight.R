@@ -101,7 +101,7 @@ calcCategorizationWeight <- function(map, geometry, crs) {
     # check for constant total areas
     outSum <- dimSums(out, dim = 3)
     testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 10^-5)
-  }), error = function(e) warning(e))
+  }), error = warning)
 
   return(list(x = out,
               isocountries = FALSE,
