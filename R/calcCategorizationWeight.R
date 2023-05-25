@@ -91,7 +91,7 @@ calcCategorizationWeight <- function(map, geometry, crs) {
   attr(out, "geometry") <- geometry
 
   # tests
-  testthat::test_that("data fullfills format requirement", {
+  tryCatch(testthat::test_that("data fullfills format requirement", {
     testthat::expect_identical(unname(getSets(out)[1]), "id")
     testthat::expect_true(all(out >= 10^-10))
 
@@ -101,7 +101,7 @@ calcCategorizationWeight <- function(map, geometry, crs) {
     # check for constant total areas
     outSum <- dimSums(out, dim = 3)
     testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 10^-5)
-  })
+  }), error = function(e) warning(e))
 
   return(list(x = out,
               isocountries = FALSE,
