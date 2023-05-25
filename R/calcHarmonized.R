@@ -1,6 +1,8 @@
 calcHarmonized <- function(input = "magpie", target = "luh2",
                            harmonizeYear = 1995, finalYear = 2015, method = "fade") {
   input <- calcOutput("HarmonizedCategories", input = input, target = target, aggregate = FALSE)
+  geometry <- attr(input, "geometry")
+  crs      <- attr(input, "crs")
 
   # get target data
   if (target == "luh2") {
@@ -39,10 +41,14 @@ calcHarmonized <- function(input = "magpie", target = "luh2",
     stop("Unexpected harmonization method: ", method)
   }
 
-  attr(out, "geometry") <- attr(input, "geometry")
-  attr(out, "crs")      <- attr(input, "crs")
+  attr(out, "geometry") <- geometry
+  attr(out, "crs")      <- crs
 
   tryCatch(testthat::test_that("output fullfills requirements", {
+
+    testthat::expect_type(attr(out, "geometry"), "character")
+    testthat::expect_type(attr(out, "crs"), "character")
+
     testthat::expect_identical(unname(getSets(out)), c("region", "id", "year", "data"))
     testthat::expect_gte(min(out), 0)
 
