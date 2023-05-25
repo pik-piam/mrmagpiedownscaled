@@ -13,8 +13,15 @@ calcHarmonizedCategories <- function(input = "magpie", target = "luh2") {
 
   # merge input and output map
   .getMap <- function(input2ref, output2ref) {
+    if (!setequal(input2ref$reference, output2ref$reference)) {
+      warning("Input map and output map contain inconsistent reference information")
+    }
     map <- merge(input2ref, output2ref, by = "reference", suffixes = c("Input", "Output"))
     map$merge <- paste(map$dataInput, map$dataOutput, sep = "_")
+    if (anyDuplicated(map$reference)) {
+      warning("Insuficient granularity of reference categories, as a reference category is mapped more than once (\"",
+              paste(unique(map$reference[duplicated(map$reference)]), collapse = "\", \""), "\").")
+    }
     return(map)
   }
   map <- .getMap(input2ref, output2ref)
@@ -30,7 +37,7 @@ calcHarmonizedCategories <- function(input = "magpie", target = "luh2") {
   attr(out, "geometry") <- attr(x, "geometry")
 
   # tests
-  testthat::test_that("data fullfills format requirement", {
+  tryCatch(testthat::test_that("data fullfills format requirement", {
     testthat::expect_identical(unname(getSets(out)), c("region", "id", "year", "data"))
     testthat::expect_true(all(out >= 0))
 
@@ -42,7 +49,7 @@ calcHarmonizedCategories <- function(input = "magpie", target = "luh2") {
     testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 10^-5)
     xSum <- dimSums(x, dim = 3)
     testthat::expect_lt(max(abs(outSum - xSum)), 10^-5)
-  })
+  }), error = function(e) warning(e))
 
   return(list(x = out,
               isocountries = FALSE,

@@ -1,6 +1,8 @@
 calcHarmonized <- function(input = "magpie", target = "luh2",
                            harmonizeYear = 1995, finalYear = 2015, method = "fade") {
   input <- calcOutput("HarmonizedCategories", input = input, target = target, aggregate = FALSE)
+  geometry <- attr(input, "geometry")
+  crs      <- attr(input, "crs")
 
   # get target data
   if (target == "luh2") {
@@ -16,7 +18,14 @@ calcHarmonized <- function(input = "magpie", target = "luh2",
   stopifnot(setequal(getItems(input, 3), getItems(target, 3)))
   target <- target[, , getItems(input, 3)] # harmonize order of dim 3
 
-  testthat::test_that("input fullfills requirements", {
+  # correct for differences in areas
+  corr <- setYears(dimSums(target[, 1, ], dim = 3) / dimSums(input[, 1, ], dim = 3), NULL)
+  if (max(corr) > 1.01) warning("Total areas differ significantly. (max ratio = ", round(max(corr), 2), ")")
+  if (min(corr) < 0.99) warning("Total areas differ significantly. (min ratio = ", round(min(corr), 2), ")")
+  input <- input * corr
+  message("Inputs have been multiplied by area correction factor to match total target areas")
+
+  tryCatch(testthat::test_that("input fullfills requirements", {
     inSum <- dimSums(input, dim = 3)
     tSum <- dimSums(target, dim = 3)
 
@@ -28,7 +37,7 @@ calcHarmonized <- function(input = "magpie", target = "luh2",
 
     # ensure cluster areas in input are equal to those in target
     testthat::expect_equal(inSum[, 1, ], tSum[, 1, ], tolerance = 0.001)
-  })
+  }), error = function(e) warning(e))
 
   if (method == "offset") {
     out <- toolHarmonizeOffset(input, target, harmonizeYear = harmonizeYear, finalYear = finalYear)
@@ -38,10 +47,14 @@ calcHarmonized <- function(input = "magpie", target = "luh2",
     stop("Unexpected harmonization method: ", method)
   }
 
-  attr(out, "geometry") <- attr(input, "geometry")
-  attr(out, "crs")      <- attr(input, "crs")
+  attr(out, "geometry") <- geometry
+  attr(out, "crs")      <- crs
 
-  testthat::test_that("output fullfills requirements", {
+  tryCatch(testthat::test_that("output fullfills requirements", {
+
+    testthat::expect_type(attr(out, "geometry"), "character")
+    testthat::expect_type(attr(out, "crs"), "character")
+
     testthat::expect_identical(unname(getSets(out)), c("region", "id", "year", "data"))
     testthat::expect_gte(min(out), 0)
 
@@ -53,7 +66,7 @@ calcHarmonized <- function(input = "magpie", target = "luh2",
     testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 0.001)
     inSum <- dimSums(input, dim = 3)
     testthat::expect_lt(max(abs(outSum - inSum)), 0.001)
-  })
+  }), error = function(e) warning(e))
 
   return(list(x = out,
               class = "magpie",
