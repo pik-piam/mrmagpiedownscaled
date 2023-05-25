@@ -1,4 +1,4 @@
-calcDownscaled <- function(input = "magpie", target = "luh2") {
+calcLandHighRes <- function(input = "magpie", target = "luh2") {
   x <- calcOutput("Harmonized", input = input, target = target, aggregate = FALSE)
 
   # get target data
