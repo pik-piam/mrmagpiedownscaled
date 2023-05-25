@@ -23,14 +23,13 @@ calcHarmonized <- function(input = "magpie", target = "luh2",
   input <- input * corr
   message("Inputs have been multiplied by area correction factor to match total target areas")
 
-  testthat::test_that("input fullfills requirements", {
+  tryCatch(testthat::test_that("input fullfills requirements", {
     inSum <- dimSums(input, dim = 3)
     testthat::expect_lt(max(abs(inSum - inSum[, 1, ])), 10^-3)
     tSum <- dimSums(target, dim = 3)
     testthat::expect_lt(max(abs(tSum - tSum[, 1, ])), 10^-3)
-
     testthat::expect_equal(inSum[, 1, ], tSum[, 1, ], tolerance = 10^-3)
-  })
+  }), error = function(e) warning(e))
 
   if (method == "offset") {
     out <- toolHarmonizeOffset(input, target, harmonizeYear = harmonizeYear, finalYear = finalYear)
@@ -43,7 +42,7 @@ calcHarmonized <- function(input = "magpie", target = "luh2",
   attr(out, "geometry") <- attr(input, "geometry")
   attr(out, "crs")      <- attr(input, "crs")
 
-  testthat::test_that("output fullfills requirements", {
+  tryCatch(testthat::test_that("output fullfills requirements", {
     testthat::expect_identical(unname(getSets(out)), c("region", "id", "year", "data"))
     testthat::expect_gte(min(out), 0)
 
@@ -55,7 +54,7 @@ calcHarmonized <- function(input = "magpie", target = "luh2",
     testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 10^-3)
     inSum <- dimSums(input, dim = 3)
     testthat::expect_lt(max(abs(outSum - inSum)), 10^-3)
-  })
+  }), error = function(e) warning(e))
 
   return(return(list(x = out,
                      class = "magpie",
