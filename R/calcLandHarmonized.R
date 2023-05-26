@@ -1,15 +1,9 @@
 calcLandHarmonized <- function(input = "magpie", target = "luh2",
                            harmonizeYear = 1995, finalYear = 2015, method = "fade") {
-  input <- calcOutput("LandHarmonizedCategories", input = input, target = target, aggregate = FALSE)
+  input  <- calcOutput("LandHarmonizedCategories", input = input, target = target, aggregate = FALSE)
   geometry <- attr(input, "geometry")
   crs      <- attr(input, "crs")
-
-  # get target data
-  if (target == "luh2") {
-    target <- madrat::readSource("LUH2v2h")
-  } else {
-    stop("Unsupported output type \"", target, "\"")
-  }
+  target <- calcOutput("LandTargetData", target = target, aggregate = FALSE)
 
   # bring target data to spatial resolution of input data
   ref    <- as.SpatVector(input[, 1, 1])[, c(".region", ".id")]
