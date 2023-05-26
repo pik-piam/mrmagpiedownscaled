@@ -26,5 +26,6 @@ calcLandInputData <- function(input = "magpie") {
               isocountries = FALSE,
               unit = "Mha",
               min = 0,
+              cache = FALSE,
               description = "Land input data for data harmonization and downscaling pipeline"))
 }
