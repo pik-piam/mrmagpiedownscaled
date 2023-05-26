@@ -11,7 +11,7 @@ License: LGPL-3
 URL: https://github.com/pik-piam/mrdownscale
 Depends:
     madrat(>= 3.0.0),
-    magclass,
+    magclass(>= 6.9.1),
     R(>= 4.0.0)
 Imports:
     luscale,
