@@ -11,7 +11,7 @@ calcLandHighRes <- function(input = "magpie", target = "luh2", downscaling = "ma
   if (downscaling == "magpieClassic") {
     out <- toolDownscaleMagpieClassic(x, xTarget)
   } else {
-    stop("Unsupported downscaling methods \"", downscaling, "\"")
+    stop("Unsupported downscaling method \"", downscaling, "\"")
   }
 
   return(list(x = out,
@@ -19,5 +19,5 @@ calcLandHighRes <- function(input = "magpie", target = "luh2", downscaling = "ma
               isocountries = FALSE,
               unit = "Mha",
               min = 0,
-              description = "Downscaled and harmonized land use data"))
+              description = "Downscaled land use data"))
 }
