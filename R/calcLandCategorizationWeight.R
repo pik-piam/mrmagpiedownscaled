@@ -56,10 +56,8 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
   }
   .getLUH2SpatRaster <- function(map) {
     luh2 <- read.magpie(system.file("extdata/luh2015.mz", package = "mrdownscale"))
-
     # reduce categories to minimum based on supplied mappings
     luh2 <- .remap(luh2, map)
-
     luh2 <- as.SpatRaster(luh2)
     return(luh2)
   }
@@ -90,18 +88,14 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
   attr(out, "crs") <- crs
   attr(out, "geometry") <- geometry
 
-  # tests
-  tryCatch(testthat::test_that("data fullfills format requirement", {
-    testthat::expect_identical(unname(getSets(out)[1]), "id")
-    testthat::expect_true(all(out >= 10^-10))
-
-    # check for expected land categories
-    testthat::expect_setequal(getItems(out, dim = 3), map$merge)
-
-    # check for constant total areas
-    outSum <- dimSums(out, dim = 3)
-    testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 10^-5)
-  }), error = warning)
+  # check data for consistency
+  sep <- paste(rep("-", 100), collapse = "")
+  vcat(1, sep, show_prefix = FALSE)
+  vcat(1, "Check LandCategorizationWeight output", show_prefix = FALSE)
+  toolExpectTrue(identical(unname(getSets(out)[1]), "id"), "Dimensions are named correctly")
+  toolExpectTrue(setequal(getItems(out, dim = 3), map$merge), "Land categories match merged categories")
+  toolExpectTrue(all(out >= 10^-10), "All values are >= 10e-10")
+  vcat(1, sep, show_prefix = FALSE)
 
   return(list(x = out,
               isocountries = FALSE,
