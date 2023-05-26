@@ -10,5 +10,6 @@ calcLandTargetData <- function(target = "luh2") {
               weight = NULL,
               class = "SpatRaster",
               unit = "Mha",
+              cache = FALSE,
               description = "Land target data for data harmonization"))
 }
