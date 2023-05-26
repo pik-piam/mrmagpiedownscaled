@@ -1,4 +1,8 @@
-convertLUH2v2h <- function(x) {
+convertLUH2v2h <- function(x, subtype = "LUH") {
+  if (subtype == "cellArea") {
+    stop("Pass convert = FALSE when getting cellArea.")
+  }
+
   stopifnot(max(terra::values(x), na.rm = TRUE) <= 1.0001)
 
   cellArea <- terra::rast("staticData_quarterdeg.nc", "carea")
