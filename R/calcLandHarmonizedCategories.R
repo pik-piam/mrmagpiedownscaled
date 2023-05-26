@@ -1,10 +1,6 @@
 calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
 
-  if (input == "magpie") {
-    x <- madrat::readSource("Magpie")
-  } else {
-    stop("Unsupported input type \"", input, "\"")
-  }
+  x   <- calcOutput("LandInputData", input = input, aggregate = FALSE)
   map <- toolLandCategoriesMapping(input, target)
 
   # get weights for disaggregation to reference categories
