@@ -25,19 +25,16 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2",
   input <- input * corr
   message("Inputs have been multiplied by area correction factor to match total target areas")
 
-  tryCatch(testthat::test_that("input fullfills requirements", {
-    inSum <- dimSums(input, dim = 3)
-    tSum <- dimSums(target, dim = 3)
-
-    # ensure cluster areas in input are consistent over the years
-    testthat::expect_lt(max(abs(inSum - inSum[, 1, ])), 0.001)
-
-    # # ensure cluster areas in target are consistent over the years
-    testthat::expect_lt(max(abs(tSum - tSum[, 1, ])), 0.001)
-
-    # ensure cluster areas in input are equal to those in target
-    testthat::expect_equal(inSum[, 1, ], tSum[, 1, ], tolerance = 0.001)
-  }), error = warning)
+  # check  input data for consistency
+  sep <- paste(rep("-", 100), collapse = "")
+  vcat(1, sep, show_prefix = FALSE)
+  vcat(1, "Check LandHarmonized input", show_prefix = FALSE)
+  inSum <- dimSums(input, dim = 3)
+  tSum <- dimSums(target, dim = 3)
+  toolExpectLessDiff(inSum, inSum[, 1, ], 10^-5, "Total areas in input stay constant over time")
+  toolExpectLessDiff(tSum, tSum[, 1, ], 10^-5, "Total areas in target stay constant over time")
+  toolExpectLessDiff(inSum[, 1, ], tSum[, 1, ], 10^-5, "Total areas are the same in target and input data")
+  vcat(1, sep, show_prefix = FALSE)
 
   if (method == "offset") {
     out <- toolHarmonizeOffset(input, target, harmonizeYear = harmonizeYear, finalYear = finalYear)
@@ -46,27 +43,22 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2",
   } else {
     stop("Unexpected harmonization method: ", method)
   }
-
   attr(out, "geometry") <- geometry
   attr(out, "crs")      <- crs
 
-  tryCatch(testthat::test_that("output fullfills requirements", {
-
-    testthat::expect_type(attr(out, "geometry"), "character")
-    testthat::expect_type(attr(out, "crs"), "character")
-
-    testthat::expect_identical(unname(getSets(out)), c("region", "id", "year", "data"))
-    testthat::expect_gte(min(out), 0)
-
-    # check for expected land categories
-    testthat::expect_setequal(getItems(out, dim = 3), getItems(input, dim = 3))
-
-    # check for constant total areas
-    outSum <- dimSums(out, dim = 3)
-    testthat::expect_lt(max(abs(outSum - outSum[, 1, ])), 0.001)
-    inSum <- dimSums(input, dim = 3)
-    testthat::expect_lt(max(abs(outSum - inSum)), 0.001)
-  }), error = warning)
+  # check  input data for consistency
+  sep <- paste(rep("-", 100), collapse = "")
+  vcat(1, sep, show_prefix = FALSE)
+  vcat(1, "Check LandHarmonized output", show_prefix = FALSE)
+  toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
+  toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
+  toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
+  toolExpectTrue(setequal(getItems(out, dim = 3), getItems(input, dim = 3)), "Land categories remain unchanged")
+  toolExpectTrue(all(out >= 0), "All values are > 0")
+  outSum <- dimSums(out, dim = 3)
+  toolExpectLessDiff(outSum, outSum[, 1, ], 10^-5, "Total areas in output stay constant over time")
+  toolExpectLessDiff(outSum, dimSums(input, dim = 3), 10^-5, "Total areas remain unchanged")
+  vcat(1, sep, show_prefix = FALSE)
 
   return(list(x = out,
               class = "magpie",
