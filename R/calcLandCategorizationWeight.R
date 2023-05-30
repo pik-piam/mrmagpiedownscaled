@@ -77,7 +77,6 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
     # generate empty dummy for missing
     # categories
     missing <- setdiff(map$merge, availableItems)
-    message("Adding dummy weights for following categories: ", paste(missing, collapse = ", "))
     dummy <- x[, , rep(1, length(missing))]
     dummy[, , ] <- 0
     getItems(dummy, dim = 3) <- missing
@@ -95,6 +94,16 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
   toolExpectTrue(identical(unname(getSets(out)[1]), "id"), "Dimensions are named correctly")
   toolExpectTrue(setequal(getItems(out, dim = 3), map$merge), "Land categories match merged categories")
   toolExpectTrue(all(out >= 10^-10), "All values are >= 10e-10")
+  .dummyCols <- function(x) {
+    dummy <- magpply(x, function(x) return(all(x == 10^-10)), 3)
+    dummy <- getItems(dummy, dim = 3)[dummy]
+    if(length(dummy) == 0) {
+      toolStatusMessage("\u2713", "No dummy weights detected")
+    } else {
+      toolStatusMessage("!", paste("Following categories contain 10^-10 as dummy weight:", paste(dummy, collapse=", ")))
+    }
+  }
+  .dummyCols(out)
   vcat(1, sep, show_prefix = FALSE)
 
   return(list(x = out,

@@ -1,8 +1,8 @@
 toolExpectTrue <- function(check, description) {
   if (isTRUE(check)) {
-    vcat(1, "[\u2713] ", description, show_prefix = FALSE)
+    toolStatusMessage("\u2713", description)
   } else {
-    vcat(1, "[-] ", description, show_prefix = FALSE)
+    toolStatusMessage("-", description)
     warning("Check failed: ", description)
   }
 }
