@@ -20,15 +20,13 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2",
   message("Inputs have been multiplied by area correction factor to match total target areas")
 
   # check  input data for consistency
-  sep <- paste(rep("-", 100), collapse = "")
-  vcat(1, sep, show_prefix = FALSE)
-  vcat(1, "Check LandHarmonized input", show_prefix = FALSE)
-  inSum <- dimSums(input, dim = 3)
-  tSum <- dimSums(target, dim = 3)
-  toolExpectLessDiff(inSum, inSum[, 1, ], 10^-5, "Total areas in input stay constant over time")
-  toolExpectLessDiff(tSum, tSum[, 1, ], 10^-5, "Total areas in target stay constant over time")
-  toolExpectLessDiff(inSum[, 1, ], tSum[, 1, ], 10^-5, "Total areas are the same in target and input data")
-  vcat(1, sep, show_prefix = FALSE)
+  toolCheck("Land Harmonized input", {
+    inSum <- dimSums(input, dim = 3)
+    tSum <- dimSums(target, dim = 3)
+    toolExpectLessDiff(inSum, inSum[, 1, ], 10^-5, "Total areas in input stay constant over time")
+    toolExpectLessDiff(tSum, tSum[, 1, ], 10^-5, "Total areas in target stay constant over time")
+    toolExpectLessDiff(inSum[, 1, ], tSum[, 1, ], 10^-5, "Total areas are the same in target and input data")
+  })
 
   if (method == "offset") {
     out <- toolHarmonizeOffset(input, target, harmonizeYear = harmonizeYear, finalYear = finalYear)
@@ -41,18 +39,16 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2",
   attr(out, "crs")      <- crs
 
   # check  input data for consistency
-  sep <- paste(rep("-", 100), collapse = "")
-  vcat(1, sep, show_prefix = FALSE)
-  vcat(1, "Check LandHarmonized output", show_prefix = FALSE)
-  toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
-  toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
-  toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
-  toolExpectTrue(setequal(getItems(out, dim = 3), getItems(input, dim = 3)), "Land categories remain unchanged")
-  toolExpectTrue(all(out >= 0), "All values are > 0")
-  outSum <- dimSums(out, dim = 3)
-  toolExpectLessDiff(outSum, outSum[, 1, ], 10^-5, "Total areas in output stay constant over time")
-  toolExpectLessDiff(outSum, dimSums(input, dim = 3), 10^-5, "Total areas remain unchanged")
-  vcat(1, sep, show_prefix = FALSE)
+  toolCheck("Land Harmonized output", {
+    toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
+    toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
+    toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
+    toolExpectTrue(setequal(getItems(out, dim = 3), getItems(input, dim = 3)), "Land categories remain unchanged")
+    toolExpectTrue(all(out >= 0), "All values are > 0")
+    outSum <- dimSums(out, dim = 3)
+    toolExpectLessDiff(outSum, outSum[, 1, ], 10^-5, "Total areas in output stay constant over time")
+    toolExpectLessDiff(outSum, dimSums(input, dim = 3), 10^-5, "Total areas remain unchanged")
+  })
 
   return(list(x = out,
               class = "magpie",

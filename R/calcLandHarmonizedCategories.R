@@ -12,16 +12,14 @@ calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
   attr(out, "geometry") <- attr(x, "geometry")
 
   # check data for consistency
-  sep <- paste(rep("-", 100), collapse = "")
-  vcat(1, sep, show_prefix = FALSE)
-  vcat(1, "Check LandHarmonizedCategories output", show_prefix = FALSE)
-  toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
-  toolExpectTrue(setequal(getItems(out, dim = 3), map$dataOutput), "Land categories match target definition")
-  toolExpectTrue(all(out >= 0), "All values are > 0")
-  outSum <- dimSums(out, dim = 3)
-  toolExpectLessDiff(outSum, outSum[, 1, ], 10^-6, "Total areas stay constant over time")
-  toolExpectLessDiff(outSum, dimSums(x, dim = 3), 10^-6, "Total areas are not affected by recategorization")
-  vcat(1, sep, show_prefix = FALSE)
+  toolCheck("Land Harmonized Categories output", {
+    toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
+    toolExpectTrue(setequal(getItems(out, dim = 3), map$dataOutput), "Land categories match target definition")
+    toolExpectTrue(all(out >= 0), "All values are > 0")
+    outSum <- dimSums(out, dim = 3)
+    toolExpectLessDiff(outSum, outSum[, 1, ], 10^-6, "Total areas stay constant over time")
+    toolExpectLessDiff(outSum, dimSums(x, dim = 3), 10^-6, "Total areas are not affected by recategorization")
+  })
 
   return(list(x = out,
               isocountries = FALSE,
