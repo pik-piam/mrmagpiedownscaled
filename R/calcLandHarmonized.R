@@ -12,13 +12,6 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2",
   stopifnot(setequal(getItems(input, 3), getItems(target, 3)))
   target <- target[, , getItems(input, 3)] # harmonize order of dim 3
 
-  # correct for differences in areas
-  corr <- setYears(dimSums(target[, 1, ], dim = 3) / dimSums(input[, 1, ], dim = 3), NULL)
-  if (max(corr) > 1.01) warning("Total areas differ significantly. (max ratio = ", round(max(corr), 2), ")")
-  if (min(corr) < 0.99) warning("Total areas differ significantly. (min ratio = ", round(min(corr), 2), ")")
-  input <- input * corr
-  message("Inputs have been multiplied by area correction factor to match total target areas")
-
   # check  input data for consistency
   toolCheck("Land Harmonized input", {
     inSum <- dimSums(input, dim = 3)
@@ -26,6 +19,12 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2",
     toolExpectLessDiff(inSum, inSum[, 1, ], 10^-5, "Total areas in input stay constant over time")
     toolExpectLessDiff(tSum, tSum[, 1, ], 10^-5, "Total areas in target stay constant over time")
     toolExpectLessDiff(inSum[, 1, ], tSum[, 1, ], 10^-5, "Total areas are the same in target and input data")
+    if(max(abs(inSum[, 1, ] - tSum[, 1, ])) >= 10^-5) {
+      corr <- setYears(dimSums(target[, 1, ], dim = 3) / dimSums(input[, 1, ], dim = 3), NULL)
+      input <- input * corr
+      vcat(1, "[!] input data multiplied with correction factors to match target areas (max ratio = ", round(max(corr), 2),
+      ", min ratio = ", round(min(corr), 2),  ")", show_prefix = FALSE)
+    }
   })
 
   if (method == "offset") {
