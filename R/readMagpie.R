@@ -20,22 +20,33 @@ readMagpie <- function(subtype = "default") {
                 class = "magpie",
                 unit = "Mha",
                 description = "Land cover information computed by MAgPIE"))
-  } else if (subtype == "management") {
-    # industrial roundwood fraction of wood harvest: rndwd
-    # fuelwood fraction of wood harvest: fulwd
-    timber <- magpie4::TimberProductionVolumetric(gdx, level = "cell", sumSource = TRUE, sumProduct = FALSE)
-    timberShares <- timber / dimSums(timber, dim = 3)
-    stopifnot(identical(getNames(timberShares), c("wood", "woodfuel")))
-    getNames(timberShares) <- c("rndwd", "fulwd")
-    stopifnot(max(timberShares, na.rm = TRUE) < 1.001)
-    stopifnot(min(timberShares, na.rm = TRUE) >= 0)
 
-    x <- timberShares
+  } else if (subtype == "woodHarvest") {
+    # TODO check endogenous forest was active when creating fulldata.gdx
+    timber <- magpie4::TimberProductionVolumetric(gdx, level = "cell", sumSource = TRUE, sumProduct = FALSE)
+    x <- timber / dimSums(timber, dim = 3)
+    stopifnot(identical(getNames(x), c("wood", "woodfuel")))
+    getNames(x) <- c("rndwd", "fulwd")
 
     return(list(x = x,
                 class = "magpie",
-                unit = "1", # TODO all shares?
-                description = "Management information computed by MAgPIE"))
+                unit = "1",
+                min = 0,
+                max = 1.0001,
+                description = "roundwood and fuelwood shares of total wood harvest computed by MAgPIE"))
+  } else if (subtype == "management") {
+    # TODO biofuel area fraction: crpbf_[c3ann,c3nfx,c3per,c4ann,c4per]
+    # - dimSums begr & betr / dimSums c3per c4per
+    # - 1st gen biofuel crops e.g. maize?
+    # - only crpbf_[c3per,c4per]
+
+    # TODO fertilization rate (in kg ha-1 yr-1 (crop season)): fertl_[c3ann,c3nfx,c3per,c4ann,c4per]
+    # - TODO check if 0.5deg data is uniformly distributed
+    # nitrogenBudget <- magpie4::NitrogenBudget(gdx,level="cell")
+    # nitrogen <- magpie4::NitrogenBudgetWithdrawals(gdx,kcr="kcr",level="grid",net=TRUE)
+
+    # irrigated
+    # crops <- magpie4::croparea(gdx, level = "cell", product_aggr = FALSE, water_aggr = FALSE)
   } else {
     stop("Unknown subtype '", subtype, "' in readMagpie")
   }
