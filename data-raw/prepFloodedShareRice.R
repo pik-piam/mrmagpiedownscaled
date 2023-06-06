@@ -1,6 +1,6 @@
 withr::with_package("mrcommons", {
-  rice <- calcOutput("Ricearea", cellular = TRUE,
-                     cells = "lpjcell", # = 67k cells, use "magpiecell" for 59k cells
+  # TODO switch to "lpjcell" when magclass::as.SpatRaster works with 67k cells
+  rice <- calcOutput("Ricearea", cellular = TRUE, cells = "magpiecell",
                      aggregate = FALSE, share = FALSE)
   rice <- rice[, getYears(rice, TRUE) >= 1995, ]
   floodedShare <- rice[, , "flooded"] / setNames(rice[, , "total"], NULL)
