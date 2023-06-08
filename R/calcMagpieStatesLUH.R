@@ -1,6 +1,5 @@
 calcMagpieStatesLUH <- function() {
-  x <- calcOutput("LandHighRes", input = "magpie", target = "luh2",
-                  downscaling = "magpieClassic", aggregate = FALSE)
+  x <- calcOutput("LandHighRes", input = "magpie", target = "luh2", aggregate = FALSE)
   stopifnot(" unit: Mha" %in% comment(x))
   cellArea <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
   cellArea <- cellArea[getItems(cellArea, 1) %in% getItems(x, 1), , ]
