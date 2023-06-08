@@ -6,8 +6,9 @@ readMagpie <- function(subtype = "default") {
   stopifnot(file.exists(gdx),
             length(Sys.glob("clustermap_*.rds")) == 1)
 
+  clustermap <- readRDS(Sys.glob("clustermap_*.rds"))
+
   if (subtype == "default") {
-    clustermap <- readRDS(Sys.glob("clustermap_*.rds"))
     landUse    <- magpie4::land(gdx, level = "cell")
     cropArea   <- magpie4::croparea(gdx, level = "cell", product_aggr = FALSE)
 
@@ -23,17 +24,21 @@ readMagpie <- function(subtype = "default") {
 
   } else if (subtype == "woodHarvest") {
     # TODO check endogenous forest was active when creating fulldata.gdx
-    timber <- magpie4::TimberProductionVolumetric(gdx, level = "cell", sumSource = TRUE, sumProduct = FALSE)
-    x <- timber / dimSums(timber, dim = 3)
-    stopifnot(identical(getNames(x), c("wood", "woodfuel")))
-    getNames(x) <- c("rndwd", "fulwd")
+    x <- magpie4::TimberProductionVolumetric(gdx, level = "cell", sumSource = TRUE, sumProduct = FALSE)
+    x <- magpie4::addGeometry(x, clustermap)
+
+    return(list(x = x,
+                unit = "mio. m3 per year",
+                min = 0,
+                description = "roundwood and fuelwood shares of total wood harvest computed by MAgPIE"))
+  } else if (subtype == "irrigation") {
+    x <- magpie4::croparea(gdx, level = "cell", product_aggr = FALSE, water_aggr = FALSE)
 
     return(list(x = x,
                 class = "magpie",
-                unit = "1",
+                unit = "mio. ha",
                 min = 0,
-                max = 1.0001,
-                description = "roundwood and fuelwood shares of total wood harvest computed by MAgPIE"))
+                description = "rainfed and irrigated area per crop computed by MAgPIE"))
   } else if (subtype == "management") {
     # TODO biofuel area fraction: crpbf_[c3ann,c3nfx,c3per,c4ann,c4per]
     # - dimSums begr & betr / dimSums c3per c4per
@@ -45,8 +50,6 @@ readMagpie <- function(subtype = "default") {
     # nitrogenBudget <- magpie4::NitrogenBudget(gdx,level="cell")
     # nitrogen <- magpie4::NitrogenBudgetWithdrawals(gdx,kcr="kcr",level="grid",net=TRUE)
 
-    # irrigated
-    # crops <- magpie4::croparea(gdx, level = "cell", product_aggr = FALSE, water_aggr = FALSE)
   } else {
     stop("Unknown subtype '", subtype, "' in readMagpie")
   }
