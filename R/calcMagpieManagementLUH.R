@@ -1,16 +1,4 @@
 calcMagpieManagementLUH <- function() {
-  # TODO flooded fraction of c3ann area: flood
-  # flooded <- read.magpie(system.file("extdata/floodedShareRice.mz", package = "mrdownscale"))
-  # floodedRaster <- magclass::as.SpatRaster(flooded)
-  # floodedTargetResolution <- terra::project(floodedRaster, target)
-
-  # land <- calcOutput("LandHighRes", input = "magpie", target = "luh2", aggregate = FALSE)
-  # c3ann <- land[, , "c3ann"]
-  # shareRiceC3ann <- # TODO get share of rice_pro / c3ann
-  # rice <- shareRiceC3ann * c3ann
-  # floodedRice <- floodedTargetResolution * rice
-  # flood <- floodedRice / c3ann
-
   # industrial roundwood fraction of wood harvest: rndwd
   # fuelwood fraction of wood harvest: fulwd
   target <- calcOutput("LandTargetData", aggregate = FALSE)
