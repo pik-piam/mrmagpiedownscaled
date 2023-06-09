@@ -40,11 +40,6 @@ readMagpie <- function(subtype = "default") {
                 min = 0,
                 description = "rainfed and irrigated area per crop computed by MAgPIE"))
   } else if (subtype == "management") {
-    # TODO biofuel area fraction: crpbf_[c3ann,c3nfx,c3per,c4ann,c4per]
-    # - dimSums begr & betr / dimSums c3per c4per
-    # - 1st gen biofuel crops e.g. maize?
-    # - only crpbf_[c3per,c4per]
-
     # TODO fertilization rate (in kg ha-1 yr-1 (crop season)): fertl_[c3ann,c3nfx,c3per,c4ann,c4per]
     # - TODO check if 0.5deg data is uniformly distributed
     # nitrogenBudget <- magpie4::NitrogenBudget(gdx,level="cell")
