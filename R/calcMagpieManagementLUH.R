@@ -53,7 +53,11 @@ calcMagpieManagementLUH <- function() {
   # irrigated fraction of crop area: irrig_[c3ann,c3nfx,c3per,c4ann,c4per]
   # irrigation <- readSource("Magpie", "irrigation")
 
-  return(list(x = c(wood, crpbf_c3per, crpbf_c4per),
+  x <- c(wood, crpbf_c3per, crpbf_c4per)
+  stopifnot(grepl("^y[0-9]{4}\\.\\.", names(x)))
+  terra::time(x, tstep = "years") <- as.integer(substr(names(x), 2, 5))
+
+  return(list(x = x,
               class = "SpatRaster",
               unit = "1", # TODO check everything is actually shares
               description = "management variables calculated by MAgPIE in the format of LUH's management.nc"))
