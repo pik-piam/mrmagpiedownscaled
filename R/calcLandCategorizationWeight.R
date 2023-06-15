@@ -1,5 +1,3 @@
-
-
 calcLandCategorizationWeight <- function(map, geometry, crs) {
 
   .getTarget <- function(geometry, crs) {
@@ -61,13 +59,13 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
     luh2 <- as.SpatRaster(luh2)
     return(luh2)
   }
-  fao      <- .getFaoSpatVector(map)
-  luh2     <- .getLUH2SpatRaster(map)
+  fao    <- .getFaoSpatVector(map)
+  luh2   <- .getLUH2SpatRaster(map)
 
   # project fao and luh2 data on x
   target <- .getTarget(geometry, crs)
-  pfao  <- .projectData(fao, target)
-  pluh2 <- .projectData(luh2, target)
+  pfao   <- .projectData(fao, target)
+  pluh2  <- .projectData(luh2, target)
 
   # convert to magclass
   mluh2 <- as.magpie(pluh2, spatial = which(terra::datatype(pluh2) != "double"))
@@ -95,10 +93,11 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
     .dummyCols <- function(x) {
       dummy <- magpply(x, function(x) return(all(x == 10^-10)), 3)
       dummy <- getItems(dummy, dim = 3)[dummy]
-      if(length(dummy) == 0) {
+      if (length(dummy) == 0) {
         toolStatusMessage("\u2713", "No dummy weights detected")
       } else {
-        toolStatusMessage("!", paste("Following categories contain 10^-10 as dummy weight:", paste(dummy, collapse=", ")))
+        toolStatusMessage("!", paste("Following categories contain 10^-10 as dummy weight:",
+                                     paste(dummy, collapse = ", ")))
       }
     }
     .dummyCols(out)
