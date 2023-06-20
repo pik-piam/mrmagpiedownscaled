@@ -5,10 +5,11 @@ readLUH2v2h <- function(subtype = "LUH", subset = "1995|2000|2005|2010|2015") {
     # remove secma & secmb
     x <- x[[grep("secm[ab]", names(x), invert = TRUE, value = TRUE)]]
 
-    # fix years in names
-    names(x) <- paste0(terra::time(x), "..", sub("_.+", "", names(x)))
+    names(x) <- paste0("y", terra::time(x), "..", sub("_.+", "", names(x)))
 
-    x <- x[as.character(subset)]
+    if (!isFALSE(subset)) {
+      x <- x[as.character(subset)]
+    }
 
     return(list(x = x,
                 class = "SpatRaster",
