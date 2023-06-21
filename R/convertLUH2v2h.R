@@ -1,6 +1,6 @@
-convertLUH2v2h <- function(x, subtype = "LUH") {
-  if (subtype == "cellArea") {
-    stop("Pass convert = FALSE when getting cellArea.")
+convertLUH2v2h <- function(x, subtype = "states") {
+  if (subtype != "states") {
+    stop("Pass convert = FALSE when subtype != states.")
   }
 
   stopifnot(max(terra::values(x), na.rm = TRUE) <= 1.0001)

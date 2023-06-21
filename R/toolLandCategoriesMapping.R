@@ -16,7 +16,7 @@ toolLandCategoriesMapping <- function(input, target) {
     warning("Input map and output map contain inconsistent reference information")
   }
   map <- merge(input2ref, output2ref, by = "reference", suffixes = c("Input", "Output"))
-  map$merge <- paste(map$dataInput, map$dataOutput, sep = "_")
+  map$merge <- paste0(map$dataInput, "__", map$dataOutput)
   if (anyDuplicated(map$reference)) {
     warning("Insuficient granularity of reference categories, as a reference category is mapped more than once (\"",
             paste(unique(map$reference[duplicated(map$reference)]), collapse = "\", \""), "\").")
