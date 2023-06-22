@@ -15,24 +15,29 @@ fullMAGPIELUH <- function() {
   stopifnot(grepl("^y[0-9]{4}\\.\\.", names(x)))
   terra::time(x, tstep = "years") <- as.integer(substr(names(x), 2, 5))
   categories <- unique(sub("^y[0-9]{4}\\.\\.", "", names(x)))
-  for (category in categories) {
+  managementCategories <- grep("crpbf", categories, value = TRUE)
+  statesCategories <- setdiff(categories, managementCategories)
+  lapply(categories, function(category) {
     message(category)
-    filled <- toolFillYearsSpatRaster(x[category])
+    filled <- toolFillYearsSpatRaster(x[paste0("\\.\\.", category, "$")])
     extended <- terra::extend(filled, history)
-    combined <- c(history[category], extended)
-    terra::writeCDF(combined, paste0(category, ".nc"), category, overwrite = TRUE)
-  }
+    # combined <- c(history[category], extended)
+    terra::writeCDF(extended, paste0(category, ".nc"), category, overwrite = TRUE)
+    TRUE
+  })
 
   # combine into one single .nc file
-  states <- terra::sds(paste0(categories, ".nc"))
-  terra::writeCDF(states, "magpie_luh_states.nc")
-  # unlink(paste0(categories, ".nc")) # TODO comment in
+  terra::writeCDF(terra::sds(paste0(statesCategories, ".nc")), "magpie_luh_states.nc")
 
   management <- calcOutput("MagpieManagementLUH", aggregate = FALSE)
   stopifnot(grepl("^y[0-9]{4}\\.\\.", names(management)))
   varnames <- unique(sub("^y[0-9]{4}\\.\\.", "", names(management)))
-  datasets <- lapply(varnames, function(varname) management[paste0("\\.\\.", varname, "$")])
+  datasets <- lapply(varnames, function(varname) toolFillYearsSpatRaster(management[paste0("\\.\\.", varname, "$")]))
   management <- terra::sds(datasets)
   names(management) <- varnames
+  management <- c(management, terra::sds(paste0(managementCategories, ".nc")))
+
   terra::writeCDF(management, "magpie_luh_management.nc")
+
+  # unlink(paste0(categories, ".nc")) # TODO comment in
 }
