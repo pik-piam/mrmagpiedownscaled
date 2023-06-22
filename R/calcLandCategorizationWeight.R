@@ -102,7 +102,7 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
     }
     .dummyCols(out)
   })
-
+  attr(out, "toolCheck") <- toolCheckReport(filter = TRUE)
   return(list(x = out,
               isocountries = FALSE,
               unit = "ha",
