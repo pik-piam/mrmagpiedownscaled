@@ -1,10 +1,9 @@
-
 toolAddCheckReport <- function(x) {
   report <- attr(x, "toolCheck")
-  envar <- getOption("toolCheck")
+  toolCheckOption <- getOption("toolCheck")
   for (n in names(report)) {
-    envar[[n]] <- report[[n]]
+    toolCheckOption[[n]] <- report[[n]]
   }
-  options(toolCheck = envar)
+  options(toolCheck = toolCheckOption)
   return(x)
 }
