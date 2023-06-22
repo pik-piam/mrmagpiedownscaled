@@ -1,11 +1,11 @@
 calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
 
-  x   <- calcOutput("LandInputData", input = input, aggregate = FALSE)
+  x   <- toolAddCheckReport(calcOutput("LandInputData", input = input, aggregate = FALSE))
   map <- toolLandCategoriesMapping(input, target)
 
   # get weights for disaggregation to reference categories
-  ref <- calcOutput("LandCategorizationWeight", map = map, geometry = attr(x, "geometry"),
-                    crs = attr(x, "crs"), aggregate = FALSE)
+  ref <- toolAddCheckReport(calcOutput("LandCategorizationWeight", map = map, geometry = attr(x, "geometry"),
+                    crs = attr(x, "crs"), aggregate = FALSE))
   y   <- toolAggregate(x, map, dim = 3, from = "dataInput", to = "merge", weight = ref)
   out <- toolAggregate(y, map, dim = 3, from = "merge",     to = "dataOutput")
   attr(out, "crs") <- attr(x, "crs")
@@ -21,6 +21,7 @@ calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
     toolExpectLessDiff(outSum, dimSums(x, dim = 3), 10^-6, "Total areas are not affected by recategorization")
   })
 
+  attr(out, "toolCheck") <- toolCheckReport(filter = TRUE)
   return(list(x = out,
               isocountries = FALSE,
               unit = "Mha",
