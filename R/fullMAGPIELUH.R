@@ -1,5 +1,6 @@
 fullMAGPIELUH <- function() {
-  x <- calcOutput("LandReport", aggregate = FALSE)
+  options(toolCheck = NULL)
+  x <- toolAddCheckReport(calcOutput("LandReport", aggregate = FALSE))
 
   # TODO move this into calcLandReport when netcdf & SpatRasterDataset can be cached
   history <- readSource("LUH2v2h", subset = FALSE, convert = FALSE)
@@ -29,7 +30,7 @@ fullMAGPIELUH <- function() {
   # combine into one single .nc file
   terra::writeCDF(terra::sds(paste0(statesCategories, ".nc")), "magpie_luh_states.nc")
 
-  management <- calcOutput("MagpieManagementLUH", aggregate = FALSE)
+  management <- toolAddCheckReport(calcOutput("MagpieManagementLUH", aggregate = FALSE))
   stopifnot(grepl("^y[0-9]{4}\\.\\.", names(management)))
   varnames <- unique(sub("^y[0-9]{4}\\.\\.", "", names(management)))
   datasets <- lapply(varnames, function(varname) toolFillYearsSpatRaster(management[paste0("\\.\\.", varname, "$")]))
@@ -38,6 +39,9 @@ fullMAGPIELUH <- function() {
   management <- c(management, terra::sds(paste0(managementCategories, ".nc")))
 
   terra::writeCDF(management, "magpie_luh_management.nc")
-
   # unlink(paste0(categories, ".nc")) # TODO comment in
+
+  report <- toolCheckReport(unlist = TRUE)
+  cat(report, sep = "\n")
+  writeLines(report, "report.log")
 }

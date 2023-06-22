@@ -1,6 +1,6 @@
 calcLandReport <- function(project = "RESCUE") {
   if (project == "RESCUE") {
-    x <- calcOutput("LandHighRes", input = "magpie", target = "luh2", aggregate = FALSE)
+    x <- toolAddCheckReport(calcOutput("LandHighRes", input = "magpie", target = "luh2", aggregate = FALSE))
 
     # combine c[34]per and c[34]per_biofuel
     per <- c("c3per", "c4per")
@@ -23,6 +23,7 @@ calcLandReport <- function(project = "RESCUE") {
 
     x <- mbind(x, management)
 
+    attr(x, "toolCheck") <- toolCheckReport(filter = TRUE)
     return(list(x = x,
                 isocountries = FALSE,
                 unit = "1",
