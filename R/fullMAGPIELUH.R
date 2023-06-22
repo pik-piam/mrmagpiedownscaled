@@ -11,6 +11,6 @@ fullMAGPIELUH <- function() {
   names(management) <- varnames
   terra::writeCDF(management, "magpie_luh_management.nc")
   report <- toolCheckReport(unlist = TRUE)
-  cat(report, sep="\n")
+  cat(report, sep = "\n")
   writeLines(report, "report.log")
 }
