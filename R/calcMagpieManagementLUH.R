@@ -17,7 +17,7 @@ calcMagpieManagementLUH <- function() {
 
   mag <- readSource("Magpie")
   clusterGeometry <- attr(mag, "geometry")
-  target <- calcOutput("LandTargetData", aggregate = FALSE)
+  target <- toolAddCheckReport(calcOutput("LandTargetData", aggregate = FALSE))
 
   # industrial roundwood fraction of wood harvest: rndwd
   # fuelwood fraction of wood harvest: fulwd
@@ -36,6 +36,7 @@ calcMagpieManagementLUH <- function() {
   stopifnot(grepl("^y[0-9]{4}\\.\\.", names(x)))
   terra::time(x, tstep = "years") <- as.integer(substr(names(x), 2, 5))
 
+  attr(x, "toolCheck") <- toolCheckReport(filter = TRUE)
   return(list(x = x,
               class = "SpatRaster",
               unit = "1", # TODO check everything is actually shares

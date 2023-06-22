@@ -21,6 +21,7 @@ calcLandTargetData <- function(target = "luh2") {
   } else {
     stop("Unsupported output type \"", target, "\"")
   }
+  attr(out, "toolCheck") <- toolCheckReport(filter = TRUE)
   return(list(x = out,
               weight = NULL,
               class = "SpatRaster",

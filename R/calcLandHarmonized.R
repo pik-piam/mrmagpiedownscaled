@@ -1,9 +1,9 @@
 calcLandHarmonized <- function(input = "magpie", target = "luh2",
                            harmonizeYear = 1995, finalYear = 2015, method = "fade") {
-  input    <- calcOutput("LandHarmonizedCategories", input = input, target = target, aggregate = FALSE)
+  input    <- toolAddCheckReport(calcOutput("LandHarmonizedCategories", input = input, target = target, aggregate = FALSE))
   geometry <- attr(input, "geometry")
   crs      <- attr(input, "crs")
-  target   <- calcOutput("LandTargetData", target = target, aggregate = FALSE)
+  target   <- toolAddCheckReport(calcOutput("LandTargetData", target = target, aggregate = FALSE))
 
   # bring target data to spatial resolution of input data
   ref    <- as.SpatVector(input[, 1, 1])[, c(".region", ".id")]
@@ -49,6 +49,7 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2",
     toolExpectLessDiff(outSum, dimSums(input, dim = 3), 10^-5, "Total areas remain unchanged")
   })
 
+  attr(out, "toolCheck") <- toolCheckReport(filter = TRUE)
   return(list(x = out,
               class = "magpie",
               isocountries = FALSE,
