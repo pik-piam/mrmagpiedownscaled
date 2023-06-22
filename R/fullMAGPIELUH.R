@@ -18,11 +18,13 @@ fullMAGPIELUH <- function() {
   categories <- unique(sub("^y[0-9]{4}\\.\\.", "", names(x)))
   managementCategories <- grep("crpbf", categories, value = TRUE)
   statesCategories <- setdiff(categories, managementCategories)
+
   lapply(categories, function(category) {
-    message(category)
-    filled <- toolFillYearsSpatRaster(x[paste0("\\.\\.", category, "$")])
+    message("filling years for ", category)
+    pattern <- paste0("\\.\\.", category, "$")
+    filled <- toolFillYearsSpatRaster(x[pattern])
     extended <- terra::extend(filled, history)
-    # combined <- c(history[category], extended)
+    # combined <- c(history[pattern], extended)
     terra::writeCDF(extended, paste0(category, ".nc"), category, overwrite = TRUE)
     TRUE
   })
@@ -39,9 +41,9 @@ fullMAGPIELUH <- function() {
   management <- c(management, terra::sds(paste0(managementCategories, ".nc")))
 
   terra::writeCDF(management, "magpie_luh_management.nc")
-  # unlink(paste0(categories, ".nc")) # TODO comment in
+  unlink(paste0(categories, ".nc"))
 
-  report <- toolCheckReport(unlist = TRUE)
+  report <- unlist(toolCheckReport(), use.names = FALSE)
   cat(report, sep = "\n")
   writeLines(report, "report.log")
 }
