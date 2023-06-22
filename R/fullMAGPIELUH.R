@@ -1,7 +1,7 @@
 fullMAGPIELUH <- function() {
-  x <- calcOutput("MagpieStatesLUH", aggregate = FALSE)
+  x <- calcOutput("LandReport", aggregate = FALSE)
 
-  # TODO move this into calcMagpieStatesLUH when netcdf & SpatRasterDataset can be cached
+  # TODO move this into calcLandReport when netcdf & SpatRasterDataset can be cached
   history <- readSource("LUH2v2h", subset = FALSE, convert = FALSE)
   history <- history[[terra::time(history) < 1995]]
 
