@@ -1,3 +1,4 @@
 toolStatusMessage <- function(symbol, message) {
-  vcat(1, "[", symbol, "] ", message, show_prefix = FALSE)
+  options(toolStatusMessages = c(getOption("toolStatusMessages"), # nolint: undesirable_function_linter
+                                 paste0("[", symbol, "] ", message)))
 }
