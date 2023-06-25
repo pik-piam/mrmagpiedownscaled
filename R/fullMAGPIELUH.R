@@ -1,5 +1,5 @@
 fullMAGPIELUH <- function() {
-  options(toolCheck = NULL)
+  options(toolCheck = NULL) # nolint: undesirable_function_linter
   x <- toolAddCheckReport(calcOutput("LandReport", aggregate = FALSE))
 
   # TODO move this into calcLandReport when netcdf & SpatRasterDataset can be cached
