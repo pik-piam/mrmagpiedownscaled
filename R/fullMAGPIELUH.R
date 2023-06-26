@@ -1,5 +1,5 @@
 fullRESCUE <- function() {
-  options(toolCheck = NULL)
+  options(toolCheck = NULL) # nolint: undesirable_function_linter
 
   historyStates <- readSource("LUH2v2h", subtype = "states", subset = 850:1994, convert = FALSE)
   historyStates <- toolSpatRasterToDataset(historyStates)

@@ -1,6 +1,7 @@
 calcLandHarmonized <- function(input = "magpie", target = "luh2",
                            harmonizeYear = 1995, finalYear = 2015, method = "fade") {
-  input    <- toolAddCheckReport(calcOutput("LandHarmonizedCategories", input = input, target = target, aggregate = FALSE))
+  input    <- toolAddCheckReport(calcOutput("LandHarmonizedCategories", input = input,
+                                            target = target, aggregate = FALSE))
   geometry <- attr(input, "geometry")
   crs      <- attr(input, "crs")
   target   <- toolAddCheckReport(calcOutput("LandTargetData", target = target, aggregate = FALSE))
