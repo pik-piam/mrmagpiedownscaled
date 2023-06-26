@@ -1,11 +1,18 @@
-fullMAGPIELUH <- function() {
+fullRESCUE <- function() {
   options(toolCheck = NULL)
-  x <- toolAddCheckReport(calcOutput("LandReport", aggregate = FALSE))
 
+  historyStates <- readSource("LUH2v2h", subtype = "states", subset = 850:1994, convert = FALSE)
+  historyStates <- toolSpatRasterToDataset(historyStates)
+  terra::writeCDF(historyStates, "history_states.nc", compress = 4)
+  gc()
+
+  historyManagement <- readSource("LUH2v2h", subtype = "management", subset = 850:1994, convert = FALSE)
+  historyManagement <- toolSpatRasterToDataset(historyManagement)
+  terra::writeCDF(historyManagement, "history_management.nc", compress = 4)
+  gc()
+
+  x <- toolAddCheckReport(calcOutput("LandReport", project = "RESCUE", aggregate = FALSE))
   # TODO move this into calcLandReport when netcdf & SpatRasterDataset can be cached
-  history <- readSource("LUH2v2h", subset = FALSE, convert = FALSE)
-  history <- history[[terra::time(history) < 1995]]
-
   # fill years, write one .nc file for each category to prevent memory issues
   todisk <- terra::terraOptions(print = FALSE)$todisk
   withr::defer({
@@ -13,35 +20,47 @@ fullMAGPIELUH <- function() {
   })
   terra::terraOptions(todisk = TRUE)
   x <- as.SpatRaster(x)
+  gc()
   stopifnot(grepl("^y[0-9]{4}\\.\\.", names(x)))
-  terra::time(x, tstep = "years") <- as.integer(substr(names(x), 2, 5))
-  categories <- unique(sub("^y[0-9]{4}\\.\\.", "", names(x)))
-  managementCategories <- grep("crpbf", categories, value = TRUE)
-  statesCategories <- setdiff(categories, managementCategories)
+  terra::time(x, tstep = "years") <- as.integer(substr(names(x), 2, 5)) # TODO make as.SpatRaster set time
+  varnames <- unique(sub("^y[0-9]+\\.\\.", "", names(x)))
 
-  lapply(categories, function(category) {
+  for (category in varnames) {
     message("filling years for ", category)
-    pattern <- paste0("\\.\\.", category, "$")
-    filled <- toolFillYearsSpatRaster(x[pattern])
-    extended <- terra::extend(filled, history)
-    # combined <- c(history[pattern], extended)
-    terra::writeCDF(extended, paste0(category, ".nc"), category, overwrite = TRUE)
-    TRUE
-  })
+    terra::writeCDF(toolFillYearsSpatRaster(x[paste0("\\.\\.", category, "$")]),
+                    paste0(category, ".nc"), overwrite = TRUE)
+    gc()
+  }
 
+  statesCategories <- c("primf", "primn", "secdf", "secdn", "urban", "c3ann",
+                        "c4ann", "c3per", "c4per", "c3nfx", "pastr", "range")
   # combine into one single .nc file
-  terra::writeCDF(terra::sds(paste0(statesCategories, ".nc")), "magpie_luh_states.nc")
+  states <- terra::sds(paste0(statesCategories, ".nc"))
+  terra::writeCDF(states, "magpie_luh_states.nc", compress = 4)
+  gc()
+
 
   management <- toolAddCheckReport(calcOutput("MagpieManagementLUH", aggregate = FALSE))
-  stopifnot(grepl("^y[0-9]{4}\\.\\.", names(management)))
-  varnames <- unique(sub("^y[0-9]{4}\\.\\.", "", names(management)))
-  datasets <- lapply(varnames, function(varname) toolFillYearsSpatRaster(management[paste0("\\.\\.", varname, "$")]))
-  management <- terra::sds(datasets)
-  names(management) <- varnames
-  management <- c(management, terra::sds(paste0(managementCategories, ".nc")))
+  management <- toolSpatRasterToDataset(management)
+  for (category in names(management)) {
+    message("filling years for ", category)
+    terra::writeCDF(toolFillYearsSpatRaster(management[category]), paste0(category, ".nc"), overwrite = TRUE)
+    gc()
+  }
 
-  terra::writeCDF(management, "magpie_luh_management.nc")
-  unlink(paste0(categories, ".nc"))
+  managementCategories <- c("crpbf_c3per", "crpbf_c4per", "rndwd", "fulwd")
+  crpbf <- terra::rast(c("crpbf_c3per.nc", "crpbf_c4per.nc"))
+  wood <- terra::rast(c("rndwd.nc", "fulwd.nc"))
+  crpbf <- terra::extend(crpbf, wood)
+  gc()
+  management <- c(crpbf, wood)
+  names(management) <- paste0("y", terra::time(management), "..", sub("_[0-9]+$", "", names(management)))
+  management <- toolSpatRasterToDataset(management)
+  stopifnot(all.equal(names(management), managementCategories))
+  terra::writeCDF(management, "magpie_luh_management.nc", compress = 4)
+  gc()
+
+  unlink(paste0(c(statesCategories, managementCategories), ".nc"))
 
   report <- unlist(toolCheckReport(), use.names = FALSE)
   cat(report, sep = "\n")
