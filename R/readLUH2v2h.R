@@ -9,7 +9,7 @@ readLUH2v2h <- function(subtype = "states", subset = seq(1995, 2015, 5)) {
     x <- x[[grep("secm[ab]", names(x), invert = TRUE)]]
   } else if (subtype == "management") {
     x <- terra::rast("management.nc")
-    x <- x["crpbf_c[34]per"]
+    x <- x["crpbf_"]
   } else {
     stop("subtype must be states, management or cellArea")
   }
