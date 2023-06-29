@@ -163,6 +163,11 @@ reference;data
 748|Peppermint;others
 betr;betr
 begr;begr
+c3per_biofuel_1st_gen;biofuel_1st_gen
+c4per_biofuel_1st_gen;biofuel_1st_gen
+c3ann_biofuel_1st_gen;biofuel_1st_gen
+c4ann_biofuel_1st_gen;biofuel_1st_gen
+c3nfx_biofuel_1st_gen;biofuel_1st_gen
 primf;primforest
 secdf;secdforest
 forestry;forestry

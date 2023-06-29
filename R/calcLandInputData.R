@@ -1,6 +1,17 @@
 calcLandInputData <- function(input = "magpie") {
   if (input == "magpie") {
     out <- madrat::readSource("Magpie")
+    geometry <- attr(out, "geometry")
+    crs <- attr(out, "crs")
+
+    # 1st gen biofuel is only modeled implicitly in magpie via demand, and
+    # because of trade it is unclear on what area 1st gen biofuel is grown,
+    # also 1st gen biofuel is quickly phased out in magpie, so we fill
+    # biofuel_1st_gen with zeros and rely on the harmonization to produce
+    # a plausible 1st gen biofuel time series
+    out <- add_columns(out, "biofuel_1st_gen", fill = 0)
+    attr(out, "geometry") <- geometry
+    attr(out, "crs") <- crs
   } else {
     stop("Unsupported input type \"", input, "\"")
   }

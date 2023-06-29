@@ -161,8 +161,13 @@ reference;data
 236|Soybeans;c3nfx
 677|Hops;c3ann
 748|Peppermint;c3ann
-betr;c3per_biofuel
-begr;c4per_biofuel
+betr;c3per_biofuel_2nd_gen
+begr;c4per_biofuel_2nd_gen
+c3per_biofuel_1st_gen;c3per_biofuel_1st_gen
+c4per_biofuel_1st_gen;c4per_biofuel_1st_gen
+c3ann_biofuel_1st_gen;c3ann_biofuel_1st_gen
+c4ann_biofuel_1st_gen;c4ann_biofuel_1st_gen
+c3nfx_biofuel_1st_gen;c3nfx_biofuel_1st_gen
 primf;primf
 secdf;secdf
 forestry;secdf
