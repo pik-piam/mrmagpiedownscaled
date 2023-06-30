@@ -39,21 +39,9 @@ fullRESCUE <- function() {
   terra::writeCDF(states, "magpie_luh_states.nc", compress = 4)
   gc()
 
-
-  management <- toolAddCheckReport(calcOutput("MagpieManagementLUH", aggregate = FALSE))
-  management <- toolSpatRasterToDataset(management)
-  for (category in names(management)) {
-    message("filling years for ", category)
-    terra::writeCDF(toolFillYearsSpatRaster(management[category]), paste0(category, ".nc"), overwrite = TRUE)
-    gc()
-  }
-
-  managementCategories <- c("crpbf_c3per", "crpbf_c4per", "rndwd", "fulwd")
-  crpbf <- terra::rast(c("crpbf_c3per.nc", "crpbf_c4per.nc"))
-  wood <- terra::rast(c("rndwd.nc", "fulwd.nc"))
-  crpbf <- terra::extend(crpbf, wood)
-  gc()
-  management <- c(crpbf, wood)
+  # TODO test this management reporting
+  managementCategories <- c("crpbf_c3per", "crpbf_c4per")
+  management <- terra::rast(paste0(managementCategories, ".nc"))
   names(management) <- paste0("y", terra::time(management), "..", sub("_[0-9]+$", "", names(management)))
   management <- toolSpatRasterToDataset(management)
   stopifnot(all.equal(names(management), managementCategories))
