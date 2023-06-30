@@ -1,5 +1,5 @@
 calcLandHarmonized <- function(input = "magpie", target = "luh2",
-                           harmonizeYear = 1995, finalYear = 2015, method = "fade") {
+                           harmonizeYear = 2015, finalYear = 2050, method = "extrapolate&fade") {
   input    <- toolAddCheckReport(calcOutput("LandHarmonizedCategories", input = input,
                                             target = target, aggregate = FALSE))
   geometry <- attr(input, "geometry")
@@ -32,6 +32,8 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2",
     out <- toolHarmonizeOffset(input, target, harmonizeYear = harmonizeYear, finalYear = finalYear)
   } else if (method == "fade") {
     out <- toolHarmonizeFade(input, target, harmonizeYear = harmonizeYear, finalYear = finalYear)
+  } else if (method == "extrapolate&fade") {
+    out <- toolHarmonizeExtrapolateFade(input, target, harmonizeYear = harmonizeYear, finalYear = finalYear)
   } else {
     stop("Unexpected harmonization method: ", method)
   }
