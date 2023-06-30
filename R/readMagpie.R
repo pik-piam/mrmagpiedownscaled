@@ -30,7 +30,7 @@ readMagpie <- function(subtype = "default") {
     return(list(x = x,
                 unit = "mio. m3 per year",
                 min = 0,
-                description = "roundwood and fuelwood shares of total wood harvest computed by MAgPIE"))
+                description = "roundwood and fuelwood harvest in mio. m3 per year computed by MAgPIE"))
   } else if (subtype == "irrigation") {
     x <- magpie4::croparea(gdx, level = "cell", product_aggr = FALSE, water_aggr = FALSE)
 

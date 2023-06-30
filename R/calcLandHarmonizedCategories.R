@@ -15,7 +15,7 @@ calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
   toolCheck("Land Harmonized Categories output", {
     toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
     toolExpectTrue(setequal(getItems(out, dim = 3), map$dataOutput), "Land categories match target definition")
-    toolExpectTrue(all(out >= 0), "All values are > 0")
+    toolExpectTrue(all(out >= 0), "All values are >= 0")
     outSum <- dimSums(out, dim = 3)
     toolExpectLessDiff(outSum, outSum[, 1, ], 10^-6, "Total areas stay constant over time")
     toolExpectLessDiff(outSum, dimSums(x, dim = 3), 10^-6, "Total areas are not affected by recategorization")

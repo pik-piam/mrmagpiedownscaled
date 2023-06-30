@@ -1,11 +1,11 @@
 calcLandHarmonized <- function(input = "magpie", target = "luh2",
-                           harmonizeYear = 1995, finalYear = 2015, method = "fade") {
+                               harmonizeYear = 1995, finalYear = 2015, method = "fade") {
   input    <- toolAddCheckReport(calcOutput("LandHarmonizedCategories", input = input,
                                             target = target, aggregate = FALSE))
   geometry <- attr(input, "geometry")
   crs      <- attr(input, "crs")
-  target   <- toolAddCheckReport(calcOutput("LandTargetData", target = target, aggregate = FALSE))
 
+  target   <- toolAddCheckReport(calcOutput("LandTargetData", target = target, aggregate = FALSE))
   # bring target data to spatial resolution of input data
   ref    <- as.SpatVector(input[, 1, 1])[, c(".region", ".id")]
   target <- terra::extract(target, ref, sum, na.rm = TRUE, bind = TRUE)
