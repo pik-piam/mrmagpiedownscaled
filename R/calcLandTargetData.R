@@ -4,6 +4,8 @@ calcLandTargetData <- function(target = "luh2") {
     states <- toolSpatRasterToDataset(states)
     man <- readSource("LUH2v2h", subtype = "management", convert = FALSE)
     man <- toolSpatRasterToDataset(man)
+    # remove rndwd & fulwd because they cannot be converted to Mha
+    man <- man[setdiff(names(man), c("rndwd", "fulwd"))]
     stopifnot(all.equal(terra::time(states[1]), terra::time(man[1])))
 
     cropTypes <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per")

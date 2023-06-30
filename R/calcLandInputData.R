@@ -10,6 +10,7 @@ calcLandInputData <- function(input = "magpie") {
     # biofuel_1st_gen with zeros and rely on the harmonization to produce
     # a plausible 1st gen biofuel time series
     out <- add_columns(out, "biofuel_1st_gen", fill = 0)
+
     attr(out, "geometry") <- geometry
     attr(out, "crs") <- crs
   } else {
@@ -24,7 +25,7 @@ calcLandInputData <- function(input = "magpie") {
     map <- toolLandCategoriesMapping(input = input, target = "luh2")
     toolExpectTrue(setequal(getItems(out, dim = 3), map$dataInput),
                    "Land input categories match the corresponding mapping")
-    toolExpectTrue(all(out >= 0), "All values are > 0")
+    toolExpectTrue(all(out >= 0), "All values are >= 0")
     outSum <- dimSums(out, dim = 3)
     toolExpectLessDiff(outSum, outSum[, 1, ], 10^-5, "Total areas in output stay constant over time")
   })
