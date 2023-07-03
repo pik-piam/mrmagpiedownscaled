@@ -31,11 +31,8 @@ calcLandInputData <- function(input = "magpie") {
   })
   attr(out, "toolCheck") <- toolCheckReport(filter = TRUE)
   return(list(x = out,
-              weight = NULL,
-              class = "magpie",
               isocountries = FALSE,
               unit = "Mha",
               min = 0,
-              cache = FALSE,
               description = "Land input data for data harmonization and downscaling pipeline"))
 }
