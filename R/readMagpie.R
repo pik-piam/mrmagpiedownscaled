@@ -26,6 +26,7 @@ readMagpie <- function(subtype = "default") {
     # TODO check endogenous forest was active when creating fulldata.gdx
     x <- magpie4::TimberProductionVolumetric(gdx, level = "cell", sumSource = TRUE, sumProduct = FALSE)
     x <- magpie4::addGeometry(x, clustermap)
+    getSets(x) <- c("region", "id", "year", "data") # fix spatial set names
 
     return(list(x = x,
                 unit = "mio. m3 per year",

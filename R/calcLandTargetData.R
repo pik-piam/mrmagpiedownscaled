@@ -1,14 +1,13 @@
 calcLandTargetData <- function(target = "luh2") {
   if (target == "luh2") {
+    cropTypes <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per")
+
     states <- readSource("LUH2v2h", subtype = "states")
     states <- toolSpatRasterToDataset(states)
     man <- readSource("LUH2v2h", subtype = "management", convert = FALSE)
     man <- toolSpatRasterToDataset(man)
-    # remove rndwd & fulwd because they cannot be converted to Mha
-    man <- man[setdiff(names(man), c("rndwd", "fulwd"))]
+    man <- man[paste0("crpbf_", cropTypes)]
     stopifnot(all.equal(terra::time(states[1]), terra::time(man[1])))
-
-    cropTypes <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per")
 
     # crpbf_<cropType> = 1st gen biofuel crop share of <cropType>
     # -> get <cropType>_biofuel_1st_gen area in Mha by multiplying with <cropType>
