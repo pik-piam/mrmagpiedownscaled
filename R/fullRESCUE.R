@@ -1,16 +1,6 @@
 fullRESCUE <- function() {
   options(toolCheck = NULL) # nolint: undesirable_function_linter
 
-  historyStates <- readSource("LUH2v2h", subtype = "states", subset = 850:1994, convert = FALSE)
-  historyStates <- toolSpatRasterToDataset(historyStates)
-  terra::writeCDF(historyStates, "history_states.nc", compress = 4)
-  gc()
-
-  historyManagement <- readSource("LUH2v2h", subtype = "management", subset = 850:1994, convert = FALSE)
-  historyManagement <- toolSpatRasterToDataset(historyManagement)
-  terra::writeCDF(historyManagement, "history_management.nc", compress = 4)
-  gc()
-
   x <- toolAddCheckReport(calcOutput("LandReport", project = "RESCUE", aggregate = FALSE))
   # TODO move this into calcLandReport when netcdf & SpatRasterDataset can be cached
   # fill years, write one .nc file for each category to prevent memory issues
@@ -22,7 +12,6 @@ fullRESCUE <- function() {
   x <- as.SpatRaster(x)
   gc()
   stopifnot(grepl("^y[0-9]{4}\\.\\.", names(x)))
-  terra::time(x, tstep = "years") <- as.integer(substr(names(x), 2, 5)) # TODO make as.SpatRaster set time
   varnames <- unique(sub("^y[0-9]+\\.\\.", "", names(x)))
 
   for (category in varnames) {

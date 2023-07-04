@@ -30,7 +30,7 @@ calcLandReport <- function(project = "RESCUE") {
                 min = 0,
                 max = 1.0001,
                 description = paste("MAgPIE land use data downscaled to LUH2 resolution,",
-                                    "unit: share of cell area, except crpbf: share of crop type area")))
+                                    "unit: share of cell area")))
   } else {
     stop("Can only report for project = 'RESCUE'")
   }
