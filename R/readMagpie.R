@@ -37,7 +37,7 @@ readMagpie <- function(subtype = "default") {
 
     return(list(x = x,
                 class = "magpie",
-                unit = "mio. ha",
+                unit = "Mha",
                 min = 0,
                 description = "rainfed and irrigated area per crop computed by MAgPIE"))
   } else if (subtype == "management") {
