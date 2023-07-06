@@ -1,8 +1,12 @@
 calcLandInputData <- function(input = "magpie") {
   if (input == "magpie") {
-    out <- madrat::readSource("Magpie")
-    geometry <- attr(out, "geometry")
-    crs <- attr(out, "crs")
+    land <- readSource("Magpie")
+    crop <- readSource("Magpie", subtype = "crop")
+
+    geometry <- attr(land, "geometry")
+    crs <- attr(land, "crs")
+
+    out <- mbind(land[, , "crop", invert = TRUE], crop)
 
     # 1st gen biofuel is only modeled implicitly in magpie via demand, and
     # because of trade it is unclear on what area 1st gen biofuel is grown,
