@@ -1,4 +1,4 @@
-readMagpie <- function(subtype = "default") {
+readMagpie <- function(subtype = "land") {
   "!# @monitor magpie4:::addGeometry"
 
   gdx <- "fulldata.gdx"
@@ -8,20 +8,20 @@ readMagpie <- function(subtype = "default") {
 
   clustermap <- readRDS(Sys.glob("clustermap_*.rds"))
 
-  if (subtype == "default") {
-    landUse    <- magpie4::land(gdx, level = "cell")
-    cropArea   <- magpie4::croparea(gdx, level = "cell", product_aggr = FALSE)
-
-    x <- magclass::mbind(landUse, cropArea)
-    x <- x[, , "crop", invert = TRUE] # remove crop to avoid double counting of areas
+  if (subtype == "land") {
+    x <- magpie4::land(gdx, level = "cell")
     x <- magpie4::addGeometry(x, clustermap)
     getSets(x) <- c("region", "id", "year", "data") # fix spatial set names
-
     return(list(x = x,
-                class = "magpie",
                 unit = "Mha",
                 description = "Land cover information computed by MAgPIE"))
-
+  } else if (subtype == "crop") {
+    x <- magpie4::croparea(gdx, level = "cell", product_aggr = FALSE)
+    x <- magpie4::addGeometry(x, clustermap)
+    getSets(x) <- c("region", "id", "year", "data") # fix spatial set names
+    return(list(x = x,
+                unit = "Mha",
+                description = "Crop land information computed by MAgPIE"))
   } else if (subtype == "woodHarvest") {
     # TODO check endogenous forest was active when creating fulldata.gdx
     x <- magpie4::TimberProductionVolumetric(gdx, level = "cell", sumSource = TRUE, sumProduct = FALSE)
@@ -36,16 +36,18 @@ readMagpie <- function(subtype = "default") {
     x <- magpie4::croparea(gdx, level = "cell", product_aggr = FALSE, water_aggr = FALSE)
 
     return(list(x = x,
-                class = "magpie",
                 unit = "Mha",
                 min = 0,
                 description = "rainfed and irrigated area per crop computed by MAgPIE"))
-  } else if (subtype == "management") {
-    # TODO fertilization rate (in kg ha-1 yr-1 (crop season)): fertl_[c3ann,c3nfx,c3per,c4ann,c4per]
-    # - TODO check if 0.5deg data is uniformly distributed
-    # nitrogenBudget <- magpie4::NitrogenBudget(gdx,level="cell")
-    # nitrogen <- magpie4::NitrogenBudgetWithdrawals(gdx,kcr="kcr",level="grid",net=TRUE)
-
+  } else if (subtype == "fertilizer") {
+    x <- magpie4::NitrogenBudget(gdx, level = "cell", cropTypes = TRUE)
+    x <- collapseDim(x[, , "fertilizer"])
+    x <- magpie4::addGeometry(x, clustermap)
+    getSets(x) <- c("region", "id", "year", "data") # fix spatial set names
+    return(list(x = x,
+                unit = "Tg Nr yr-1",
+                min = 0,
+                description = "fertilization rate per croptype computed by MAgPIE"))
   } else {
     stop("Unknown subtype '", subtype, "' in readMagpie")
   }
