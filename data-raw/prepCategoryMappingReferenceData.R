@@ -1,9 +1,9 @@
 # following the workflow proposed by https://r-pkgs.org/data.html#sec-data-sysdata
 # code to prepare the internal datasets for category mapping
 withr::with_package("mrcommons", {
-  fao <- collapseDim(madrat::readSource("FAO_online", "Crop")[, 2019, "area_harvested"])
+  fao <- collapseDim(readSource("FAO_online", "Crop")[, 2019, "area_harvested"])
   getYears(fao) <- NULL
-  faoFodder <- collapseDim(madrat::readSource("FAO_online", "Fodder")[, 2011, "area_harvested"])
+  faoFodder <- collapseDim(readSource("FAO_online", "Fodder")[, 2011, "area_harvested"])
   getYears(faoFodder) <- NULL
   fao <- mbind(fao, faoFodder)
 
