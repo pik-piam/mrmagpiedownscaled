@@ -1,8 +1,7 @@
 readLUH2v2h <- function(subtype = "states", subset = seq(1995, 2015, 5)) {
   if (subtype == "cellArea") {
-    cellArea <- read.magpie("staticData_quarterdeg.nc")[, , "carea"]
-    cellArea <- collapseDim(cellArea, 2)
-    return(list(x = cellArea, unit = "km2"))
+    cellArea <- terra::rast("staticData_quarterdeg.nc", "carea")
+    return(list(x = cellArea, class = "SpatRaster", cache = FALSE, unit = "km2"))
   }
 
   if (subtype == "states") {
