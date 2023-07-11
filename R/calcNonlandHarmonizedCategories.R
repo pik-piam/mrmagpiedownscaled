@@ -6,7 +6,7 @@ calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
   x <- x[, , c("rndwd", "fulwd"), invert = TRUE]
 
   # map categories using weights from land categorization
-  getItems(x, 3) <- sub("fertl_", "", getItems(x, 3))
+  getItems(x, 3) <- sub("_fertilizer", "", getItems(x, 3))
   map <- toolLandCategoriesMapping(input, target)
 
   # get weights for disaggregation to reference categories
@@ -19,7 +19,7 @@ calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
   out[, , "c3per"] <- out[, , "c3per"] + out[, , "c3per_biofuel_2nd_gen"]
   out[, , "c4per"] <- out[, , "c4per"] + out[, , "c4per_biofuel_2nd_gen"]
   out <- out[, , c("c3per_biofuel_2nd_gen", "c4per_biofuel_2nd_gen"), invert = TRUE]
-  getItems(out, 3) <- paste0("fertl_", getItems(out, 3))
+  getItems(out, 3) <- paste0(getItems(out, 3), "_fertilizer")
 
   out <- mbind(out, wood)
   attr(out, "crs") <- attr(x, "crs")
@@ -28,7 +28,7 @@ calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
   # check data for consistency
   toolCheck("Nonland Harmonized Categories output", {
     toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
-    expectedCategories <- c("fertl_c3ann", "fertl_c4ann", "fertl_c3per", "fertl_c4per", "fertl_c3nfx", "rndwd", "fulwd")
+    expectedCategories <- c(paste0(c("c3ann", "c4ann", "c3per", "c4per", "c3nfx"), "_fertilizer"), "rndwd", "fulwd")
     toolExpectTrue(setequal(getItems(out, dim = 3), expectedCategories), "Nonland categories match target definition")
     toolExpectTrue(all(out >= 0), "All values are >= 0")
   })
@@ -36,7 +36,7 @@ calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
   attr(out, "toolCheck") <- toolCheckReport(filter = TRUE)
   return(list(x = out,
               isocountries = FALSE,
-              unit = "rndwd, fulwd: 1; fertl_*: kg ha-1 yr-1", # TODO change fertl unit to kg yr-1
+              unit = "rndwd, fulwd: 1; *_fertilizer: kg yr-1",
               min = 0,
               description = "Input data with nonland categories remapped to categories of target data set"))
 }
