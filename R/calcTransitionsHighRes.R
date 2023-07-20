@@ -1,9 +1,9 @@
-calcTransitionsHighRes <- function(input = "magpie", target = "luh2", years = c(1995, 2000, 2005, 2010)) {
+calcTransitionsHighRes <- function(input = "magpie", target = "luh2", diffYears = c(1995, 2000, 2005, 2010)) {
 
-  if (length(years) < 2) stop("At least two time steps required to be able to compute transistions")
-  if (length(years) > 5) warning("Selecting more than 5 time steps at once will most like cause memory problems.")
+  if (length(diffYears) < 2) stop("At least two time steps required to be able to compute transistions")
+  if (length(diffYears) > 5) warning("Selecting more than 5 time steps at once will most like cause memory problems.")
 
-  x <- toolAddCheckReport(calcOutput("LandHighRes", input = input, target = target, aggregate = FALSE))[, years, ]
+  x <- toolAddCheckReport(calcOutput("LandHighRes", input = input, target = target, aggregate = FALSE))[, diffYears, ]
   x <- toolTransitionsBasic(x)
   attr(x, "toolCheck") <- toolCheckReport(filter = TRUE)
 
