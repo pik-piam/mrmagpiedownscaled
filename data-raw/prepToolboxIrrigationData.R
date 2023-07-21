@@ -46,5 +46,5 @@ magclass::getItems(mag, 3, raw = TRUE) <- magclass::getItems(mag, 3) |>
   gsub(pattern = "_crop=([0-9]+)$|_harvested_area", replacement = "") |>
   paste0(".", rep(crop, 2))
 names(dimnames(mag))[3] <- "irrigation.crop"
-magclass::write.magpie(mag, "0p5.mz", overwrite = TRUE)
+magclass::write.magpie(mag, "inst/extdata/0p5.mz", overwrite = TRUE)
 unlink(Sys.glob("loop-*.tif"))
