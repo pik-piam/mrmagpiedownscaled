@@ -1,4 +1,5 @@
 calcLandCategorizationWeight <- function(map, geometry, crs) {
+  # TODO use toolbox data here
 
   .getTarget <- function(geometry, crs) {
     target <- new.magpie(names(geometry), sets = c("id", "temporal", "data"))

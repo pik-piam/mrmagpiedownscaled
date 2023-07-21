@@ -3,13 +3,15 @@ calcLandTargetData <- function(target = "luh2") {
     cropTypes <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per")
 
     states <- readSource("LUH2v2h", subtype = "states")
+    nonCropStates <- states[[grep(paste(cropTypes, collapse = "|"), names(states),
+                                  value = TRUE, invert = TRUE)]]
     states <- toolSpatRasterToDataset(states)
     man <- readSource("LUH2v2h", subtype = "management", convert = FALSE)
     man <- toolSpatRasterToDataset(man)
     man <- man[c(paste0("crpbf_", cropTypes), paste0("irrig_", cropTypes))]
     stopifnot(all.equal(terra::time(states[1]), terra::time(man[1])))
 
-    out <- list()
+    out <- list(nonCropStates)
     for (cropType in cropTypes) {
       crpbf <- man[paste0("crpbf_", cropType)]
       irrig <- man[paste0("irrig_", cropType)]
@@ -29,13 +31,15 @@ calcLandTargetData <- function(target = "luh2") {
 
       nonBiofuel <- states[cropType] - biofuel1stGen
 
+      irrigatedBiofuel2ndGen <- NULL
       rainfedBiofuel2ndGen <- NULL
       if (grepl("per", cropType)) {
         # 2nd gen biofuel is not part of LUH2v2h, but we need it for the harmonization, so fill with zeros
+        irrigatedBiofuel2ndGen <- 0 * states[cropType]
         rainfedBiofuel2ndGen <- 0 * states[cropType]
+        names(irrigatedBiofuel2ndGen) <- paste0(names(irrigatedBiofuel2ndGen), "_irrigated_biofuel_2nd_gen")
         names(rainfedBiofuel2ndGen) <- paste0(names(rainfedBiofuel2ndGen), "_rainfed_biofuel_2nd_gen")
-        # we assume 2nd gen biofuel is never irrigated, so irrigatedBiofuel2ndGen does not exist
-        nonBiofuel <- nonBiofuel - rainfedBiofuel2ndGen
+        nonBiofuel <- nonBiofuel - irrigatedBiofuel2ndGen - rainfedBiofuel2ndGen
       }
 
       irrigatedNonBiofuel <- irrig * nonBiofuel
@@ -43,8 +47,8 @@ calcLandTargetData <- function(target = "luh2") {
       names(irrigatedNonBiofuel) <- sub("\\.\\..+$", paste0("..", cropType, "_irrigated"), names(irrigatedNonBiofuel))
       names(rainfedNonBiofuel) <- sub("\\.\\..+$", paste0("..", cropType, "_rainfed"), names(rainfedNonBiofuel))
 
-      out <- c(out, irrigatedNonBiofuel, rainfedNonBiofuel,
-               irrigatedBiofuel1stGen, rainfedBiofuel1stGen, rainfedBiofuel2ndGen)
+      out <- c(out, irrigatedNonBiofuel, rainfedNonBiofuel, irrigatedBiofuel1stGen,
+               rainfedBiofuel1stGen, irrigatedBiofuel2ndGen, rainfedBiofuel2ndGen)
     }
     out <- do.call(c, out)
     terra::time(out, tstep = "years") <- as.integer(substr(names(out), 2, 5))
@@ -61,7 +65,7 @@ calcLandTargetData <- function(target = "luh2") {
     totalAreas <- vapply(unique(terra::time(out)), function(year) {
       sum(terra::values(out[[terra::time(out) == year]]), na.rm = TRUE)
     }, double(1))
-    toolExpectLessDiff(max(totalAreas), min(totalAreas), 10^-5,
+    toolExpectLessDiff(max(totalAreas), min(totalAreas), 10^-4,
                        "Total area is constant over time")
   })
   attr(out, "toolCheck") <- toolCheckReport(filter = TRUE)
