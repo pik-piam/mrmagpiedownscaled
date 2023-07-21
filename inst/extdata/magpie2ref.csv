@@ -1,173 +1,4 @@
 reference;data
-122|Sweet potatoes;cassav_sp
-125|Cassava;cassav_sp
-135|Yautia (cocoyam);cassav_sp
-136|Taro (cocoyam);cassav_sp
-137|Yams;cassav_sp
-149|Roots and tubers, nes;cassav_sp
-328|Seed cotton;cottn_pro
-638|Forage and silage, rye grass;foddr
-639|Forage and silage, grasses nes;foddr
-642|Forage and silage, green oilseeds;foddr
-644|Cabbage for fodder;foddr
-646|Turnips for fodder;foddr
-647|Beets for fodder;foddr
-648|Carrots for fodder;foddr
-649|Swedes for fodder;foddr
-651|Forage products;foddr
-655|Vegetables and roots fodder;foddr
-358|Cabbages and other brassicas;others
-366|Artichokes;others
-367|Asparagus;others
-372|Lettuce and chicory;others
-373|Spinach;others
-378|Cassava leaves;others
-388|Tomatoes;others
-393|Cauliflowers and broccoli;others
-394|Pumpkins, squash and gourds;others
-397|Cucumbers and gherkins;others
-399|Eggplants (aubergines);others
-401|Chillies and peppers, green;others
-402|Onions, shallots, green;others
-403|Onions, dry;others
-406|Garlic;others
-407|Leeks, other alliaceous vegetables;others
-426|Carrots and turnips;others
-430|Okra;others
-449|Mushrooms and truffles;others
-459|Chicory roots;others
-463|Vegetables, fresh nes;others
-544|Strawberries;others
-567|Watermelons;others
-568|Melons, other (inccantaloupes);others
-689|Chillies and peppers, dry;others
-711|Anise, badian, fennel, coriander;others
-720|Ginger;others
-723|Spices, nes;others
-116|Potatoes;potato
-265|Castor oil seed;rapeseed
-270|Rapeseed;rapeseed
-280|Safflower seed;rapeseed
-289|Sesame seed;rapeseed
-292|Mustard seed;rapeseed
-296|Poppy seed;rapeseed
-299|Melonseed;rapeseed
-333|Linseed;rapeseed
-336|Hempseed;rapeseed
-27|Rice, paddy;rice_pro
-157|Sugar beet;sugr_beet
-267|Sunflower seed;sunflower
-15|Wheat;tece
-44|Barley;tece
-71|Rye;tece
-75|Oats;tece
-89|Buckwheat;tece
-92|Quinoa;tece
-94|Fonio;tece
-97|Triticale;tece
-101|Canary seed;tece
-103|Grain, mixed;tece
-108|Cereals, nes;tece
-216|Brazil nuts, with shell;others
-217|Cashew nuts, with shell;others
-220|Chestnut;others
-221|Almonds, with shell;others
-222|Walnuts, with shell;others
-223|Pistachios;others
-224|Kola nuts;others
-225|Hazelnuts, with shell;others
-226|Areca nuts;others
-234|Nuts, nes;others
-461|Carobs;others
-486|Bananas;cassav_sp
-489|Plantains;cassav_sp
-490|Oranges;others
-495|Tangerines, mandarins, clementines, satsumas;others
-497|Lemons and limes;others
-507|Grapefruit (inc pomelos);others
-512|Fruit, citrus nes;others
-515|Apples;others
-521|Pears;others
-523|Quinces;others
-526|Apricots;others
-530|Cherries, sour;others
-531|Cherries;others
-534|Peaches and nectarines;others
-536|Plums and sloes;others
-541|Fruit, stone nes;others
-542|Fruit, pome nes;others
-547|Raspberries;others
-549|Gooseberries;others
-550|Currants;others
-552|Blueberries;others
-554|Cranberries;others
-558|Berries nes;others
-560|Grapes;others
-569|Figs;others
-571|Mangoes, mangosteens, guavas;others
-572|Avocados;others
-574|Pineapples;others
-577|Dates;others
-587|Persimmons;others
-591|Cashewapple;others
-592|Kiwi fruit;others
-600|Papayas;others
-603|Fruit, tropical fresh nes;others
-619|Fruit, fresh nes;others
-656|Coffee, green;others
-661|Cocoa, beans;others
-667|Tea;others
-671|Mate;others
-687|Pepper (piper spp);others
-692|Vanilla;others
-693|Cinnamon (canella);others
-698|Cloves;others
-702|Nutmeg, mace and cardamoms;others
-249|Coconuts;rapeseed
-260|Olives;rapeseed
-263|Karite nuts (sheanuts);rapeseed
-275|Tung nuts;rapeseed
-277|Jojoba seed;rapeseed
-305|Tallowtree seed;rapeseed
-310|Kapok fruit;rapeseed
-339|Oilseeds nes;rapeseed
-636|Forage and silage, maize;foddr
-637|Forage and silage, sorghum;foddr
-446|Maize, green;others
-640|Forage and silage, clover;foddr
-641|Forage and silage, alfalfa;foddr
-643|Forage and silage, legumes;foddr
-414|Beans, green;others
-417|Peas, green;others
-420|Vegetables, leguminous nes;others
-423|String beans;others
-254|Oil palm fruit;oilpalm
-56|Maize;maiz
-79|Millet;trce
-83|Sorghum;trce
-156|Sugar cane;sugr_cane
-242|Groundnuts, with shell;groundnut
-176|Beans, dry;puls_pro
-181|Broad beans, horse beans, dry;puls_pro
-187|Peas, dry;puls_pro
-191|Chick peas;puls_pro
-195|Cow peas, dry;puls_pro
-197|Pigeon peas;puls_pro
-201|Lentils;puls_pro
-203|Bambara beans;puls_pro
-205|Vetches;puls_pro
-210|Lupins;puls_pro
-211|Pulses, nes;puls_pro
-236|Soybeans;soybean
-677|Hops;others
-748|Peppermint;others
-betr;betr
-begr;begr
-c3per_biofuel_1st_gen;biofuel_1st_gen
-c4per_biofuel_1st_gen;biofuel_1st_gen
-c3ann_biofuel_1st_gen;biofuel_1st_gen
-c4ann_biofuel_1st_gen;biofuel_1st_gen
-c3nfx_biofuel_1st_gen;biofuel_1st_gen
 primf;primforest
 secdf;secdforest
 forestry;forestry
@@ -176,3 +7,343 @@ secdn;other
 pastr;past
 range;past
 urban;urban
+c3per_irrigated_biofuel_1st_gen;biofuel_1st_gen
+c3per_rainfed_biofuel_1st_gen;biofuel_1st_gen
+c4per_irrigated_biofuel_1st_gen;biofuel_1st_gen
+c4per_rainfed_biofuel_1st_gen;biofuel_1st_gen
+c3ann_irrigated_biofuel_1st_gen;biofuel_1st_gen
+c3ann_rainfed_biofuel_1st_gen;biofuel_1st_gen
+c4ann_irrigated_biofuel_1st_gen;biofuel_1st_gen
+c4ann_rainfed_biofuel_1st_gen;biofuel_1st_gen
+c3nfx_irrigated_biofuel_1st_gen;biofuel_1st_gen
+c3nfx_rainfed_biofuel_1st_gen;biofuel_1st_gen
+begr, irrigated;begr_irrigated
+begr, rainfed;begr_rainfed
+betr, irrigated;betr_irrigated
+betr, rainfed;betr_rainfed
+alfalfa, irrigated;foddr_irrigated
+alfalfa, rainfed;foddr_rainfed
+Almonds, with shell, irrigated;others_irrigated
+Almonds, with shell, rainfed;others_rainfed
+Anise, badian, fennel, coriander, irrigated;others_irrigated
+Anise, badian, fennel, coriander, rainfed;others_rainfed
+Apples, irrigated;others_irrigated
+Apples, rainfed;others_rainfed
+Apricots, irrigated;others_irrigated
+Apricots, rainfed;others_rainfed
+Areca nuts, irrigated;others_irrigated
+Areca nuts, rainfed;others_rainfed
+Artichokes, irrigated;others_irrigated
+Artichokes, rainfed;others_rainfed
+Asparagus, irrigated;others_irrigated
+Asparagus, rainfed;others_rainfed
+Avocados, irrigated;others_irrigated
+Avocados, rainfed;others_rainfed
+Bambara beans, irrigated;puls_pro_irrigated
+Bambara beans, rainfed;puls_pro_rainfed
+Bananas, irrigated;cassav_sp_irrigated
+Bananas, rainfed;cassav_sp_rainfed
+Barley, irrigated;tece_irrigated
+Barley, rainfed;tece_rainfed
+Beans, dry, irrigated;puls_pro_irrigated
+Beans, dry, rainfed;puls_pro_rainfed
+Beans, green, irrigated;others_irrigated
+Beans, green, rainfed;others_rainfed
+beetfor, irrigated;foddr_irrigated
+beetfor, rainfed;foddr_rainfed
+Berries nes, irrigated;others_irrigated
+Berries nes, rainfed;others_rainfed
+Blueberries, irrigated;others_irrigated
+Blueberries, rainfed;others_rainfed
+Brazil nuts, with shell, irrigated;others_irrigated
+Brazil nuts, with shell, rainfed;others_rainfed
+Broad beans, horse beans, dry, irrigated;puls_pro_irrigated
+Broad beans, horse beans, dry, rainfed;puls_pro_rainfed
+Buckwheat, irrigated;tece_irrigated
+Buckwheat, rainfed;tece_rainfed
+cabbagefor, irrigated;foddr_irrigated
+cabbagefor, rainfed;foddr_rainfed
+Cabbages and other brassicas, irrigated;others_irrigated
+Cabbages and other brassicas, rainfed;others_rainfed
+Canary seed, irrigated;tece_irrigated
+Canary seed, rainfed;tece_rainfed
+Carobs, irrigated;others_irrigated
+Carobs, rainfed;others_rainfed
+carrotfor, irrigated;foddr_irrigated
+carrotfor, rainfed;foddr_rainfed
+Carrots and turnips, irrigated;others_irrigated
+Carrots and turnips, rainfed;others_rainfed
+Cashew nuts, with shell, irrigated;others_irrigated
+Cashew nuts, with shell, rainfed;others_rainfed
+Cashewapple, irrigated;others_irrigated
+Cashewapple, rainfed;others_rainfed
+Cassava, irrigated;cassav_sp_irrigated
+Cassava, rainfed;cassav_sp_rainfed
+Castor oil seed, irrigated;rapeseed_irrigated
+Castor oil seed, rainfed;rapeseed_rainfed
+Cauliflowers and broccoli, irrigated;others_irrigated
+Cauliflowers and broccoli, rainfed;others_rainfed
+Cereals nes, irrigated;tece_irrigated
+Cereals nes, rainfed;tece_rainfed
+Cherries, irrigated;others_irrigated
+Cherries, rainfed;others_rainfed
+Cherries, sour, irrigated;others_irrigated
+Cherries, sour, rainfed;others_rainfed
+Chestnut, irrigated;others_irrigated
+Chestnut, rainfed;others_rainfed
+Chick peas, irrigated;puls_pro_irrigated
+Chick peas, rainfed;puls_pro_rainfed
+Chicory roots, irrigated;others_irrigated
+Chicory roots, rainfed;others_rainfed
+Chillies and peppers, dry, irrigated;others_irrigated
+Chillies and peppers, dry, rainfed;others_rainfed
+Chillies and peppers, green, irrigated;others_irrigated
+Chillies and peppers, green, rainfed;others_rainfed
+Cinnamon (cannella), irrigated;others_irrigated
+Cinnamon (cannella), rainfed;others_rainfed
+clover, irrigated;foddr_irrigated
+clover, rainfed;foddr_rainfed
+Cloves, irrigated;others_irrigated
+Cloves, rainfed;others_rainfed
+Cocoa, beans, irrigated;others_irrigated
+Cocoa, beans, rainfed;others_rainfed
+Coconuts, irrigated;rapeseed_irrigated
+Coconuts, rainfed;rapeseed_rainfed
+Coffee, green, irrigated;others_irrigated
+Coffee, green, rainfed;others_rainfed
+Cow peas, dry, irrigated;puls_pro_irrigated
+Cow peas, dry, rainfed;puls_pro_rainfed
+Cranberries, irrigated;others_irrigated
+Cranberries, rainfed;others_rainfed
+Cucumbers and gherkins, irrigated;others_irrigated
+Cucumbers and gherkins, rainfed;others_rainfed
+Currants, irrigated;others_irrigated
+Currants, rainfed;others_rainfed
+Dates, irrigated;others_irrigated
+Dates, rainfed;others_rainfed
+Eggplants (aubergines), irrigated;others_irrigated
+Eggplants (aubergines), rainfed;others_rainfed
+Figs, irrigated;others_irrigated
+Figs, rainfed;others_rainfed
+Fonio, irrigated;trce_irrigated
+Fonio, rainfed;trce_rainfed
+fornes, irrigated;foddr_irrigated
+fornes, rainfed;foddr_rainfed
+Fruit, citrus nes, irrigated;others_irrigated
+Fruit, citrus nes, rainfed;others_rainfed
+Fruit, fresh nes, irrigated;others_irrigated
+Fruit, fresh nes, rainfed;others_rainfed
+Fruit, pome nes, irrigated;others_irrigated
+Fruit, pome nes, rainfed;others_rainfed
+Fruit, stone nes, irrigated;others_irrigated
+Fruit, stone nes, rainfed;others_rainfed
+Fruit, tropical fresh nes, irrigated;others_irrigated
+Fruit, tropical fresh nes, rainfed;others_rainfed
+Garlic, irrigated;others_irrigated
+Garlic, rainfed;others_rainfed
+Ginger, irrigated;others_irrigated
+Ginger, rainfed;others_rainfed
+Gooseberries, irrigated;others_irrigated
+Gooseberries, rainfed;others_rainfed
+Grain, mixed, irrigated;tece_irrigated
+Grain, mixed, rainfed;tece_rainfed
+Grapefruit (incl pomelos), irrigated;others_irrigated
+Grapefruit (incl pomelos), rainfed;others_rainfed
+Grapes, irrigated;others_irrigated
+Grapes, rainfed;others_rainfed
+grassnes, irrigated;foddr_irrigated
+grassnes, rainfed;foddr_rainfed
+Groundnuts, with shell, irrigated;groundnut_irrigated
+Groundnuts, with shell, rainfed;groundnut_rainfed
+Hazelnuts, with shell, irrigated;others_irrigated
+Hazelnuts, with shell, rainfed;others_rainfed
+Hempseed, irrigated;rapeseed_irrigated
+Hempseed, rainfed;rapeseed_rainfed
+Hops, irrigated;others_irrigated
+Hops, rainfed;others_rainfed
+Jojoba seed, irrigated;rapeseed_irrigated
+Jojoba seed, rainfed;rapeseed_rainfed
+Kapok fruit, irrigated;rapeseed_irrigated
+Kapok fruit, rainfed;rapeseed_rainfed
+Karite nuts (sheanuts), irrigated;rapeseed_irrigated
+Karite nuts (sheanuts), rainfed;rapeseed_rainfed
+Kiwi fruit, irrigated;others_irrigated
+Kiwi fruit, rainfed;others_rainfed
+Kola nuts, irrigated;others_irrigated
+Kola nuts, rainfed;others_rainfed
+Leeks, other alliaceous vegetables, irrigated;others_irrigated
+Leeks, other alliaceous vegetables, rainfed;others_rainfed
+legumenes, irrigated;foddr_irrigated
+legumenes, rainfed;foddr_rainfed
+Lemons and limes, irrigated;others_irrigated
+Lemons and limes, rainfed;others_rainfed
+Lentils, irrigated;puls_pro_irrigated
+Lentils, rainfed;puls_pro_rainfed
+Lettuce and chicory, irrigated;others_irrigated
+Lettuce and chicory, rainfed;others_rainfed
+Linseed, irrigated;rapeseed_irrigated
+Linseed, rainfed;rapeseed_rainfed
+Lupins, irrigated;puls_pro_irrigated
+Lupins, rainfed;puls_pro_rainfed
+Maize, irrigated;maiz_irrigated
+Maize, rainfed;maiz_rainfed
+Maize, green, irrigated;others_irrigated
+Maize, green, rainfed;others_rainfed
+maizefor, irrigated;foddr_irrigated
+maizefor, rainfed;foddr_rainfed
+Mangoes, mangosteens, guavas, irrigated;others_irrigated
+Mangoes, mangosteens, guavas, rainfed;others_rainfed
+Mate, irrigated;others_irrigated
+Mate, rainfed;others_rainfed
+Melons, other (incl cantaloupes), irrigated;others_irrigated
+Melons, other (incl cantaloupes), rainfed;others_rainfed
+Melonseed, irrigated;rapeseed_irrigated
+Melonseed, rainfed;rapeseed_rainfed
+Millet, irrigated;trce_irrigated
+Millet, rainfed;trce_rainfed
+mixedgrass, irrigated;foddr_irrigated
+mixedgrass, rainfed;foddr_rainfed
+Mushrooms and truffles, irrigated;others_irrigated
+Mushrooms and truffles, rainfed;others_rainfed
+Mustard seed, irrigated;rapeseed_irrigated
+Mustard seed, rainfed;rapeseed_rainfed
+Nutmeg, mace and cardamoms, irrigated;others_irrigated
+Nutmeg, mace and cardamoms, rainfed;others_rainfed
+Nuts nes, irrigated;others_irrigated
+Nuts nes, rainfed;others_rainfed
+Oats, irrigated;tece_irrigated
+Oats, rainfed;tece_rainfed
+Oil palm fruit, irrigated;oilpalm_irrigated
+Oil palm fruit, rainfed;oilpalm_rainfed
+oilseedfor, irrigated;foddr_irrigated
+oilseedfor, rainfed;foddr_rainfed
+Oilseeds nes, irrigated;rapeseed_irrigated
+Oilseeds nes, rainfed;rapeseed_rainfed
+Okra, irrigated;others_irrigated
+Okra, rainfed;others_rainfed
+Olives, irrigated;rapeseed_irrigated
+Olives, rainfed;rapeseed_rainfed
+Onions, dry, irrigated;others_irrigated
+Onions, dry, rainfed;others_rainfed
+Onions, shallots, green, irrigated;others_irrigated
+Onions, shallots, green, rainfed;others_rainfed
+Oranges, irrigated;others_irrigated
+Oranges, rainfed;others_rainfed
+Papayas, irrigated;others_irrigated
+Papayas, rainfed;others_rainfed
+Peaches and nectarines, irrigated;others_irrigated
+Peaches and nectarines, rainfed;others_rainfed
+Pears, irrigated;others_irrigated
+Pears, rainfed;others_rainfed
+Peas, dry, irrigated;puls_pro_irrigated
+Peas, dry, rainfed;puls_pro_rainfed
+Peas, green, irrigated;others_irrigated
+Peas, green, rainfed;others_rainfed
+Pepper (piper spp), irrigated;others_irrigated
+Pepper (piper spp), rainfed;others_rainfed
+Peppermint, irrigated;others_irrigated
+Peppermint, rainfed;others_rainfed
+Persimmons, irrigated;others_irrigated
+Persimmons, rainfed;others_rainfed
+Pigeon peas, irrigated;puls_pro_irrigated
+Pigeon peas, rainfed;puls_pro_rainfed
+Pineapples, irrigated;others_irrigated
+Pineapples, rainfed;others_rainfed
+Pistachios, irrigated;others_irrigated
+Pistachios, rainfed;others_rainfed
+Plantains and others, irrigated;cassav_sp_irrigated
+Plantains and others, rainfed;cassav_sp_rainfed
+Plums and sloes, irrigated;others_irrigated
+Plums and sloes, rainfed;others_rainfed
+popcorn, irrigated;tece_irrigated
+popcorn, rainfed;tece_rainfed
+Poppy seed, irrigated;rapeseed_irrigated
+Poppy seed, rainfed;rapeseed_rainfed
+Potatoes, irrigated;potato_irrigated
+Potatoes, rainfed;potato_rainfed
+Pulses nes, irrigated;puls_pro_irrigated
+Pulses nes, rainfed;puls_pro_rainfed
+Pumpkins, squash and gourds, irrigated;others_irrigated
+Pumpkins, squash and gourds, rainfed;others_rainfed
+Quinces, irrigated;others_irrigated
+Quinces, rainfed;others_rainfed
+Quinoa, irrigated;tece_irrigated
+Quinoa, rainfed;tece_rainfed
+Rapeseed, irrigated;rapeseed_irrigated
+Rapeseed, rainfed;rapeseed_rainfed
+Raspberries, irrigated;others_irrigated
+Raspberries, rainfed;others_rainfed
+Rice, paddy, irrigated;rice_pro_irrigated
+Rice, paddy, rainfed;rice_pro_rainfed
+Roots and tubers nes, irrigated;cassav_sp_irrigated
+Roots and tubers nes, rainfed;cassav_sp_rainfed
+Rye, irrigated;tece_irrigated
+Rye, rainfed;tece_rainfed
+ryefor, irrigated;foddr_irrigated
+ryefor, rainfed;foddr_rainfed
+Safflower seed, irrigated;rapeseed_irrigated
+Safflower seed, rainfed;rapeseed_rainfed
+Seed cotton, irrigated;cottn_pro_irrigated
+Seed cotton, rainfed;cottn_pro_rainfed
+Sesame seed, irrigated;rapeseed_irrigated
+Sesame seed, rainfed;rapeseed_rainfed
+Sorghum, irrigated;trce_irrigated
+Sorghum, rainfed;trce_rainfed
+sorghumfor, irrigated;foddr_irrigated
+sorghumfor, rainfed;foddr_rainfed
+Soybeans, irrigated;soybean_irrigated
+Soybeans, rainfed;soybean_rainfed
+Spices nes, irrigated;others_irrigated
+Spices nes, rainfed;others_rainfed
+Spinach, irrigated;others_irrigated
+Spinach, rainfed;others_rainfed
+Strawberries, irrigated;others_irrigated
+Strawberries, rainfed;others_rainfed
+String beans, irrigated;others_irrigated
+String beans, rainfed;others_rainfed
+Sugar beet, irrigated;sugr_beet_irrigated
+Sugar beet, rainfed;sugr_beet_rainfed
+Sugar cane, irrigated;sugr_cane_irrigated
+Sugar cane, rainfed;sugr_cane_rainfed
+Sunflower seed, irrigated;sunflower_irrigated
+Sunflower seed, rainfed;sunflower_rainfed
+swedefor, irrigated;foddr_irrigated
+swedefor, rainfed;foddr_rainfed
+Sweet potatoes, irrigated;cassav_sp_irrigated
+Sweet potatoes, rainfed;cassav_sp_rainfed
+Tallowtree seed, irrigated;rapeseed_irrigated
+Tallowtree seed, rainfed;rapeseed_rainfed
+Tangerines, mandarins, clementines, satsumas, irrigated;others_irrigated
+Tangerines, mandarins, clementines, satsumas, rainfed;others_rainfed
+Taro (cocoyam), irrigated;cassav_sp_irrigated
+Taro (cocoyam), rainfed;cassav_sp_rainfed
+Tea, irrigated;others_irrigated
+Tea, rainfed;others_rainfed
+Tomatoes, irrigated;others_irrigated
+Tomatoes, rainfed;others_rainfed
+Triticale, irrigated;tece_irrigated
+Triticale, rainfed;tece_rainfed
+Tung nuts, irrigated;rapeseed_irrigated
+Tung nuts, rainfed;rapeseed_rainfed
+turnipfor, irrigated;foddr_irrigated
+turnipfor, rainfed;foddr_rainfed
+Vanilla, irrigated;others_irrigated
+Vanilla, rainfed;others_rainfed
+Vegetables, fresh nes, irrigated;others_irrigated
+Vegetables, fresh nes, rainfed;others_rainfed
+Vegetables, leguminous nes, irrigated;others_irrigated
+Vegetables, leguminous nes, rainfed;others_rainfed
+vegfor, irrigated;foddr_irrigated
+vegfor, rainfed;foddr_rainfed
+Vetches, irrigated;puls_pro_irrigated
+Vetches, rainfed;puls_pro_rainfed
+Walnuts, with shell, irrigated;others_irrigated
+Walnuts, with shell, rainfed;others_rainfed
+Watermelons, irrigated;others_irrigated
+Watermelons, rainfed;others_rainfed
+Wheat, irrigated;tece_irrigated
+Wheat, rainfed;tece_rainfed
+Yams, irrigated;cassav_sp_irrigated
+Yams, rainfed;cassav_sp_rainfed
+Yautia (cocoyam), irrigated;cassav_sp_irrigated
+Yautia (cocoyam), rainfed;cassav_sp_rainfed

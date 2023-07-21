@@ -60,7 +60,7 @@ Fonio;c4ann
 fornes;c3ann
 Fruit, citrus nes;c3per
 Fruit, fresh nes;c3per
-Fruit, pome nes;
+Fruit, pome nes;c3per
 Fruit, stone nes;c3per
 Fruit, tropical fresh nes;c3per
 Garlic;c3ann
@@ -76,13 +76,13 @@ Hazelnuts, with shell;c3per
 Hemp tow waste;c3ann
 Hempseed;c3ann
 Hops;c3ann
-Jojoba seed;
+Jojoba seed;c3per
 Jute;c3ann
-Kapok fruit;
+Kapok fruit;c3per
 Karite nuts (sheanuts);c3per
 Kiwi fruit;c3per
 Kola nuts;c3per
-Leeks, other alliaceous vegetables;
+Leeks, other alliaceous vegetables;c3ann
 legumenes;c3nfx
 Lemons and limes;c3per
 Lentils;c3nfx
@@ -158,7 +158,7 @@ Sugar crops nes;c3per
 Sunflower seed;c3ann
 swedefor;c3ann
 Sweet potatoes;c3ann
-Tallowtree seed;
+Tallowtree seed;c3per
 Tangerines, mandarins, clementines, satsumas;c3per
 Taro (cocoyam);c3ann
 Tea;c3per
