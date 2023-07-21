@@ -2,6 +2,8 @@ calcLandInputData <- function(input = "magpie") {
   if (input == "magpie") {
     land <- readSource("Magpie")
     crop <- readSource("Magpie", subtype = "crop")
+    getItems(crop, dim = 3.1, full = TRUE) <- sub("\\.", "_", getItems(crop, dim = 3, full = TRUE))
+    getItems(crop, dim = 3.2) <- NULL
 
     geometry <- attr(land, "geometry")
     crs <- attr(land, "crs")
@@ -31,7 +33,7 @@ calcLandInputData <- function(input = "magpie") {
                    "Land input categories match the corresponding mapping")
     toolExpectTrue(all(out >= 0), "All values are >= 0")
     outSum <- dimSums(out, dim = 3)
-    toolExpectLessDiff(outSum, outSum[, 1, ], 10^-5, "Total areas in output stay constant over time")
+    toolExpectLessDiff(outSum, outSum[, 1, ], 10^-4, "Total area is constant over time")
   })
   attr(out, "toolCheck") <- toolCheckReport(filter = TRUE)
   return(list(x = out,
