@@ -11,7 +11,7 @@ readLUH2v2h <- function(subtype = "states", subset = seq(1995, 2015, 5)) {
     unit <- "1"
   } else if (subtype == "management") {
     x <- terra::rast("management.nc")
-    x <- x["crpbf|rndwd|fulwd|fertl"]
+    x <- x["crpbf|rndwd|fulwd|fertl|irrig"]
     unit <- "1, except fertl: kg ha-1 yr-1"
   } else {
     stop("subtype must be states, management or cellArea")
