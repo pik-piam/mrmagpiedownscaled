@@ -1,6 +1,4 @@
 calcLandCategorizationWeight <- function(map, geometry, crs) {
-  # TODO use toolbox data here
-
   .getTarget <- function(geometry, crs) {
     target <- new.magpie(names(geometry), sets = c("id", "temporal", "data"))
     attr(target, "geometry") <- geometry
@@ -38,21 +36,14 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
     return(x)
   }
 
-  # prepare FAO reference data
-  .getFaoSpatVector <- function(map) {
-    fao <- readRDS(system.file("extdata/faoAreaHarvested.rds", package = "mrdownscale"))
-
+  .getToolboxSpatRaster <- function(map) {
+    x <- read.magpie(system.file("extdata/toolbox2000.mz", package = "mrdownscale"))
     # reduce categories to minimum based on supplied mappings
-    fao <- .remap(fao, map)
-    fao <- fao * 10^-6 # mio. ha -> ha
-
-    geometryCountries <- readRDS(system.file("extdata/geometryCountries.rds", package = "mrdownscale"))
-    attr(fao, "geometry") <- geometryCountries[getItems(fao, dim = 1)]
-    attr(fao, "crs") <- "+proj=longlat +datum=WGS84 +no_defs"
-    fao <- as.SpatVector(fao)
-    fao[[1]] <- NULL # remove country column
-    return(fao)
+    x <- .remap(x, map)
+    x <- as.SpatRaster(x)
+    return(x)
   }
+
   .getLUH2SpatRaster <- function(map) {
     luh2 <- read.magpie(system.file("extdata/luh2015.mz", package = "mrdownscale"))
     # reduce categories to minimum based on supplied mappings
@@ -60,21 +51,21 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
     luh2 <- as.SpatRaster(luh2)
     return(luh2)
   }
-  fao    <- .getFaoSpatVector(map)
-  luh2   <- .getLUH2SpatRaster(map)
 
-  # project fao and luh2 data on x
+  toolbox <- .getToolboxSpatRaster(map)
+  luh2 <- .getLUH2SpatRaster(map)
+
+  # project toolbox and luh2 data on x
   target <- .getTarget(geometry, crs)
-  pfao   <- .projectData(fao, target)
-  pluh2  <- .projectData(luh2, target)
+  ptoolbox <- .projectData(toolbox, target)
+  pluh2 <- .projectData(luh2, target)
 
   # convert to magclass
   mluh2 <- as.magpie(pluh2, spatial = which(terra::datatype(pluh2) != "double"))
-  mfao  <- as.magpie(pfao, spatial = which(terra::datatype(pfao) != "double"))
+  mtoolbox  <- as.magpie(ptoolbox, spatial = which(terra::datatype(ptoolbox) != "double"))
 
   .dummy <- function(x, map, availableItems) {
-    # generate empty dummy for missing
-    # categories
+    # generate empty dummy for missing categories
     missing <- setdiff(map$merge, availableItems)
     dummy <- x[, , rep(1, length(missing))]
     dummy[, , ] <- 0
@@ -82,7 +73,8 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
     return(dummy)
   }
 
-  out <- mbind(mluh2, mfao, .dummy(mfao, map, c(getItems(mluh2, dim = 3), getItems(mfao, dim = 3)))) + 10^-10
+  out <- mbind(mluh2, mtoolbox, .dummy(mtoolbox, map, c(getItems(mluh2, dim = 3),
+                                                        getItems(mtoolbox, dim = 3)))) + 10^-10
   attr(out, "crs") <- crs
   attr(out, "geometry") <- geometry
 
@@ -90,7 +82,7 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
   toolCheck("Land Categorization Weight output", {
     toolExpectTrue(identical(unname(getSets(out)[1]), "id"), "Dimensions are named correctly")
     toolExpectTrue(setequal(getItems(out, dim = 3), map$merge), "Land categories match merged categories")
-    toolExpectTrue(all(out >= 10^-10), "All values are >= 10e-10")
+    toolExpectTrue(all(out >= 10^-10), "All values are >= 10^-10")
     .dummyCols <- function(x) {
       dummy <- magpply(x, function(x) return(all(x == 10^-10)), 3)
       dummy <- getItems(dummy, dim = 3)[dummy]
@@ -109,5 +101,4 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
               unit = "ha",
               min = 10^-10,
               description = "Weights for dissagregation inputs to reference categories"))
-
 }
