@@ -9,7 +9,7 @@ calcNonlandTargetData <- function(target = "luh2") {
     names(fertl) <- paste0(sub("fertl_", "", names(fertl)), "_fertilizer")
 
     out <- c(man["rndwd|fulwd"], fertl)
-    attr(out, "toolCheck") <- toolCheckReport(filter = TRUE)
+
     return(list(x = out,
                 class = "SpatRaster",
                 cache = FALSE,
