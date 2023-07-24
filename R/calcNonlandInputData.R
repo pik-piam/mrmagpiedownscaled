@@ -28,14 +28,12 @@ calcNonlandInputData <- function(input = "magpie") {
   }
 
   # check data for consistency
-  toolCheck("Nonland input data", {
-    toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
-    toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
-    toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
-    toolExpectTrue(all(out >= 0), "All values are >= 0")
-    toolExpectTrue(all(out[, , c("rndwd", "fulwd")] <= 1.0001), "All shares are < 1.0001")
-  })
-  attr(out, "toolCheck") <- toolCheckReport(filter = TRUE)
+  toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
+  toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
+  toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
+  toolExpectTrue(all(out >= 0), "All values are >= 0")
+  toolExpectTrue(all(out[, , c("rndwd", "fulwd")] <= 1.0001), "All shares are < 1.0001")
+
   return(list(x = out,
               isocountries = FALSE,
               unit = "rndwd, fulwd: 1, *_fertilizer: kg yr-1",
