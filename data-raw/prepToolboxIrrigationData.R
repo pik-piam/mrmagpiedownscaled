@@ -1,4 +1,4 @@
-raw <- terra::rast("harvested_area_GADM_timeseries_2000-2009_20200417_20200127.nc",
+raw <- terra::rast("data-raw/raw/harvested_area_GADM_timeseries_2000-2009_20200417_20200127.nc",
                    c("rainfed_harvested_area", "irrigated_harvested_area"))
 year <- 2000
 raw <- raw[[terra::time(raw) == year]]
