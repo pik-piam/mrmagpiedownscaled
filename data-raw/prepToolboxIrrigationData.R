@@ -1,6 +1,7 @@
 raw <- terra::rast("harvested_area_GADM_timeseries_2000-2009_20200417_20200127.nc",
                    c("rainfed_harvested_area", "irrigated_harvested_area"))
-raw <- raw[[terra::time(raw) == 2000]]
+year <- 2000
+raw <- raw[[terra::time(raw) == year]]
 names(raw) <- sub("_1$", "", names(raw))
 for (i in seq_len(terra::nlyr(raw))) {
   terra::aggregate(raw[[i]], 6, fun = "sum", filename = paste0("loop-", i, ".tif"), overwrite = TRUE)
@@ -8,7 +9,7 @@ for (i in seq_len(terra::nlyr(raw))) {
 }
 
 combined <- terra::rast(paste0("loop-", seq_along(Sys.glob("loop-*.tif")), ".tif"))
-mag <- magclass::as.magpie(combined)
+x <- magclass::as.magpie(combined)
 
 crop <- c("Almonds, with shell", "Anise, badian, fennel, coriander", "Apples", "Apricots", "Barley", "Berries nes",
           "Figs", "Fruit, citrus nes", "Fruit, fresh nes", "Fruit, stone nes", "Grapes", "Linseed", "Maize",
@@ -40,11 +41,19 @@ crop <- c("Almonds, with shell", "Anise, badian, fennel, coriander", "Apples", "
           "Fruit, pome nes", "alfalfa", "beetfor", "cabbagefor", "carrotfor", "clover", "fornes", "grassnes",
           "legumenes", "maizefor", "mixedgrass", "oilseedfor", "popcorn", "ryefor", "sorghumfor", "swedefor",
           "turnipfor", "vegfor")
-stopifnot(identical(sub("^.+=([0-9]+)$", "\\1", magclass::getItems(mag, 3)), as.character(rep(seq_along(crop), 2))))
-
-magclass::getItems(mag, 3, raw = TRUE) <- magclass::getItems(mag, 3) |>
-  gsub(pattern = "_crop=([0-9]+)$|_harvested_area", replacement = "") |>
-  paste0(".", rep(crop, 2))
-names(dimnames(mag))[3] <- "irrigation.crop"
-magclass::write.magpie(mag, "inst/extdata/0p5.mz", overwrite = TRUE)
+stopifnot(identical(sub("^.+=([0-9]+)$", "\\1", magclass::getItems(x, 3)), as.character(rep(seq_along(crop), 2))))
+magclass::getItems(x, 3) <- paste0(rep(crop, 2), ", ", gsub("_.+$", "", magclass::getItems(x, 3)))
+remove <- c("Tobacco, unmanufactured, irrigated", "Bastfibres, other, irrigated",
+            "Sisal, irrigated", "Fibre crops nes, irrigated", "Flax fibre and tow, irrigated",
+            "Hemp tow waste, irrigated", "Coir, irrigated", "Jute, irrigated",
+            "Rubber, natural, irrigated", "Sugar crops nes, irrigated", "Pyrethrum, dried, irrigated",
+            "Gums, natural, irrigated", "Ramie, irrigated", "Agave fibres nes, irrigated",
+            "Manila fibre (abaca), irrigated", "Tobacco, unmanufactured, rainfed",
+            "Bastfibres, other, rainfed", "Sisal, rainfed", "Fibre crops nes, rainfed",
+            "Flax fibre and tow, rainfed", "Hemp tow waste, rainfed", "Coir, rainfed",
+            "Jute, rainfed", "Rubber, natural, rainfed", "Sugar crops nes, rainfed",
+            "Pyrethrum, dried, rainfed", "Gums, natural, rainfed", "Ramie, rainfed",
+            "Agave fibres nes, rainfed", "Manila fibre (abaca), rainfed")
+x <- x[, , remove, invert = TRUE]
+magclass::write.magpie(x, paste0("inst/extdata/toolbox", year, ".mz"), overwrite = TRUE)
 unlink(Sys.glob("loop-*.tif"))
