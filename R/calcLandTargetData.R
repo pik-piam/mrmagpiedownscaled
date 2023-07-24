@@ -56,19 +56,18 @@ calcLandTargetData <- function(target = "luh2") {
     stop("Unsupported output type \"", target, "\"")
   }
 
-  toolCheck("Land target data", {
-    toolExpectTrue(terra::crs(out) != "", "Data contains CRS information")
-    map <- toolLandCategoriesMapping(input = "magpie", target = target)
-    toolExpectTrue(setequal(sub("y[0-9]+\\.\\.", "", names(out)), map$dataOutput),
-                   "Land target categories match the corresponding mapping")
-    toolExpectTrue(min(terra::values(out), na.rm = TRUE) >= 0, "All values are >= 0")
-    totalAreas <- vapply(unique(terra::time(out)), function(year) {
-      sum(terra::values(out[[terra::time(out) == year]]), na.rm = TRUE)
-    }, double(1))
-    toolExpectLessDiff(max(totalAreas), min(totalAreas), 10^-4,
-                       "Total area is constant over time")
-  })
-  attr(out, "toolCheck") <- toolCheckReport(filter = TRUE)
+  #checks
+  toolExpectTrue(terra::crs(out) != "", "Data contains CRS information")
+  map <- toolLandCategoriesMapping(input = "magpie", target = target)
+  toolExpectTrue(setequal(sub("y[0-9]+\\.\\.", "", names(out)), map$dataOutput),
+                 "Land target categories match the corresponding mapping")
+  toolExpectTrue(min(terra::values(out), na.rm = TRUE) >= 0, "All values are >= 0")
+  totalAreas <- vapply(unique(terra::time(out)), function(year) {
+    sum(terra::values(out[[terra::time(out) == year]]), na.rm = TRUE)
+  }, double(1))
+  toolExpectLessDiff(max(totalAreas), min(totalAreas), 10^-4,
+                     "Total area is constant over time")
+
   return(list(x = out,
               class = "SpatRaster",
               unit = "Mha",

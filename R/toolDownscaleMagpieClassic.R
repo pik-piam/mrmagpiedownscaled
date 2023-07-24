@@ -17,29 +17,27 @@ toolDownscaleMagpieClassic <- function(x, xTarget) {
 
   map <- .getDownscaleMap(x, xTarget)
 
-  toolCheck("Land High Res input", {
-    mTarget <- as.magpie(xTarget)
-    intersect <- intersect(getItems(mTarget, dim = 1), map$cell)
-    missingInTarget <- (length(map$cell) - length(intersect)) / length(map$cell)
-    if (missingInTarget > 0) {
-      map <- map[map$cell %in% intersect, ]
-      message <- paste0(round(missingInTarget * 100, 2),
-                        "% of cells missing in target data and thus removed from input data!")
-      toolStatusMessage("!", message)
-    }  else {
-      toolStatusMessage("\u2713", "input data area is fully covered by target data")
-    }
+  mTarget <- as.magpie(xTarget)
+  intersect <- intersect(getItems(mTarget, dim = 1), map$cell)
+  missingInTarget <- (length(map$cell) - length(intersect)) / length(map$cell)
+  if (missingInTarget > 0) {
+    map <- map[map$cell %in% intersect, ]
+    message <- paste0(round(missingInTarget * 100, 2),
+                      "% of cells missing in target data and thus removed from input data!")
+    toolStatusMessage("!", message)
+  }  else {
+    toolStatusMessage("\u2713", "input data area is fully covered by target data")
+  }
 
-    missingInX <- (dim(mTarget)[1] - length(intersect)) / dim(mTarget)[1]
-    if (missingInX > 0) {
-      mTarget <- mTarget[intersect, , ]
-      message <- paste0(round(missingInX * 100, 2),
-                        "% of cells missing in input data and thus removed from target data!")
-      toolStatusMessage("!", message)
-    } else {
-      toolStatusMessage("\u2713", "target data area is fully covered by input data")
-    }
-  })
+  missingInX <- (dim(mTarget)[1] - length(intersect)) / dim(mTarget)[1]
+  if (missingInX > 0) {
+    mTarget <- mTarget[intersect, , ]
+    message <- paste0(round(missingInX * 100, 2),
+                      "% of cells missing in input data and thus removed from target data!")
+    toolStatusMessage("!", message)
+  } else {
+    toolStatusMessage("\u2713", "target data area is fully covered by input data")
+  }
 
   "!# @monitor luscale::interpolate2"
 
