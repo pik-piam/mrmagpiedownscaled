@@ -3,11 +3,11 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2",
                                   method = "extrapolateFade") {
   # could try to harmonize fertilizer data using relative values (kg ha-1 yr-1) instead of absolute values (kg yr-1)
 
-  input <- toolAddCheckReport(calcOutput("NonlandHarmonizedCategories", input = input, aggregate = FALSE))
+  input <- calcOutput("NonlandHarmonizedCategories", input = input, aggregate = FALSE)
   geometry <- attr(input, "geometry")
   crs <- attr(input, "crs")
 
-  target <- toolAddCheckReport(calcOutput("NonlandTargetData", target = target, aggregate = FALSE))
+  target <- calcOutput("NonlandTargetData", target = target, aggregate = FALSE)
   # bring target data to spatial resolution of input data
   ref    <- as.SpatVector(input[, 1, 1])[, c(".region", ".id")]
   shareCategories <- c("rndwd", "fulwd")
@@ -36,16 +36,14 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2",
   attr(out, "geometry") <- geometry
   attr(out, "crs")      <- crs
 
-  toolCheck("Nonland Harmonized output", {
-    toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
-    toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
-    toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
-    toolExpectTrue(setequal(getItems(out, dim = 3), getItems(input, dim = 3)), "Nonland categories remain unchanged")
-    toolExpectTrue(all(out >= 0), "All values are >= 0")
-    toolExpectTrue(all(out[, , shareCategories] <= 1.0001), "All shares are <= 1")
-  })
+  # checks
+  toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
+  toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
+  toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
+  toolExpectTrue(setequal(getItems(out, dim = 3), getItems(input, dim = 3)), "Nonland categories remain unchanged")
+  toolExpectTrue(all(out >= 0), "All values are >= 0")
+  toolExpectTrue(all(out[, , shareCategories] <= 1.0001), "All shares are <= 1")
 
-  attr(out, "toolCheck") <- toolCheckReport(filter = TRUE)
   return(list(x = out,
               class = "magpie",
               isocountries = FALSE,
