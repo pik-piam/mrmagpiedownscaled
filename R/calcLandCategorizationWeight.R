@@ -79,23 +79,21 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
   attr(out, "geometry") <- geometry
 
   # check data for consistency
-  toolCheck("Land Categorization Weight output", {
-    toolExpectTrue(identical(unname(getSets(out)[1]), "id"), "Dimensions are named correctly")
-    toolExpectTrue(setequal(getItems(out, dim = 3), map$merge), "Land categories match merged categories")
-    toolExpectTrue(all(out >= 10^-10), "All values are >= 10^-10")
-    .dummyCols <- function(x) {
-      dummy <- magpply(x, function(x) return(all(x == 10^-10)), 3)
-      dummy <- getItems(dummy, dim = 3)[dummy]
-      if (length(dummy) == 0) {
-        toolStatusMessage("\u2713", "No dummy weights detected")
-      } else {
-        toolStatusMessage("!", paste("Following categories contain 10^-10 as dummy weight:",
-                                     paste(dummy, collapse = ", ")))
-      }
+  toolExpectTrue(identical(unname(getSets(out)[1]), "id"), "Dimensions are named correctly")
+  toolExpectTrue(setequal(getItems(out, dim = 3), map$merge), "Land categories match merged categories")
+  toolExpectTrue(all(out >= 10^-10), "All values are >= 10^-10")
+  .dummyCols <- function(x) {
+    dummy <- magpply(x, function(x) return(all(x == 10^-10)), 3)
+    dummy <- getItems(dummy, dim = 3)[dummy]
+    if (length(dummy) == 0) {
+      toolStatusMessage("\u2713", "No dummy weights detected")
+    } else {
+      toolStatusMessage("!", paste("Following categories contain 10^-10 as dummy weight:",
+                                   paste(dummy, collapse = ", ")))
     }
-    .dummyCols(out)
-  })
-  attr(out, "toolCheck") <- toolCheckReport(filter = TRUE)
+  }
+  .dummyCols(out)
+
   return(list(x = out,
               isocountries = FALSE,
               unit = "ha",

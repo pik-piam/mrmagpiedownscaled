@@ -1,7 +1,6 @@
 fullRESCUE <- function() {
-  options(toolCheck = NULL) # nolint: undesirable_function_linter
 
-  x <- toolAddCheckReport(calcOutput("LandReport", project = "RESCUE", aggregate = FALSE))
+  x <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)
   # TODO move this into calcLandReport when netcdf & SpatRasterDataset can be cached
   # fill years, write one .nc file for each category to prevent memory issues
   todisk <- terra::terraOptions(print = FALSE)$todisk
@@ -39,7 +38,7 @@ fullRESCUE <- function() {
 
   unlink(paste0(c(statesCategories, managementCategories), ".nc"))
 
-  report <- unlist(toolCheckReport(), use.names = FALSE)
-  cat(report, sep = "\n")
+  report <- yaml::as.yaml(getMadratMessage("status"))
+  cat(report)
   writeLines(report, "report.log")
 }
