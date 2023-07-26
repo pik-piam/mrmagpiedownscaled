@@ -14,7 +14,7 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2",
   stopifnot(setequal(getItems(input, 3), getItems(target, 3)))
   target <- target[, , getItems(input, 3)] # harmonize order of dim 3
 
-  # checks
+  # checks and corrections
   inSum <- dimSums(input, dim = 3)
   tSum <- dimSums(target, dim = 3)
   toolExpectLessDiff(inSum, inSum[, 1, ], 10^-5, "Total areas in input stay constant over time")
@@ -23,8 +23,8 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2",
   if (max(abs(inSum[, 1, ] - tSum[, 1, ])) >= 10^-5) {
     corr <- setYears(dimSums(target[, 1, ], dim = 3) / dimSums(input[, 1, ], dim = 3), NULL)
     input <- input * corr
-    vcat(1, "[!] input data multiplied with correction factors to match target areas (max ratio = ",
-         round(max(corr), 2), ", min ratio = ", round(min(corr), 2),  ")", show_prefix = FALSE)
+    toolStatusMessage("warn", paste0("input data multiplied with correction factors to match target areas (max ratio = ",
+         round(max(corr), 2), ", min ratio = ", round(min(corr), 2),  ")"))
   }
 
   harmonizer <- toolGetHarmonizer(method)
