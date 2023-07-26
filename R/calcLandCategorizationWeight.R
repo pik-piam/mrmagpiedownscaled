@@ -88,7 +88,7 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
     if (length(dummy) == 0) {
       toolStatusMessage("ok", "No dummy weights detected", level = 1)
     } else {
-      if(length(dummy) > 3) dummy <- c(dummy[1:3], "..")
+      if (length(dummy) > 3) dummy <- c(dummy[1:3], "..")
       toolStatusMessage("warn", paste("Some categories contain dummy weight 10^-10:",
                                       paste(dummy, collapse = ", ")), level = 1)
     }
