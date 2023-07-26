@@ -1,3 +1,5 @@
+# Jan
+
 toolLandCategoriesMapping <- function(input, target) {
   .getMap <- function(x) {
     if (x == "magpie") {

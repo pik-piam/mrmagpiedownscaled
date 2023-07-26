@@ -1,3 +1,5 @@
+# Pascal
+
 toolHarmonizeFade <- function(input, target, harmonizeYear, finalYear) {
   inputYears <- getYears(input, as.integer = TRUE)
   targetYears <- getYears(target, as.integer = TRUE)

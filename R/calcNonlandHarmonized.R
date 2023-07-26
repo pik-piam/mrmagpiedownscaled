@@ -1,3 +1,4 @@
+
 calcNonlandHarmonized <- function(input = "magpie", target = "luh2",
                                   harmonizeYear = 2015, finalYear = 2050,
                                   method = "extrapolateFade") {

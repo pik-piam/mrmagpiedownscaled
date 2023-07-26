@@ -1,3 +1,5 @@
+# Pascal
+
 convertLUH2v2h <- function(x, subtype = "states") {
   if (subtype != "states") {
     stop("Pass convert = FALSE when subtype != states.")

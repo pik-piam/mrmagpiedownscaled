@@ -1,3 +1,5 @@
+# Pascal
+
 calcLandTargetData <- function(target = "luh2") {
   if (target == "luh2") {
     cropTypes <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per")

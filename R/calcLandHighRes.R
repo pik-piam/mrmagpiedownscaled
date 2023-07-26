@@ -1,3 +1,5 @@
+# Pascal
+
 calcLandHighRes <- function(input = "magpie", target = "luh2", downscaling = "magpieClassic") {
   x <- calcOutput("LandHarmonized", input = input, target = target, aggregate = FALSE)
   xTarget <- calcOutput("LandTargetData", target = target, aggregate = FALSE)
