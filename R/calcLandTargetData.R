@@ -62,7 +62,7 @@ calcLandTargetData <- function(target = "luh2") {
     stop("Unsupported output type \"", target, "\"")
   }
 
-  #checks
+  # checks
   toolExpectTrue(terra::crs(out) != "", "Data contains CRS information")
   map <- toolLandCategoriesMapping(input = "magpie", target = target)
   toolExpectTrue(setequal(sub("y[0-9]+\\.\\.", "", names(out)), map$dataOutput),
