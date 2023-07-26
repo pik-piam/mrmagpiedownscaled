@@ -1,3 +1,5 @@
+# Pascal
+
 readLUH2v2h <- function(subtype = "states", subset = seq(1995, 2015, 5)) {
   if (subtype == "cellArea") {
     cellArea <- terra::rast("staticData_quarterdeg.nc", "carea")

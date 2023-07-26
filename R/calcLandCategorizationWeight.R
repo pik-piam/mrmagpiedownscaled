@@ -1,3 +1,5 @@
+# Jan
+
 calcLandCategorizationWeight <- function(map, geometry, crs) {
   .getTarget <- function(geometry, crs) {
     target <- new.magpie(names(geometry), sets = c("id", "temporal", "data"))

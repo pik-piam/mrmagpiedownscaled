@@ -1,3 +1,5 @@
+# Pascal
+
 toolFillYearsSpatRaster <- function(x, years = NULL) {
   stopifnot(grepl("^y[0-9]{4}\\.\\.", names(x)[[1]]))
   category <- sub("^y[0-9]{4}\\.\\.", "", names(x)[[1]])

@@ -1,3 +1,5 @@
+# Jan
+
 calcTransitionsHighRes <- function(input = "magpie", target = "luh2", diffYears = c(1995, 2000, 2005, 2010)) {
 
   if (length(diffYears) < 2) stop("At least two time steps required to be able to compute transistions")
