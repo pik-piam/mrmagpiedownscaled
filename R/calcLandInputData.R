@@ -1,3 +1,5 @@
+# Pascal
+
 calcLandInputData <- function(input = "magpie") {
   if (input == "magpie") {
     land <- readSource("Magpie")

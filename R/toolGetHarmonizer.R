@@ -1,3 +1,5 @@
+# Pascal
+
 toolGetHarmonizer <- function(harmonizerName) {
   harmonizers <- list(offset = toolHarmonizeOffset,
                       fade = toolHarmonizeFade,

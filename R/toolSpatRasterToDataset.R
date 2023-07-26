@@ -1,3 +1,5 @@
+# Pascal
+
 toolSpatRasterToDataset <- function(x) {
   stopifnot(grepl("^y[0-9]+\\.\\.", names(x)))
   varnames <- unique(sub("^y[0-9]+\\.\\.", "", names(x)))

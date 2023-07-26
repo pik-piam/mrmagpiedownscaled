@@ -1,3 +1,5 @@
+# Jan
+
 toolHarmonizeExtrapolateFade <- function(input, target, harmonizeYear, finalYear) {
   # extrapolate target data till finalYear and afterwards fade from one dataset to the other
   inputYears <- getYears(input, as.integer = TRUE)
