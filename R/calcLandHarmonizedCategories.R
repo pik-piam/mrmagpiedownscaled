@@ -24,5 +24,5 @@ calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
               isocountries = FALSE,
               unit = "Mha",
               min = 0,
-              description = "Input data with land categories remapped to categories of target data set"))
+              description = "Input data with land categories remapped to categories of target dataset"))
 }

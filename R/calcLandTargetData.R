@@ -1,5 +1,11 @@
-# Pascal
-
+#' calcLandTargetData
+#'
+#' Prepare the high resolution target land use dataset for
+#' harmonization and downscaling, checking data for consistency before returning.
+#'
+#' @param target name of the target dataset, currently only "luh2"
+#' @return land target data
+#' @author Pascal Führlich
 calcLandTargetData <- function(target = "luh2") {
   if (target == "luh2") {
     cropTypes <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per")

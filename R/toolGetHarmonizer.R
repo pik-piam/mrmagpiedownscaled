@@ -1,5 +1,10 @@
-# Pascal
-
+#' toolGetHarmonizer
+#'
+#' Get a harmonizer function by name.
+#'
+#' @param harmonizerName name of a harmonizer function, currently offset, fade, extrapolateFade
+#' @return harmonizer function
+#' @author Pascal Führlich
 toolGetHarmonizer <- function(harmonizerName) {
   harmonizers <- list(offset = toolHarmonizeOffset,
                       fade = toolHarmonizeFade,

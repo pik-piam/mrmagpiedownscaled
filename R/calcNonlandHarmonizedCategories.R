@@ -1,3 +1,12 @@
+#' calcNonlandHarmonizedCategories
+#'
+#' Harmonize categories by mapping nonland input data categories to the categories of the nonland target dataset.
+#' See \code{\link{calcLandHarmonizedCategories}} for an explanation of the mapping procedure.
+#'
+#' @param input name of the input dataset, currently only "magpie"
+#' @param target name of the target dataset, currently only "luh2"
+#' @return nonland data with target categories
+#' @author Pascal Führlich
 calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
   x <- calcOutput("NonlandInputData", input = input, aggregate = FALSE)
 
@@ -35,5 +44,5 @@ calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
               isocountries = FALSE,
               unit = "rndwd, fulwd: 1; *_fertilizer: kg yr-1",
               min = 0,
-              description = "Input data with nonland categories remapped to categories of target data set"))
+              description = "Input data with nonland categories remapped to categories of target dataset"))
 }

@@ -1,5 +1,13 @@
-# Pascal
-
+#' calcLandInputData
+#'
+#' Prepare the land input data for the category mapping, checking data for consistency before returning.
+#' All "Land" functions deal with area data, as opposed to "Nonland" functions which deal with non-area
+#' data such as the amount of applied fertilizer. These are treated differently, because for area
+#' data other constraints apply, e.g. the total area must be constant over time.
+#'
+#' @param input name of an input dataset, currently only "magpie"
+#' @return land input data
+#' @author Jan Philipp Dietrich, Pascal Führlich
 calcLandInputData <- function(input = "magpie") {
   if (input == "magpie") {
     land <- readSource("Magpie")

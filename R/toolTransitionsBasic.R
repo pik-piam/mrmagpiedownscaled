@@ -1,11 +1,11 @@
 #' toolTransitionsBasic
 #'
 #' tool function to extract net transitions between categories from a land
-#' data set with at least 2 time steps. The approach is rather simplistic by
+#' dataset with at least 2 time steps. The approach is rather simplistic by
 #' assuming that expansion happens proportionally in all affected classes (equal
 #' preference of transistions across all categories).
 #'
-#' @param x magpie data set containing land data with at least two time steps
+#' @param x magpie dataset containing land data with at least two time steps
 #' to extract net transitions from
 #' @author Jan Philipp Dietrich
 
