@@ -33,7 +33,7 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2",
   attr(out, "geometry") <- geometry
   attr(out, "crs")      <- crs
 
-  #checks
+  # checks
   toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
   toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
   toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
