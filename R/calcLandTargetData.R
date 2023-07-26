@@ -52,11 +52,17 @@ calcLandTargetData <- function(target = "luh2") {
     }
     out <- do.call(c, out)
     terra::time(out, tstep = "years") <- as.integer(substr(names(out), 2, 5))
+
+    if ("" %in% terra::sources(out) && any(terra::sources(out) != "")) {
+      # cannot cache SpatRaster with both in memory and out of memory sources,
+      # so write `out` to a tif file to get SpatRaster with a single source (the tif file)
+      out <- terra::writeRaster(out, file = withr::local_tempfile(fileext = ".tif"))
+    }
   } else {
     stop("Unsupported output type \"", target, "\"")
   }
 
-  #checks
+  # checks
   toolExpectTrue(terra::crs(out) != "", "Data contains CRS information")
   map <- toolLandCategoriesMapping(input = "magpie", target = target)
   toolExpectTrue(setequal(sub("y[0-9]+\\.\\.", "", names(out)), map$dataOutput),

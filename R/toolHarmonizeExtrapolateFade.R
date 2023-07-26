@@ -41,7 +41,6 @@ toolHarmonizeExtrapolateFade <- function(input, target, harmonizeYear, finalYear
   out <- convergence(exTarget[, transitionYears, ], input[, transitionYears, ],
                      start_year = harmonizeYear, end_year = finalYear)
   out <- mbind(target[, (getYears(target, as.integer = TRUE) < min(getYears(out, as.integer = TRUE))), ], out,
-                      input[, (getYears(input, as.integer = TRUE) > max(getYears(out, as.integer = TRUE))), ])
+               input[, (getYears(input, as.integer = TRUE) > max(getYears(out, as.integer = TRUE))), ])
   return(out)
-
 }
