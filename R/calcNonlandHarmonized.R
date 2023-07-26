@@ -1,4 +1,17 @@
-
+#' calcNonlandHarmonized
+#'
+#' Harmonize nonland input data to target data using the specified method, checking
+#' data for consistency before returning.
+#'
+#' @param input name of the input dataset, currently only "magpie"
+#' @param target name of the target dataset, currently only "luh2"
+#' @param harmonizeYear start of the harmonization period, years before
+#' this are taken from the target dataset
+#' @param finalYear end of the harmonization period, years after this are
+#' taken from the input dataset
+#' @param method harmonization method, see \code{\link{toolGetHarmonizer}} for available methods
+#' @return harmonized nonland data
+#' @author Pascal Führlich
 calcNonlandHarmonized <- function(input = "magpie", target = "luh2",
                                   harmonizeYear = 2015, finalYear = 2050,
                                   method = "extrapolateFade") {

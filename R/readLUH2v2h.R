@@ -1,5 +1,10 @@
-# Pascal
-
+#' readLUH2v2h
+#'
+#' Read LUH2v2h data. For the states subtype, the secma and secmb categories are removed.
+#' For the management subtype, only the categories crpbf, rndwd, fulwd, fertl and irrig are read.
+#'
+#' @param subtype one of states, management, cellArea
+#' @param subset subset of years to read
 readLUH2v2h <- function(subtype = "states", subset = seq(1995, 2015, 5)) {
   if (subtype == "cellArea") {
     cellArea <- terra::rast("staticData_quarterdeg.nc", "carea")
