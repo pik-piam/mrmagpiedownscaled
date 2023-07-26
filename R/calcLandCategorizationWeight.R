@@ -86,10 +86,10 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
     dummy <- magpply(x, function(x) return(all(x == 10^-10)), 3)
     dummy <- getItems(dummy, dim = 3)[dummy]
     if (length(dummy) == 0) {
-      toolStatusMessage("\u2713", "No dummy weights detected")
+      toolStatusMessage("\u2713", "No dummy weights detected", level = 1)
     } else {
       toolStatusMessage("!", paste("Following categories contain 10^-10 as dummy weight:",
-                                   paste(dummy, collapse = ", ")))
+                                   paste(dummy, collapse = ", ")), level = 1)
     }
   }
   .dummyCols(out)
