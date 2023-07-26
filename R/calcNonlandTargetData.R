@@ -1,3 +1,11 @@
+#' calcNonlandTargetData
+#'
+#' Prepare the high resolution nonland target dataset for
+#' harmonization and downscaling, checking data for consistency before returning.
+#'
+#' @param target name of the target dataset, currently only "luh2"
+#' @return nonland target data
+#' @author Pascal Führlich
 calcNonlandTargetData <- function(target = "luh2") {
   if (target == "luh2") {
     man <- readSource("LUH2v2h", subtype = "management", convert = FALSE)

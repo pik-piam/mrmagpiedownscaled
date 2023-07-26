@@ -1,5 +1,10 @@
-# Pascal
-
+#' toolSpatRasterToDataset
+#'
+#' Convert a SpatRaster to a SpatRasterDataset.
+#'
+#' @param x SpatRaster with names of the form "y[0-9]+..[varname]"
+#' @return SpatRasterDataset
+#' @author Pascal Führlich
 toolSpatRasterToDataset <- function(x) {
   stopifnot(grepl("^y[0-9]+\\.\\.", names(x)))
   varnames <- unique(sub("^y[0-9]+\\.\\.", "", names(x)))

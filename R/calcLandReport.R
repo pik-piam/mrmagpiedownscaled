@@ -1,5 +1,10 @@
-# Pascal
-
+#' calcLandReport
+#'
+#' Convert the downscaled land use data to the format required by the given project.
+#'
+#' @param project name of the project, currently only "RESCUE"
+#' @return land use data
+#' @author Pascal Führlich
 calcLandReport <- function(project = "RESCUE") {
   if (project == "RESCUE") {
     stop("The RESCUE reporting does not work at the moment. We are waiting for the RESCUE check tool.")

@@ -1,7 +1,11 @@
-# Pascal
-
+#' fullRESCUE
+#'
+#' Run the pipeline to generate harmonized and downscaled data to report for the RESCUE project.
+#' Data is calculated for every 5th year, fill years inbetween with linear interpolation.
+#' Write .nc files, print full report on consistency checks and write it to report.log.
+#'
+#' @author Pascal Führlich
 fullRESCUE <- function() {
-
   x <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)
   # TODO move this into calcLandReport when netcdf & SpatRasterDataset can be cached
   # fill years, write one .nc file for each category to prevent memory issues

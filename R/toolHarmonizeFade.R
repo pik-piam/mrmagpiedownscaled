@@ -1,5 +1,19 @@
-# Pascal
-
+#' toolHarmonizeFade
+#'
+#' Harmonize two datasets by fading from one to the other, using the following formula:
+#' .inputFactor(year) * input[, year, ] + (1 - .inputFactor(year)) * target[, year, ]
+#' where .inputFactor is (year - harmonizeYear) / (finalYear - harmonizeYear).
+#' Requires both datasets to have all years including and between harmonizeYear and finalYear,
+#' so it is not suitable for harmonization periods in the future if historical data is used.
+#'
+#' @param input magpie object to fade to, usually model projections
+#' @param target magpie object to fade from, usually historical data, this argument is called "target"
+#' for consistency with argument names of other functions, it is somewhat misleading here,
+#' because data after the finalYear will not be taken from target, but from input
+#' @param harmonizeYear year to start fading, data at and before this year will be taken from target
+#' @param finalYear year to stop fading, data at and after this year will be taken from input
+#' @return magpie object with harmonized data
+#' @author Pascal Führlich
 toolHarmonizeFade <- function(input, target, harmonizeYear, finalYear) {
   inputYears <- getYears(input, as.integer = TRUE)
   targetYears <- getYears(target, as.integer = TRUE)

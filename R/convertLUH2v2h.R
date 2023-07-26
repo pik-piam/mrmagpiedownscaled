@@ -1,5 +1,9 @@
-# Pascal
-
+#' convertLUH2v2h
+#'
+#' Convert LUH2 cell area shares to absolute areas by multiplying with cell area.
+#'
+#' @param x SpatRaster with LUH2 cell area shares
+#' @param subtype only "states" is supported, for other subtypes pass convert = FALSE
 convertLUH2v2h <- function(x, subtype = "states") {
   if (subtype != "states") {
     stop("Pass convert = FALSE when subtype != states.")

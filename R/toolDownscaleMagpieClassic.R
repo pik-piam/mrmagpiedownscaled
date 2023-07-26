@@ -3,10 +3,10 @@
 #' classic MAgPIE downscaling method using \code{luscale::interpolate2} as
 #' downscaling function.
 #'
-#' @param x magpie data set containing land to be downscaled
-#' @param xTarget target land use data set as SpatRaster for initialization year
+#' @param x magpie dataset containing land to be downscaled
+#' @param xTarget target land use dataset as SpatRaster for initialization year
+#' @return downscaled land use dataset
 #' @author Jan Philipp Dietrich
-
 toolDownscaleMagpieClassic <- function(x, xTarget) {
 
   .getDownscaleMap <- function(x, xTarget) {

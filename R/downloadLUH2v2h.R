@@ -1,5 +1,11 @@
-# Pascal
-
+#' downloadLUH2v2h
+#'
+#' Download the LUH2v2h dataset (states.nc, transitions.nc,
+#' management.nc, staticData_quarterdeg.nc).
+#'
+#' @param subtype ignored, exists for technical reasons
+#' @return metadata list with URL, DOI, title, description, author, unit, version, release date
+#' @author Pascal Führlich
 downloadLUH2v2h <- function(subtype = NULL) {
   fileNames <- c("states.nc",
                  "transitions.nc",

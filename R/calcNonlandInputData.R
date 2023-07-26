@@ -1,3 +1,14 @@
+#' calcNonlandInputData
+#'
+#' Prepare the nonland input data for category mapping, checking data for consistency before returning.
+#'
+#' All "Land" functions deal with area data, as opposed to "Nonland" functions which deal with non-area
+#' data such as the amount of applied fertilizer. These are treated differently, because for area
+#' data other constraints apply, e.g. the total area must be constant over time.
+#'
+#' @param input name of an input dataset, currently only "magpie"
+#' @return nonland input data
+#' @author Pascal Führlich
 calcNonlandInputData <- function(input = "magpie") {
   if (input == "magpie") {
     wood <- readSource("Magpie", subtype = "woodHarvest")
