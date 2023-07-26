@@ -1,4 +1,17 @@
-# Jan
+#' calcLandHarmonized
+#'
+#' This function computes a version of the chosen land input data in the resolution
+#' of the land input data but harmonized to the land use information of the
+#' chosen land target data set (harmonized categories as well as harmonized
+#' transition from historic target data to simulated input data).
+#'
+#' @param input name of the land input source to be used (default "magpie")
+#' @param target name of the land target source to be used (default "luh2")
+#' @param harmonizeYear year in which the transition from target to input
+#' data begins
+#' @param finalYear year in which the transition shall be completed
+#' @param method transitioning method (default "extrapolateFade")
+#' @author  Pascal Führlich, Jan Philipp Dietrich
 
 calcLandHarmonized <- function(input = "magpie", target = "luh2",
                                harmonizeYear = 2015, finalYear = 2050,
