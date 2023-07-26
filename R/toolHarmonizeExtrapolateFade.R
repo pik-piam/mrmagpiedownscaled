@@ -1,4 +1,23 @@
-# Jan
+#' toolHarmonizeExtrapolateFade
+#'
+#' Tool function for creating a harmonized land data set with a smooth transistion
+#' from historic target data to simulated input data.
+#'
+#' A smooth transition is achieved in 2 steps: 1) extrapolating the target data
+#' into the future so that it covers the whole transition period and 2) fade
+#' over from the extrapolated target data to the input data.
+#'
+#' Extrapolation of target data is achieved by taking the historically observed
+#' growth rates of the different land categories, dampen them (to avoid overestimation
+#' of trends), apply them into the future and finally normalize the result
+#' to the total area of each spatial entity.
+#'
+#' @param input name of the land input source to be used (default "magpie")
+#' @param target name of the land target source to be used (default "luh2")
+#' @param harmonizeYear year in which the transition from target to input
+#' data begins
+#' @param finalYear year in which the transition shall be completed
+#' @author Jan Philipp Dietrich
 
 toolHarmonizeExtrapolateFade <- function(input, target, harmonizeYear, finalYear) {
   # extrapolate target data till finalYear and afterwards fade from one dataset to the other

@@ -1,5 +1,16 @@
-# Jan
-
+#' toolLandCategoriesMapping
+#'
+#' Computes a land category mapping between input and target data set via
+#' retrieving mappings from these sources to an internally defined
+#' reference categorization and merging them to a direct input-to-target
+#' mapping.
+#' Mappings to reference categories are stored internally in the package and
+#' have to be added to it if new input and/or target data should be supported.
+#'
+#' @param input name of the land input source to be used (default "magpie")
+#' @param target name of the land target source to be used (default "luh2")
+#' @author Jan Philipp Dietrich
+#'
 toolLandCategoriesMapping <- function(input, target) {
   .getMap <- function(x) {
     if (x == "magpie") {

@@ -1,4 +1,17 @@
-# Jan
+#' calcLandHarmonizedCategories
+#'
+#' Computes the land input data in target land categories. Splitting of land
+#' categories is performed under use of internal land weights reflecting the
+#' prevalence of a certain land category in the given area.
+#'
+#' Mapping from input to target categories is achieve via a merge of a land input
+#' mapping to reference categories and a mapping between land target categories and
+#' the same reference categories. Thereby a new source or new target can be supported
+#' by supplying a map of that new input and/or target to the reference categories.
+#'
+#' @param input name of the land input source to be used (default "magpie")
+#' @param target name of the land target source to be used (default "luh2")
+#' @author Jan Philipp Dietrich
 
 calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
   x   <- calcOutput("LandInputData", input = input, aggregate = FALSE)
