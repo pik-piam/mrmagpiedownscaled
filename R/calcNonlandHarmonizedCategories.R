@@ -21,7 +21,23 @@ calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
   # get weights for disaggregation to reference categories
   ref <- calcOutput("LandCategorizationWeight", map = map, geometry = attr(x, "geometry"),
                     crs = attr(x, "crs"), aggregate = FALSE)
+
+  # sum up weights for irrigated/rainfed
+  irrigatedNames <- grep("irrigated", getItems(ref, 3), value = TRUE)
+  rainfedNames <- gsub("irrigated", "rainfed", irrigatedNames)
+  irrigated <- ref[, , irrigatedNames]
+  getItems(irrigated, 3) <- gsub("_irrigated", "", irrigatedNames)
+  rainfed <- ref[, , rainfedNames]
+  getItems(rainfed, 3) <- gsub("_rainfed", "", rainfedNames)
+  ref <- mbind(ref[, , c(irrigatedNames, rainfedNames), invert = TRUE], irrigated + rainfed)
+  stopifnot(!grepl("irrigated|rainfed", getItems(ref, 3)))
+
+  map$reference <- sub(", irrigated", "", map$reference)
+  map$dataInput <- sub("_irrigated", "", map$dataInput)
+  map$dataOutput <- sub("_irrigated", "", map$dataOutput)
+  map$merge <- gsub("_irrigated", "", map$merge)
   map <- map[map$dataInput %in% getItems(x, 3), ]
+
   ref <- ref[, , unique(map$merge)]
   y   <- toolAggregate(x, map, dim = 3, from = "dataInput", to = "merge", weight = ref)
   out <- toolAggregate(y, map, dim = 3, from = "merge",     to = "dataOutput")
