@@ -7,7 +7,7 @@
 #' @author Pascal Führlich
 fullRESCUE <- function() {
   x <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)
-  # TODO move this into calcLandReport when netcdf & SpatRasterDataset can be cached
+  # move this into calcLandReport when netcdf & SpatRasterDataset can be cached
   # fill years, write one .nc file for each category to prevent memory issues
   todisk <- terra::terraOptions(print = FALSE)$todisk
   withr::defer({
@@ -33,7 +33,6 @@ fullRESCUE <- function() {
   terra::writeCDF(states, "magpie_luh_states.nc", compress = 4)
   gc()
 
-  # TODO test this management reporting
   managementCategories <- c("crpbf_c3per", "crpbf_c4per")
   management <- terra::rast(paste0(managementCategories, ".nc"))
   names(management) <- paste0("y", terra::time(management), "..", sub("_[0-9]+$", "", names(management)))
