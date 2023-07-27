@@ -32,8 +32,16 @@ readMagpie <- function(subtype = "land") {
                 unit = "Mha",
                 description = "Crop land information separated by irrigated/rainfed computed by MAgPIE"))
   } else if (subtype == "woodHarvest") {
-    # TODO check endogenous forest was active when creating fulldata.gdx
-    x <- magpie4::TimberProductionVolumetric(gdx, level = "cell", sumSource = TRUE, sumProduct = FALSE)
+    tryCatch({
+      x <- magpie4::TimberProductionVolumetric(gdx, level = "cell", sumSource = TRUE, sumProduct = FALSE)
+    }, message = function(msg) {
+      if (grepl("Missing timber production", msg$message)) {
+        stop("Cannot read wood harvest from fulldata.gdx. Try using fulldata.gdx ",
+             "from a magpie run with endogenous forestry enabled (use scripts/start/forestry.R).")
+      } else {
+        message(message)
+      }
+    })
     x <- magpie4::addGeometry(x, clustermap)
     getSets(x) <- c("region", "id", "year", "data")
 
