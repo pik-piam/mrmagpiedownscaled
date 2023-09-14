@@ -13,7 +13,7 @@ calcLandReport <- function(project = "RESCUE") {
 
     # calc irrigation shares
     cropTypes <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per")
-    out <- do.call(mbind, lapply(cropTypes, function(cropType) {
+    cropData <- do.call(mbind, lapply(cropTypes, function(cropType) {
       x <- native[, , grep(cropType, getItems(native, 3))]
       total <- dimSums(x, dim = 3)
 
@@ -38,6 +38,11 @@ calcLandReport <- function(project = "RESCUE") {
       }
       return(combined)
     }))
+
+    nonCropData <- native[, , c("primf", "primn", "secdf", "secdn", "urban", "pastr", "range")]
+    nonCropData <- nonCropData * 10000 / cellArea[getItems(cellArea, 1) %in% getItems(nonCropData, 1), , ]
+
+    out <- mbind(cropData, nonCropData)
 
     stopifnot(!any(is.na(out)))
 
