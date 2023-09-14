@@ -7,44 +7,46 @@
 #' @author Pascal Führlich
 calcLandReport <- function(project = "RESCUE") {
   if (project == "RESCUE") {
-    stop("The RESCUE reporting does not work at the moment. We are waiting for the RESCUE check tool.")
-    x <- calcOutput("LandHighRes", input = "magpie", target = "luh2", aggregate = FALSE)
-
-    # combine c[34]per and c[34]per_biofuel
-    per <- c("c3per", "c4per")
-    nonPer <- c("c3ann", "c4ann", "c3nfx")
-    biofuel1stGen <- magclass::setNames(x[, , paste0(c(per, nonPer), "_biofuel_1st_gen")], c(per, nonPer))
-    biofuel2ndGen <- magclass::setNames(x[, , paste0(per, "_biofuel_2nd_gen")], per)
-    x[, , per] <- x[, , per] + biofuel1stGen[, , per] + biofuel2ndGen
-    x[, , nonPer] <- x[, , nonPer] + biofuel1stGen[, , nonPer]
-
-    # crpbf_c[34]per = biofuel share of c[34]per
-    biofuel <- x[, , grep("biofuel", getItems(x, 3))]
-    stopifnot(!is.na(biofuel))
-    biofuel <- biofuel / magclass::setNames(x[, , sub("_.+$", "", getItems(biofuel, 3))], getItems(biofuel, 3))
-    biofuel[is.na(biofuel)] <- 0 # replace NAs introduced by 0 / 0
-    biofuel <- magclass::setNames(biofuel, paste0("crpbf_", sub("biofuel_", "", getItems(biofuel, 3))))
-
-    x <- x[, , getItems(biofuel, 3), invert = TRUE]
-
-    # convert to share of cell area
-    stopifnot(" unit: Mha" %in% comment(x))
+    native <- calcOutput("LandHighRes", input = "magpie", target = "luh2", aggregate = FALSE)
     cellArea <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
-    cellArea <- as.magpie(cellArea)
-    cellArea <- cellArea[getItems(cellArea, 1) %in% getItems(x, 1), , ]
-    cellArea <- collapseDim(cellArea, 3)
-    # multiply by 10000 to convert from Mha to km2, divide by cellArea to get shares
-    x <- x * 10000 / cellArea
+    cellArea <- collapseDim(as.magpie(cellArea), 3)
 
-    x <- mbind(x, biofuel)
+    # calc irrigation shares
+    cropTypes <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per")
+    out <- do.call(mbind, lapply(cropTypes, function(cropType) {
+      x <- native[, , grep(cropType, getItems(native, 3))]
+      total <- dimSums(x, dim = 3)
 
-    return(list(x = x,
+      irrigationShare <- dimSums(x[, , grep("irrigated", getItems(x, 3))], dim = 3) / total
+      getNames(irrigationShare) <- paste0("irrig_", cropType)
+      irrigationShare[total == 0] <- 0 # replace NAs introduced by 0 / 0
+
+      biofuel1stGenShare <- dimSums(x[, , grep("biofuel_1st_gen", getItems(x, 3))], dim = 3) / total
+      getNames(biofuel1stGenShare) <- paste0("crpbf_", cropType)
+      biofuel1stGenShare[total == 0] <- 0 # replace NAs introduced by 0 / 0
+
+      # multiply by 10000 to convert from Mha to km2, divide by cellArea to get shares
+      cellAreaShare <- total * 10000 / cellArea[getItems(cellArea, 1) %in% getItems(x, 1), , ]
+      getNames(cellAreaShare) <- cropType
+
+      combined <- mbind(irrigationShare, biofuel1stGenShare, cellAreaShare)
+      if (any(grepl("biofuel_2nd_gen", getItems(x, 3)))) {
+        biofuel2ndGenShare <- dimSums(x[, , grep("biofuel_2nd_gen", getItems(x, 3))], dim = 3) / total
+        getNames(biofuel2ndGenShare) <- paste0("crpbf2_", cropType)
+        biofuel2ndGenShare[total == 0] <- 0 # replace NAs introduced by 0 / 0
+        combined <- mbind(combined, biofuel2ndGenShare)
+      }
+      return(combined)
+    }))
+
+    stopifnot(!any(is.na(out)))
+
+    return(list(x = out,
                 isocountries = FALSE,
                 unit = "1",
                 min = 0,
                 max = 1.0001,
-                description = paste("MAgPIE land use data downscaled to LUH2 resolution,",
-                                    "unit: share of cell area")))
+                description = "MAgPIE land use data downscaled to LUH2 resolution"))
   } else {
     stop("Can only report for project = 'RESCUE'")
   }
