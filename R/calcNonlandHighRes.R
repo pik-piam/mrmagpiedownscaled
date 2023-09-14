@@ -25,7 +25,7 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2", downscaling = 
 
   return(list(x = out,
               isocountries = FALSE,
-              unit = "Mha",
+              unit = "rndwd, fulwd: 1, *_fertilizer: kg yr-1",
               min = 0,
               description = "Downscaled nonland data"))
 }
