@@ -47,7 +47,7 @@ calcNonlandInputData <- function(input = "magpie") {
 
   return(list(x = out,
               isocountries = FALSE,
-              unit = "rndwd, fulwd: 1, *_fertilizer: kg yr-1",
+              unit = "rndwd, fulwd: 1; *_fertilizer: kg yr-1",
               min = 0,
               description = "Nonland input data for data harmonization and downscaling pipeline"))
 }

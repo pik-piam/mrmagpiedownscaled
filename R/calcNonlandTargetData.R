@@ -21,7 +21,7 @@ calcNonlandTargetData <- function(target = "luh2") {
     return(list(x = out,
                 class = "SpatRaster",
                 cache = FALSE,
-                unit = "rndwd, fulwd: 1, fertl_*: kg yr-1",
+                unit = "rndwd, fulwd: 1; fertl_*: kg yr-1",
                 description = "Nonland target data for data harmonization"))
   } else {
     stop("Unsupported output type \"", target, "\"")
