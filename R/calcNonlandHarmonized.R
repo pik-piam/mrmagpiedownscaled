@@ -24,7 +24,7 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2",
   target <- calcOutput("NonlandTargetData", target = target, aggregate = FALSE)
   # bring target data to spatial resolution of input data
   ref    <- as.SpatVector(input[, 1, 1])[, c(".region", ".id")]
-  shareCategories <- c("rndwd", "fulwd")
+  shareCategories <- c("rndwd", "fulwd") # TODO combf is also a share of wood harvest -> needed so it sums to 1
   nonShareCategories <- "fertilizer"
   stopifnot(grepl(paste(c(shareCategories, nonShareCategories), collapse = "|"), names(target)))
   targetNonShare <- terra::extract(target[nonShareCategories], ref, sum, na.rm = TRUE, bind = TRUE)
@@ -61,7 +61,7 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2",
   return(list(x = out,
               class = "magpie",
               isocountries = FALSE,
-              unit = "rndwd, fulwd: 1, *_fertilizer: kg yr-1",
+              unit = "rndwd, fulwd: 1; *_fertilizer: kg yr-1",
               min = 0,
               description = "Harmonized nonland data"))
 }

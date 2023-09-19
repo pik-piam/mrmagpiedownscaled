@@ -39,9 +39,6 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2") {
   })
   downscaledFertilizer <- do.call(c, downscaledFertilizer)
   out <- as.magpie(downscaledFertilizer)
-
-  # TODO rndwd and fulwd
-
   return(list(x = out,
               isocountries = FALSE,
               unit = "*_fertilizer: kg yr-1",

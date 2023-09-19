@@ -16,11 +16,9 @@ calcNonlandReport <- function(project = "RESCUE") {
     x <- x / (cellArea[getItems(x, 1), , ] * 100) # divide by cell area in ha (*100 to convert from km2 to ha)
     getNames(x) <- sub("^(.+)_fertilizer$", "fertl_\\1", getNames(x))
 
-    # TODO report fulwd & rndwd
-
     return(list(x = x,
                 isocountries = FALSE,
-                unit = "rndwd, fulwd: 1, fertl_*: kg ha-1 yr-1",
+                unit = "fertl_*: kg ha-1 yr-1",
                 min = 0,
                 description = "Downscaled nonland data report for RESCUE"))
   } else {
