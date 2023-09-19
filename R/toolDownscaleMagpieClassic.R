@@ -50,7 +50,10 @@ toolDownscaleMagpieClassic <- function(x, xTarget) {
 
   "!# @monitor luscale::interpolate2"
 
-  out <- luscale::interpolate2(x[, -1, ], mTarget[, 1, ], map)
+  # interpolate2 assumes constant total over time, but only warns if unfulfilled, convert that to error
+  withr::with_options(c(warn = 2), {
+    out <- luscale::interpolate2(x[, -1, ], mTarget[, 1, ], map)
+  })
   getSets(out)[1:2] <- c("x", "y")
 
   return(out)
