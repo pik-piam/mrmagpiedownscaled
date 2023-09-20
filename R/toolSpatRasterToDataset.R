@@ -7,6 +7,7 @@
 #' @author Pascal Führlich
 #' @export
 toolSpatRasterToDataset <- function(x) {
+  # remove this function once it is available from magclass
   stopifnot(grepl("^y[0-9]+\\.\\.", names(x)))
   varnames <- unique(sub("^y[0-9]+\\.\\.", "", names(x)))
   datasets <- lapply(varnames, function(varname) x[paste0("\\.\\.", varname, "$")])
