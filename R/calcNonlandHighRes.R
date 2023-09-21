@@ -20,7 +20,7 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2") {
 
     # use latest year of historical data as weight
     weight <- xTarget[[terra::time(xTarget) == max(terra::time(xTarget))]]
-    weight <- weight[paste0(cropType, "_fertilizer")]
+    weight <- weight[paste0(cropType, "_fertilizer")] + 10^-10 # add 10^-10 to prevent weight 0
     names(weight) <- sub("^y[0-9]+\\.\\.", "", names(weight))
 
     # calculate weight sum in each cluster

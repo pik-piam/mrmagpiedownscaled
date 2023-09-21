@@ -15,8 +15,6 @@
 calcNonlandHarmonized <- function(input = "magpie", target = "luh2",
                                   harmonizeYear = 2015, finalYear = 2050,
                                   method = "extrapolateFade") {
-  # could try to harmonize fertilizer data using relative values (kg ha-1 yr-1) instead of absolute values (kg yr-1)
-
   input <- calcOutput("NonlandHarmonizedCategories", input = input, aggregate = FALSE)
   geometry <- attr(input, "geometry")
   crs <- attr(input, "crs")
