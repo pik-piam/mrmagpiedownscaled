@@ -12,7 +12,7 @@ calcNonlandTargetData <- function(target = "luh2") {
 
     # need absolute values for downscaling, fertl_* is in kg ha-1 yr-1, convert to kg yr-1
     cellArea <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
-    fertl <- man["fertl"] * cellArea
+    fertl <- man["fertl"] * (cellArea * 100) # *100 converts cell area from km2 to ha
     terra::units(fertl) <- "kg yr-1"
     names(fertl) <- paste0(sub("fertl_", "", names(fertl)), "_fertilizer")
 

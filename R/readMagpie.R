@@ -55,7 +55,7 @@ readMagpie <- function(subtype = "land") {
     x <- magpie4::addGeometry(x, clustermap)
     getSets(x) <- c("region", "id", "year", "data")
     return(list(x = x,
-                unit = "Tg Nr yr-1",
+                unit = "Tg yr-1",
                 min = 0,
                 description = "fertilization rate per croptype computed by MAgPIE"))
   } else {

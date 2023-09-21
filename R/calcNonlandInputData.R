@@ -22,13 +22,13 @@ calcNonlandInputData <- function(input = "magpie") {
     wood[is.na(wood)] <- 0 # replace NAs introduced by division by zero
 
     fertilizer <- readSource("Magpie", subtype = "fertilizer")
-    # convert from Tg Nr yr-1 to kg yr-1
-    fertilizer <- fertilizer / 10^9
     # clusters without crop area are NA, replace with 0
     fertilizer[is.na(fertilizer)] <- 0
     # there are some negative values very close to zero, replace with 0
     stopifnot(min(fertilizer) >= -10^-10)
     fertilizer[fertilizer < 0] <- 0
+    # convert from Tg yr-1 to kg yr-1
+    fertilizer <- fertilizer * 10^9
     getItems(fertilizer, 3) <- paste0(getItems(fertilizer, 3), "_fertilizer")
 
     out <- mbind(wood, fertilizer)
