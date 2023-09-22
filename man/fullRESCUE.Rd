@@ -4,7 +4,10 @@
 \alias{fullRESCUE}
 \title{fullRESCUE}
 \usage{
-fullRESCUE()
+fullRESCUE(rev = 1)
+}
+\arguments{
+\item{rev}{revision number of the data}
 }
 \description{
 Run the pipeline to generate harmonized and downscaled data to report for the RESCUE project.

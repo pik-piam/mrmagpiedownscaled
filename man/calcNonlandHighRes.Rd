@@ -4,27 +4,20 @@
 \alias{calcNonlandHighRes}
 \title{calcNonlandHighRes}
 \usage{
-calcNonlandHighRes(
-  input = "magpie",
-  target = "luh2",
-  downscaling = "magpieClassic"
-)
+calcNonlandHighRes(input = "magpie", target = "luh2")
 }
 \arguments{
 \item{input}{name of an input dataset, currently only "magpie"}
 
 \item{target}{name of a target dataset, currently only "luh2"}
-
-\item{downscaling}{name of downscaling method, currently only "magpieClassic"}
 }
 \value{
 downscaled nonland data
 }
 \description{
 This function performs the downscaling: It calculates a high resolution dataset
-from the low resolution input dataset and the high resolution target dataset
-using the given downscaling method.
+from the low resolution input dataset and the high resolution target dataset.
 }
 \author{
-Jan Philipp Dietrich
+Pascal Führlich
 }

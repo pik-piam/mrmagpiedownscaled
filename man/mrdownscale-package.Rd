@@ -18,4 +18,9 @@ Useful links:
 \author{
 \strong{Maintainer}: Pascal Führlich \email{pascal.fuehrlich@pik-potsdam.de}
 
+Authors:
+\itemize{
+  \item Jan Philipp Dietrich \email{dietrich@pik-potsdam.de}
+}
+
 }
