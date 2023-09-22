@@ -1,10 +1,12 @@
 Type: Package
 Package: mrdownscale
 Title: Downscale and harmonize MAgPIE output using LUH2 as reference data
-Version: 0.4.3
-Date: 2023-08-11
-Authors@R:
-    person("Pascal", "Führlich", , "pascal.fuehrlich@pik-potsdam.de", role = c("aut", "cre"))
+Version: 0.5.0
+Date: 2023-09-22
+Authors@R: c(
+    person("Pascal", "Führlich", , "pascal.fuehrlich@pik-potsdam.de", role = c("aut", "cre")),
+    person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = "aut")
+  )
 Description: Downscale and harmonize MAgPIE output using LUH2 as reference
     data.
 License: LGPL-3
@@ -18,8 +20,7 @@ Imports:
     magpie4(>= 1.188.0),
     mip,
     terra,
-    withr,
-    yaml
+    withr
 Suggests:
     covr,
     mrcommons,
