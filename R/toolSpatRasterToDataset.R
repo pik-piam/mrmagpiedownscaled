@@ -4,7 +4,7 @@
 #'
 #' @param x SpatRaster with names of the form "y[0-9]+..[varname]"
 #' @return SpatRasterDataset
-#' @author Pascal Führlich
+#' @author Pascal Sauer
 #' @export
 toolSpatRasterToDataset <- function(x) {
   # remove this function once it is available from magclass

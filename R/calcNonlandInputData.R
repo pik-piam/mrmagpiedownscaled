@@ -8,7 +8,7 @@
 #'
 #' @param input name of an input dataset, currently only "magpie"
 #' @return nonland input data
-#' @author Pascal Führlich
+#' @author Pascal Sauer
 calcNonlandInputData <- function(input = "magpie") {
   if (input == "magpie") {
     wood <- readSource("Magpie", subtype = "woodHarvest")

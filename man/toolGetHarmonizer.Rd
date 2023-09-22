@@ -16,5 +16,5 @@ harmonizer function
 Get a harmonizer function by name.
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }

@@ -28,5 +28,5 @@ Requires both datasets to have all years including and between harmonizeYear and
 so it is not suitable for harmonization periods in the future if historical data is used.
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }

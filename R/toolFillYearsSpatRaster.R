@@ -6,7 +6,7 @@
 #' @param years data for these years will be added if they are not already present,
 #' if years is NULL all years between the first and last year in x will be filled
 #' @return SpatRaster with filled years
-#' @author Pascal Führlich
+#' @author Pascal Sauer
 toolFillYearsSpatRaster <- function(x, years = NULL) {
   stopifnot(grepl("^y[0-9]{4}\\.\\.", names(x)[[1]]))
   category <- sub("^y[0-9]{4}\\.\\.", "", names(x)[[1]])

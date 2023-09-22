@@ -5,7 +5,7 @@
 #'
 #' @param target name of the target dataset, currently only "luh2"
 #' @return nonland target data
-#' @author Pascal Führlich
+#' @author Pascal Sauer
 calcNonlandTargetData <- function(target = "luh2") {
   if (target == "luh2") {
     man <- readSource("LUH2v2h", subtype = "management", convert = FALSE)

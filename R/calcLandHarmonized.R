@@ -11,7 +11,7 @@
 #' data begins
 #' @param finalYear year in which the transition shall be completed
 #' @param method transitioning method (default "extrapolateFade")
-#' @author  Pascal Führlich, Jan Philipp Dietrich
+#' @author  Pascal Sauer, Jan Philipp Dietrich
 
 calcLandHarmonized <- function(input = "magpie", target = "luh2",
                                harmonizeYear = 2015, finalYear = 2050,

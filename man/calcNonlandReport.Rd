@@ -16,5 +16,5 @@ nonland data
 Convert the downscaled nonland data to the format required by the given project.
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }

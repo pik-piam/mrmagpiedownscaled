@@ -17,5 +17,5 @@ Prepare the high resolution nonland target dataset for
 harmonization and downscaling, checking data for consistency before returning.
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }

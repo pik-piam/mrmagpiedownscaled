@@ -6,7 +6,7 @@
 #' @param input name of the input dataset, currently only "magpie"
 #' @param target name of the target dataset, currently only "luh2"
 #' @return nonland data with target categories
-#' @author Pascal Führlich
+#' @author Pascal Sauer
 calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
   x <- calcOutput("NonlandInputData", input = input, aggregate = FALSE)
 
