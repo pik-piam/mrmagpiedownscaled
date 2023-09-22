@@ -11,6 +11,7 @@ Description: Downscale and harmonize MAgPIE output using LUH2 as reference
     data.
 License: LGPL-3
 URL: https://github.com/pik-piam/mrdownscale
+BugReports: https://github.com/pik-piam/mrdownscale/issues
 Depends:
     madrat(>= 3.6.0),
     magclass(>= 6.9.1),
