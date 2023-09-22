@@ -4,6 +4,8 @@
 #' Data is calculated for every 5th year, fill years inbetween with linear interpolation.
 #' Write .nc files, print full report on consistency checks and write it to report.log.
 #'
+#' @param rev revision number of the data
+#'
 #' @author Pascal Führlich
 fullRESCUE <- function(rev = 1) {
   land <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)

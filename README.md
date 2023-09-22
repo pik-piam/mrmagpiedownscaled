@@ -1,6 +1,6 @@
 # Downscale and harmonize MAgPIE output using LUH2 as reference data
 
-R package **mrdownscale**, version **0.4.3**
+R package **mrdownscale**, version **0.5.0**
 
 [![CRAN status](https://www.r-pkg.org/badges/version/mrdownscale)](https://cran.r-project.org/package=mrdownscale)  [![R build status](https://github.com/pik-piam/mrdownscale/workflows/check/badge.svg)](https://github.com/pik-piam/mrdownscale/actions) [![codecov](https://codecov.io/gh/pik-piam/mrdownscale/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/mrdownscale) 
 
@@ -39,16 +39,16 @@ In case of questions / problems please contact Pascal Führlich <pascal.fuehrlic
 
 To cite package **mrdownscale** in publications use:
 
-Führlich P (2023). _mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference data_. R package version 0.4.3, <https://github.com/pik-piam/mrdownscale>.
+Führlich P, Dietrich J (2023). _mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference data_. R package version 0.5.0, <https://github.com/pik-piam/mrdownscale>.
 
 A BibTeX entry for LaTeX users is
 
  ```latex
 @Manual{,
   title = {mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference data},
-  author = {Pascal Führlich},
+  author = {Pascal Führlich and Jan Philipp Dietrich},
   year = {2023},
-  note = {R package version 0.4.3},
+  note = {R package version 0.5.0},
   url = {https://github.com/pik-piam/mrdownscale},
 }
 ```
