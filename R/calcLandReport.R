@@ -4,7 +4,7 @@
 #'
 #' @param project name of the project, currently only "RESCUE"
 #' @return land use data
-#' @author Pascal Führlich
+#' @author Pascal Sauer
 calcLandReport <- function(project = "RESCUE") {
   if (project == "RESCUE") {
     native <- calcOutput("LandHighRes", input = "magpie", target = "luh2", aggregate = FALSE)

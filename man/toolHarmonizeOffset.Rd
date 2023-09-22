@@ -25,5 +25,5 @@ Harmonize datasets using the offset method as implemented in mip::harmonize,
 originally implemented in Python as part of aneris.
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }

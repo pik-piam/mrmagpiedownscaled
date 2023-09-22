@@ -31,5 +31,5 @@ chosen land target data set (harmonized categories as well as harmonized
 transition from historic target data to simulated input data).
 }
 \author{
-Pascal Führlich, Jan Philipp Dietrich
+Pascal Sauer, Jan Philipp Dietrich
 }

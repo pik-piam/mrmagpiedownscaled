@@ -17,5 +17,5 @@ Prepare the high resolution target land use dataset for
 harmonization and downscaling, checking data for consistency before returning.
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }

@@ -10,7 +10,7 @@
 #' @param harmonizeYear year to start fading, data at and before this year will be taken from target
 #' @param finalYear year to stop fading, data at and after this year will be taken from input
 #' @return magpie object with harmonized data
-#' @author Pascal Führlich
+#' @author Pascal Sauer
 toolHarmonizeOffset <- function(input, target, harmonizeYear, finalYear) {
   "!# @monitor mip::harmonize"
 

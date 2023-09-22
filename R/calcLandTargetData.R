@@ -5,7 +5,7 @@
 #'
 #' @param target name of the target dataset, currently only "luh2"
 #' @return land target data
-#' @author Pascal Führlich
+#' @author Pascal Sauer
 calcLandTargetData <- function(target = "luh2") {
   if (target == "luh2") {
     cropTypes <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per")

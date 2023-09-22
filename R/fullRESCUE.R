@@ -6,7 +6,7 @@
 #'
 #' @param rev revision number of the data
 #'
-#' @author Pascal Führlich
+#' @author Pascal Sauer
 fullRESCUE <- function(rev = 1) {
   land <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)
 

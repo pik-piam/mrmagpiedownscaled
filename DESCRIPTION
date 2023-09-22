@@ -4,7 +4,7 @@ Title: Downscale and harmonize MAgPIE output using LUH2 as reference data
 Version: 0.5.0
 Date: 2023-09-22
 Authors@R: c(
-    person("Pascal", "Führlich", , "pascal.fuehrlich@pik-potsdam.de", role = c("aut", "cre")),
+    person("Pascal", "Sauer", , "pascal.fuehrlich@pik-potsdam.de", role = c("aut", "cre")),
     person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = "aut")
   )
 Description: Downscale and harmonize MAgPIE output using LUH2 as reference

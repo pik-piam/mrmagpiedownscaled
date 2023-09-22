@@ -21,5 +21,5 @@ data such as the amount of applied fertilizer. These are treated differently, be
 data other constraints apply, e.g. the total area must be constant over time.
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }
