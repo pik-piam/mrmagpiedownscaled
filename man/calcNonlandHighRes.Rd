@@ -19,5 +19,5 @@ This function performs the downscaling: It calculates a high resolution dataset
 from the low resolution input dataset and the high resolution target dataset.
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }

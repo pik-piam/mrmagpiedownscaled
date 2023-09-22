@@ -33,5 +33,5 @@ Harmonize nonland input data to target data using the specified method, checking
 data for consistency before returning.
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }

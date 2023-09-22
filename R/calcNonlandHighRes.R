@@ -6,7 +6,7 @@
 #' @param input name of an input dataset, currently only "magpie"
 #' @param target name of a target dataset, currently only "luh2"
 #' @return downscaled nonland data
-#' @author Pascal Führlich
+#' @author Pascal Sauer
 calcNonlandHighRes <- function(input = "magpie", target = "luh2") {
   xInput <- calcOutput("NonlandHarmonized", input = input, target = target, aggregate = FALSE)
   xTarget <- calcOutput("NonlandTargetData", target = target, aggregate = FALSE)

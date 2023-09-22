@@ -7,7 +7,7 @@ version: 0.5.0
 date-released: '2023-09-22'
 abstract: Downscale and harmonize MAgPIE output using LUH2 as reference data.
 authors:
-- family-names: Führlich
+- family-names: Sauer
   given-names: Pascal
   email: pascal.fuehrlich@pik-potsdam.de
 - family-names: Dietrich

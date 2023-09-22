@@ -19,5 +19,5 @@ Harmonize categories by mapping nonland input data categories to the categories 
 See \code{\link{calcLandHarmonizedCategories}} for an explanation of the mapping procedure.
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }

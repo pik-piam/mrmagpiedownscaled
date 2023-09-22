@@ -33,20 +33,20 @@ update.packages()
 
 ## Questions / Problems
 
-In case of questions / problems please contact Pascal Führlich <pascal.fuehrlich@pik-potsdam.de>.
+In case of questions / problems please contact Pascal Sauer <pascal.fuehrlich@pik-potsdam.de>.
 
 ## Citation
 
 To cite package **mrdownscale** in publications use:
 
-Führlich P, Dietrich J (2023). _mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference data_. R package version 0.5.0, <https://github.com/pik-piam/mrdownscale>.
+Sauer P, Dietrich J (2023). _mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference data_. R package version 0.5.0, <https://github.com/pik-piam/mrdownscale>.
 
 A BibTeX entry for LaTeX users is
 
  ```latex
 @Manual{,
   title = {mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference data},
-  author = {Pascal Führlich and Jan Philipp Dietrich},
+  author = {Pascal Sauer and Jan Philipp Dietrich},
   year = {2023},
   note = {R package version 0.5.0},
   url = {https://github.com/pik-piam/mrdownscale},

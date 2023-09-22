@@ -4,7 +4,7 @@
 #'
 #' @param project name of the project, currently only "RESCUE"
 #' @return nonland data
-#' @author Pascal Führlich
+#' @author Pascal Sauer
 calcNonlandReport <- function(project = "RESCUE") {
   if (project == "RESCUE") {
     x <- calcOutput("NonlandHighRes", input = "magpie", target = "luh2", aggregate = FALSE)
