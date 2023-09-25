@@ -1,4 +1,4 @@
-#' calcNonlandInputData
+#' calcNonlandInput
 #'
 #' Prepare the nonland input data for category mapping, checking data for consistency before returning.
 #'
@@ -9,7 +9,7 @@
 #' @param input name of an input dataset, currently only "magpie"
 #' @return nonland input data
 #' @author Pascal Sauer
-calcNonlandInputData <- function(input = "magpie") {
+calcNonlandInput <- function(input = "magpie") {
   if (input == "magpie") {
     wood <- readSource("Magpie", subtype = "woodHarvest")
     geometry <- attr(wood, "geometry")

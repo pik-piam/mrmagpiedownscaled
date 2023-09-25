@@ -7,7 +7,7 @@
 #' @param rev revision number of the data
 #'
 #' @author Pascal Sauer
-fullRESCUE <- function(rev = 1) {
+fullRESCUE <- function(rev = 2) {
   land <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)
 
   statesVariables <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per", "pastr",
