@@ -14,7 +14,7 @@
 #' @author Jan Philipp Dietrich
 
 calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
-  x   <- calcOutput("LandInputData", input = input, aggregate = FALSE)
+  x   <- calcOutput("LandInput", input = input, aggregate = FALSE)
   map <- toolLandCategoriesMapping(input, target)
 
   # get weights for disaggregation to reference categories

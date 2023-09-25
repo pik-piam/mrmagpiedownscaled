@@ -4,7 +4,7 @@
 \alias{fullRESCUE}
 \title{fullRESCUE}
 \usage{
-fullRESCUE(rev = 1)
+fullRESCUE(rev = 2)
 }
 \arguments{
 \item{rev}{revision number of the data}

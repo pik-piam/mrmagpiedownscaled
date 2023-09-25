@@ -1,4 +1,4 @@
-#' calcLandTargetData
+#' calcLandTarget
 #'
 #' Prepare the high resolution target land use dataset for
 #' harmonization and downscaling, checking data for consistency before returning.
@@ -6,8 +6,8 @@
 #' @param target name of the target dataset, currently only "luh2"
 #' @return land target data
 #' @author Pascal Sauer
-calcLandTargetData <- function(target = "luh2") {
-  if (target == "luh2") {
+calcLandTarget <- function(target = "luh2mod") {
+  if (target %in% c("luh2", "luh2mod")) {
     cropTypes <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per")
 
     states <- readSource("LUH2v2h", subtype = "states")
@@ -65,6 +65,11 @@ calcLandTargetData <- function(target = "luh2") {
       # cannot cache SpatRaster with both in memory and out of memory sources,
       # so write `out` to a tif file to get SpatRaster with a single source (the tif file)
       out <- terra::writeRaster(out, file = withr::local_tempfile(fileext = ".tif"))
+    }
+
+    if (target == "luh2mod") {
+      # TODO disaggregate secdf to secdf & forestry
+      browser()
     }
   } else {
     stop("Unsupported output type \"", target, "\"")

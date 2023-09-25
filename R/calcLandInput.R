@@ -1,4 +1,4 @@
-#' calcLandInputData
+#' calcLandInput
 #'
 #' Prepare the land input data for the category mapping, checking data for consistency before returning.
 #' All "Land" functions deal with area data, as opposed to "Nonland" functions which deal with non-area
@@ -8,7 +8,7 @@
 #' @param input name of an input dataset, currently only "magpie"
 #' @return land input data
 #' @author Jan Philipp Dietrich, Pascal Sauer
-calcLandInputData <- function(input = "magpie") {
+calcLandInput <- function(input = "magpie") {
   if (input == "magpie") {
     land <- readSource("Magpie")
     crop <- readSource("Magpie", subtype = "crop")
