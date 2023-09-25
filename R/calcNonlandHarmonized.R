@@ -19,7 +19,7 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2",
   geometry <- attr(input, "geometry")
   crs <- attr(input, "crs")
 
-  target <- calcOutput("NonlandTargetData", target = target, aggregate = FALSE)
+  target <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
   # bring target data to spatial resolution of input data
   ref <- as.SpatVector(input[, 1, 1])[, c(".region", ".id")]
   shareCategories <- c("rndwd", "fulwd") # combf is also a share of wood harvest -> needed so it sums to 1?

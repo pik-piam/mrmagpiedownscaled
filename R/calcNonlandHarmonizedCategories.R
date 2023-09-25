@@ -8,7 +8,7 @@
 #' @return nonland data with target categories
 #' @author Pascal Sauer
 calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2") {
-  x <- calcOutput("NonlandInputData", input = input, aggregate = FALSE)
+  x <- calcOutput("NonlandInput", input = input, aggregate = FALSE)
 
   # separate categories that need to be mapped from those that don't
   wood <- x[, , c("rndwd", "fulwd")]
