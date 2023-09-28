@@ -12,7 +12,7 @@
 #' @param finalYear year in which the transition shall be completed
 #' @param method transitioning method
 #' @author Pascal Sauer, Jan Philipp Dietrich
-calcLandHarmonized <- function(input = "magpie", target = "luh2",
+calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
                                harmonizeYear = 2015, finalYear = 2050,
                                method = "extrapolateFade") {
   input    <- calcOutput("LandHarmonizedCategories", input = input,

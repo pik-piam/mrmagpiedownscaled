@@ -6,7 +6,7 @@
 \usage{
 calcTransitionsHighRes(
   input = "magpie",
-  target = "luh2",
+  target = "luh2mod",
   diffYears = c(1995, 2000, 2005, 2010)
 )
 }

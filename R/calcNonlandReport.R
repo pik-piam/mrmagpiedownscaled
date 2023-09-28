@@ -7,7 +7,7 @@
 #' @author Pascal Sauer
 calcNonlandReport <- function(project = "RESCUE") {
   if (project == "RESCUE") {
-    x <- calcOutput("NonlandHighRes", input = "magpie", target = "luh2", aggregate = FALSE)
+    x <- calcOutput("NonlandHighRes", input = "magpie", target = "luh2mod", aggregate = FALSE)
 
     # *_fertilizer is in kg yr-1, need to report in kg ha-1 yr-1, so divide by cell area
     cellArea <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
