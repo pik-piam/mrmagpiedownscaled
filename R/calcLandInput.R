@@ -1,4 +1,4 @@
-#' calcLandInputData
+#' calcLandInput
 #'
 #' Prepare the land input data for the category mapping, checking data for consistency before returning.
 #' All "Land" functions deal with area data, as opposed to "Nonland" functions which deal with non-area
@@ -7,8 +7,8 @@
 #'
 #' @param input name of an input dataset, currently only "magpie"
 #' @return land input data
-#' @author Jan Philipp Dietrich, Pascal Führlich
-calcLandInputData <- function(input = "magpie") {
+#' @author Jan Philipp Dietrich, Pascal Sauer
+calcLandInput <- function(input = "magpie") {
   if (input == "magpie") {
     land <- readSource("Magpie")
     crop <- readSource("Magpie", subtype = "crop")
@@ -37,7 +37,7 @@ calcLandInputData <- function(input = "magpie") {
   toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
   toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
   toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
-  map <- toolLandCategoriesMapping(input = input, target = "luh2")
+  map <- toolLandCategoriesMapping(input = input, target = "luh2mod")
   toolExpectTrue(setequal(getItems(out, dim = 3), map$dataInput),
                  "Land input categories match the corresponding mapping")
   toolExpectTrue(all(out >= 0), "All values are >= 0")

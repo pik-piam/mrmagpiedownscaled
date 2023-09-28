@@ -19,5 +19,5 @@ SpatRaster with filled years
 Fill data for missing years using linear interpolation.
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }

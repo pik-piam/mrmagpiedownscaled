@@ -6,8 +6,8 @@
 #'
 #' @param rev revision number of the data
 #'
-#' @author Pascal Führlich
-fullRESCUE <- function(rev = 1) {
+#' @author Pascal Sauer
+fullRESCUE <- function(rev = 2) {
   land <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)
 
   statesVariables <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per", "pastr",
@@ -20,7 +20,7 @@ fullRESCUE <- function(rev = 1) {
                     paste0(statesVariable, ".nc"), overwrite = TRUE)
   }
   states <- terra::sds(paste0(statesVariables, ".nc"))
-  statesFile <- paste0("multiple-states_input4MIPs_landState_ScenarioMIP_PIK-", rev,
+  statesFile <- paste0("multiple-states_input4MIPs_landState_RESCUE_PIK-MAgPIE4.6.11-", rev,
                        "_gn_1995-2100.nc")
   terra::writeCDF(states, statesFile, overwrite = TRUE)
   unlink(paste0(statesVariables, ".nc"))
@@ -29,7 +29,7 @@ fullRESCUE <- function(rev = 1) {
   managementVariables <- c("fertl_c3ann", "fertl_c3nfx", "fertl_c3per", "fertl_c4ann", "fertl_c4per",
                            "irrig_c3ann", "irrig_c3nfx", "irrig_c3per", "irrig_c4ann", "irrig_c4per",
                            "crpbf_c3ann", "crpbf_c3nfx", "crpbf_c3per", "crpbf_c4ann", "crpbf_c4per",
-                           "crpbf2_c3per", "crpbf2_c4per")
+                           "crpbf2_c3per", "crpbf2_c4per", "manaf")
   nonland <- calcOutput("NonlandReport", project = "RESCUE", aggregate = FALSE)
   for (i in seq_along(managementVariables)) {
     managementVariable <- managementVariables[i]
@@ -43,7 +43,7 @@ fullRESCUE <- function(rev = 1) {
     terra::writeCDF(toolSpatRasterToDataset(xRaster), paste0(managementVariable, ".nc"), overwrite = TRUE)
   }
   management <- terra::sds(paste0(managementVariables, ".nc"))
-  managementFile <- paste0("multiple-management_input4MIPs_landState_ScenarioMIP_PIK-", rev,
+  managementFile <- paste0("multiple-management_input4MIPs_landState_RESCUE_PIK-MAgPIE4.6.11-", rev,
                            "_gn_1995-2100.nc")
   terra::writeCDF(management, managementFile, overwrite = TRUE)
   unlink(paste0(managementVariables, ".nc"))

@@ -11,15 +11,15 @@
 #' taken from the input dataset
 #' @param method harmonization method, see \code{\link{toolGetHarmonizer}} for available methods
 #' @return harmonized nonland data
-#' @author Pascal Führlich
-calcNonlandHarmonized <- function(input = "magpie", target = "luh2",
+#' @author Pascal Sauer
+calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
                                   harmonizeYear = 2015, finalYear = 2050,
                                   method = "extrapolateFade") {
   input <- calcOutput("NonlandHarmonizedCategories", input = input, aggregate = FALSE)
   geometry <- attr(input, "geometry")
   crs <- attr(input, "crs")
 
-  target <- calcOutput("NonlandTargetData", target = target, aggregate = FALSE)
+  target <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
   # bring target data to spatial resolution of input data
   ref <- as.SpatVector(input[, 1, 1])[, c(".region", ".id")]
   shareCategories <- c("rndwd", "fulwd") # combf is also a share of wood harvest -> needed so it sums to 1?

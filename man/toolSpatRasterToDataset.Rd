@@ -16,5 +16,5 @@ SpatRasterDataset
 Convert a SpatRaster to a SpatRasterDataset.
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }

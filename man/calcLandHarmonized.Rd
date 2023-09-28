@@ -6,23 +6,23 @@
 \usage{
 calcLandHarmonized(
   input = "magpie",
-  target = "luh2",
+  target = "luh2mod",
   harmonizeYear = 2015,
   finalYear = 2050,
   method = "extrapolateFade"
 )
 }
 \arguments{
-\item{input}{name of the land input source to be used (default "magpie")}
+\item{input}{name of the land input source to be used}
 
-\item{target}{name of the land target source to be used (default "luh2")}
+\item{target}{name of the land target source to be used}
 
 \item{harmonizeYear}{year in which the transition from target to input
 data begins}
 
 \item{finalYear}{year in which the transition shall be completed}
 
-\item{method}{transitioning method (default "extrapolateFade")}
+\item{method}{transitioning method}
 }
 \description{
 This function computes a version of the chosen land input data in the resolution
@@ -31,5 +31,5 @@ chosen land target data set (harmonized categories as well as harmonized
 transition from historic target data to simulated input data).
 }
 \author{
-Pascal Führlich, Jan Philipp Dietrich
+Pascal Sauer, Jan Philipp Dietrich
 }

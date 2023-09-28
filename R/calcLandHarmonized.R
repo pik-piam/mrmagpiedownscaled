@@ -5,15 +5,14 @@
 #' chosen land target data set (harmonized categories as well as harmonized
 #' transition from historic target data to simulated input data).
 #'
-#' @param input name of the land input source to be used (default "magpie")
-#' @param target name of the land target source to be used (default "luh2")
+#' @param input name of the land input source to be used
+#' @param target name of the land target source to be used
 #' @param harmonizeYear year in which the transition from target to input
 #' data begins
 #' @param finalYear year in which the transition shall be completed
-#' @param method transitioning method (default "extrapolateFade")
-#' @author  Pascal Führlich, Jan Philipp Dietrich
-
-calcLandHarmonized <- function(input = "magpie", target = "luh2",
+#' @param method transitioning method
+#' @author Pascal Sauer, Jan Philipp Dietrich
+calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
                                harmonizeYear = 2015, finalYear = 2050,
                                method = "extrapolateFade") {
   input    <- calcOutput("LandHarmonizedCategories", input = input,
@@ -21,7 +20,7 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2",
   geometry <- attr(input, "geometry")
   crs      <- attr(input, "crs")
 
-  target <- calcOutput("LandTargetData", target = target, aggregate = FALSE)
+  target <- calcOutput("LandTarget", target = target, aggregate = FALSE)
   # bring target data to spatial resolution of input data
   ref    <- as.SpatVector(input[, 1, 1])[, c(".region", ".id")]
   target <- terra::extract(target, ref, sum, na.rm = TRUE, bind = TRUE)
