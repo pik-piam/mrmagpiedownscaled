@@ -4,7 +4,7 @@
 \alias{calcNonlandTarget}
 \title{calcNonlandTarget}
 \usage{
-calcNonlandTarget(target = "luh2")
+calcNonlandTarget(target = "luh2mod")
 }
 \arguments{
 \item{target}{name of the target dataset, currently only "luh2"}

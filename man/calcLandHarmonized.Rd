@@ -6,7 +6,7 @@
 \usage{
 calcLandHarmonized(
   input = "magpie",
-  target = "luh2",
+  target = "luh2mod",
   harmonizeYear = 2015,
   finalYear = 2050,
   method = "extrapolateFade"

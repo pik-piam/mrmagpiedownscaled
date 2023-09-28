@@ -29,7 +29,7 @@ fullRESCUE <- function(rev = 2) {
   managementVariables <- c("fertl_c3ann", "fertl_c3nfx", "fertl_c3per", "fertl_c4ann", "fertl_c4per",
                            "irrig_c3ann", "irrig_c3nfx", "irrig_c3per", "irrig_c4ann", "irrig_c4per",
                            "crpbf_c3ann", "crpbf_c3nfx", "crpbf_c3per", "crpbf_c4ann", "crpbf_c4per",
-                           "crpbf2_c3per", "crpbf2_c4per")
+                           "crpbf2_c3per", "crpbf2_c4per", "manaf")
   nonland <- calcOutput("NonlandReport", project = "RESCUE", aggregate = FALSE)
   for (i in seq_along(managementVariables)) {
     managementVariable <- managementVariables[i]

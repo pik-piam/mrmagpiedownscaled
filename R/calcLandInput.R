@@ -37,7 +37,7 @@ calcLandInput <- function(input = "magpie") {
   toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
   toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
   toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
-  map <- toolLandCategoriesMapping(input = input, target = "luh2")
+  map <- toolLandCategoriesMapping(input = input, target = "luh2mod")
   toolExpectTrue(setequal(getItems(out, dim = 3), map$dataInput),
                  "Land input categories match the corresponding mapping")
   toolExpectTrue(all(out >= 0), "All values are >= 0")

@@ -6,8 +6,8 @@
 #' @param target name of the target dataset, currently only "luh2"
 #' @return nonland target data
 #' @author Pascal Sauer
-calcNonlandTarget <- function(target = "luh2") {
-  if (target == "luh2") {
+calcNonlandTarget <- function(target = "luh2mod") {
+  if (target %in% c("luh2", "luh2mod")) {
     man <- readSource("LUH2v2h", subtype = "management", convert = FALSE)
 
     # need absolute values for downscaling, fertl_* is in kg ha-1 yr-1, convert to kg yr-1

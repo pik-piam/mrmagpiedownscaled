@@ -7,7 +7,7 @@
 calcLandTarget(target = "luh2mod")
 }
 \arguments{
-\item{target}{name of the target dataset, currently only "luh2"}
+\item{target}{name of the target dataset, options are: luh2, luh2mod}
 }
 \value{
 land target data
