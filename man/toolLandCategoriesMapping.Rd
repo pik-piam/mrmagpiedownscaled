@@ -7,9 +7,9 @@
 toolLandCategoriesMapping(input, target)
 }
 \arguments{
-\item{input}{name of the land input source to be used (default "magpie")}
+\item{input}{name of the land input source to be used}
 
-\item{target}{name of the land target source to be used (default "luh2")}
+\item{target}{name of the land target source to be used}
 }
 \description{
 Computes a land category mapping between input and target data set via

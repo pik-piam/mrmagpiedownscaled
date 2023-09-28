@@ -9,7 +9,7 @@
 #' @param downscaling name of downscaling method, currently only "magpieClassic"
 #' @return downscaled land use data
 #' @author Jan Philipp Dietrich
-calcLandHighRes <- function(input = "magpie", target = "luh2", downscaling = "magpieClassic") {
+calcLandHighRes <- function(input = "magpie", target = "luh2mod", downscaling = "magpieClassic") {
   x <- calcOutput("LandHarmonized", input = input, target = target, aggregate = FALSE)
   xTarget <- calcOutput("LandTarget", target = target, aggregate = FALSE)
 

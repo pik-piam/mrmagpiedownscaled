@@ -3,7 +3,7 @@
 #' Prepare the high resolution target land use dataset for
 #' harmonization and downscaling, checking data for consistency before returning.
 #'
-#' @param target name of the target dataset, currently only "luh2"
+#' @param target name of the target dataset, options are: luh2, luh2mod
 #' @return land target data
 #' @author Pascal Sauer
 calcLandTarget <- function(target = "luh2mod") {
@@ -60,16 +60,24 @@ calcLandTarget <- function(target = "luh2mod") {
     }
     out <- do.call(c, out)
     terra::time(out, tstep = "years") <- as.integer(substr(names(out), 2, 5))
-
-    if ("" %in% terra::sources(out) && any(terra::sources(out) != "")) {
-      # cannot cache SpatRaster with both in memory and out of memory sources,
-      # so write `out` to a tif file to get SpatRaster with a single source (the tif file)
-      out <- terra::writeRaster(out, file = withr::local_tempfile(fileext = ".tif"))
-    }
+    # need to write raster to disk to avoid memory issues
+    # cannot use withr::local_tempfile because the SpatRaster is invalid as soon as the underlying file is deleted
+    out <- terra::writeRaster(out, file = tempfile(fileext = ".tif"))
 
     if (target == "luh2mod") {
-      # TODO disaggregate secdf to secdf & forestry
-      browser()
+      # split secdf into forestry and secdf
+      forestryShare <- read.magpie(system.file("extdata/forestryShare.mz", package = "mrdownscale"))
+      forestryShare <- as.SpatRaster(forestryShare)
+      forestryShare <- terra::disagg(forestryShare, 2) # convert from 0.5x0.5 to 0.25x0.25 degree cells
+      forestryShare <- terra::extend(forestryShare, out)
+      forestry <- out["secdf"] * forestryShare
+      names(forestry) <- sub("secdf", "forestry", names(forestry))
+      secdf <- out["secdf"] - forestry
+      out <- c(out[[grep("secdf", names(out), invert = TRUE)]], forestry, secdf)
+
+      # cannot cache SpatRaster with both in-memory and on-disk/file sources,
+      # so write `out` to a tif file to get SpatRaster with a single source (the tif file)
+      out <- terra::writeRaster(out, file = tempfile(fileext = ".tif"))
     }
   } else {
     stop("Unsupported output type \"", target, "\"")
@@ -80,7 +88,7 @@ calcLandTarget <- function(target = "luh2mod") {
   map <- toolLandCategoriesMapping(input = "magpie", target = target)
   toolExpectTrue(setequal(sub("y[0-9]+\\.\\.", "", names(out)), map$dataOutput),
                  "Land target categories match the corresponding mapping")
-  toolExpectTrue(min(terra::values(out), na.rm = TRUE) >= 0, "All values are >= 0")
+  toolExpectTrue(min(terra::values(min(out)), na.rm = TRUE) >= 0, "All values are >= 0")
   totalAreas <- vapply(unique(terra::time(out)), function(year) {
     sum(terra::values(out[[terra::time(out) == year]]), na.rm = TRUE)
   }, double(1))

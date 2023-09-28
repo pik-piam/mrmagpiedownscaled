@@ -12,7 +12,7 @@
 #' @param method harmonization method, see \code{\link{toolGetHarmonizer}} for available methods
 #' @return harmonized nonland data
 #' @author Pascal Sauer
-calcNonlandHarmonized <- function(input = "magpie", target = "luh2",
+calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
                                   harmonizeYear = 2015, finalYear = 2050,
                                   method = "extrapolateFade") {
   input <- calcOutput("NonlandHarmonizedCategories", input = input, aggregate = FALSE)

@@ -7,7 +7,7 @@
 #' @author Pascal Sauer
 calcLandReport <- function(project = "RESCUE") {
   if (project == "RESCUE") {
-    native <- calcOutput("LandHighRes", input = "magpie", target = "luh2", aggregate = FALSE)
+    native <- calcOutput("LandHighRes", input = "magpie", target = "luh2mod", aggregate = FALSE)
     cellArea <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
     cellArea <- collapseDim(as.magpie(cellArea), 3)
 
@@ -39,10 +39,17 @@ calcLandReport <- function(project = "RESCUE") {
       return(combined)
     }))
 
+    totalSecondaryForest <- dimSums(native[, , c("forestry", "secdf")], dim = 3)
+    # calculate manaf (managed forest) = forestry share of secondary forest
+    manaf <- native[, , "forestry"] / totalSecondaryForest
+    manaf[totalSecondaryForest == 0] <- 0 # replace NAs introduced by 0 / 0
+    getNames(manaf) <- "manaf"
+
     nonCropData <- native[, , c("primf", "primn", "secdf", "secdn", "urban", "pastr", "range")]
+    nonCropData[, , "secdf"] <- totalSecondaryForest
     nonCropData <- nonCropData * 10000 / cellArea[getItems(cellArea, 1) %in% getItems(nonCropData, 1), , ]
 
-    out <- mbind(cropData, nonCropData)
+    out <- mbind(cropData, nonCropData, manaf)
 
     stopifnot(!any(is.na(out)))
 
@@ -51,7 +58,8 @@ calcLandReport <- function(project = "RESCUE") {
                 unit = "1",
                 min = 0,
                 max = 1.0001,
-                description = "MAgPIE land use data downscaled to LUH2 resolution"))
+                description = paste("MAgPIE land use data downscaled to LUH2 resolution,",
+                                    "unit is share of cell area, except manaf which is share of secdf")))
   } else {
     stop("Can only report for project = 'RESCUE'")
   }
