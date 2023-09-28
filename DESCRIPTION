@@ -13,12 +13,12 @@ License: LGPL-3
 URL: https://github.com/pik-piam/mrdownscale
 BugReports: https://github.com/pik-piam/mrdownscale/issues
 Depends:
-    madrat(>= 3.6.0),
-    magclass(>= 6.9.1),
-    R(>= 4.0.0)
+    R (>= 4.0.0),
+    madrat (>= 3.6.0),
+    magclass (>= 6.9.1)
 Imports:
     luscale,
-    magpie4(>= 1.188.0),
+    magpie4 (>= 1.188.0),
     mip,
     terra,
     withr
