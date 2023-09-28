@@ -20,7 +20,7 @@ fullRESCUE <- function(rev = 2) {
                     paste0(statesVariable, ".nc"), overwrite = TRUE)
   }
   states <- terra::sds(paste0(statesVariables, ".nc"))
-  statesFile <- paste0("multiple-states_input4MIPs_landState_ScenarioMIP_PIK-", rev,
+  statesFile <- paste0("multiple-states_input4MIPs_landState_RESCUE_PIK-MAgPIE4.6.11-", rev,
                        "_gn_1995-2100.nc")
   terra::writeCDF(states, statesFile, overwrite = TRUE)
   unlink(paste0(statesVariables, ".nc"))
@@ -43,7 +43,7 @@ fullRESCUE <- function(rev = 2) {
     terra::writeCDF(toolSpatRasterToDataset(xRaster), paste0(managementVariable, ".nc"), overwrite = TRUE)
   }
   management <- terra::sds(paste0(managementVariables, ".nc"))
-  managementFile <- paste0("multiple-management_input4MIPs_landState_ScenarioMIP_PIK-", rev,
+  managementFile <- paste0("multiple-management_input4MIPs_landState_RESCUE_PIK-MAgPIE4.6.11-", rev,
                            "_gn_1995-2100.nc")
   terra::writeCDF(management, managementFile, overwrite = TRUE)
   unlink(paste0(managementVariables, ".nc"))
