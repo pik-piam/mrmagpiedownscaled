@@ -10,7 +10,7 @@
 #' years at once
 #' @author Jan Philipp Dietrich
 
-calcTransitionsHighRes <- function(input = "magpie", target = "luh2", diffYears = c(1995, 2000, 2005, 2010)) {
+calcTransitionsHighRes <- function(input = "magpie", target = "luh2mod", diffYears = c(1995, 2000, 2005, 2010)) {
 
   if (length(diffYears) < 2) stop("At least two time steps required to be able to compute transistions")
   if (length(diffYears) > 5) warning("Selecting more than 5 time steps at once will most like cause memory problems.")

@@ -6,10 +6,10 @@
 #' @param input name of an input dataset, currently only "magpie"
 #' @param target name of a target dataset, currently only "luh2"
 #' @return downscaled nonland data
-#' @author Pascal Führlich
-calcNonlandHighRes <- function(input = "magpie", target = "luh2") {
+#' @author Pascal Sauer
+calcNonlandHighRes <- function(input = "magpie", target = "luh2mod") {
   xInput <- calcOutput("NonlandHarmonized", input = input, target = target, aggregate = FALSE)
-  xTarget <- calcOutput("NonlandTargetData", target = target, aggregate = FALSE)
+  xTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
 
   # simple weighted disaggregation for fertl
   cropTypes <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per")

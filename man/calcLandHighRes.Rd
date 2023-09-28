@@ -6,7 +6,7 @@
 \usage{
 calcLandHighRes(
   input = "magpie",
-  target = "luh2",
+  target = "luh2mod",
   downscaling = "magpieClassic"
 )
 }

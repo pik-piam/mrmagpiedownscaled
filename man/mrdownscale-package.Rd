@@ -12,11 +12,12 @@ Downscale and harmonize MAgPIE output using LUH2 as reference data.
 Useful links:
 \itemize{
   \item \url{https://github.com/pik-piam/mrdownscale}
+  \item Report bugs at \url{https://github.com/pik-piam/mrdownscale/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Pascal Führlich \email{pascal.fuehrlich@pik-potsdam.de}
+\strong{Maintainer}: Pascal Sauer \email{pascal.fuehrlich@pik-potsdam.de}
 
 Authors:
 \itemize{

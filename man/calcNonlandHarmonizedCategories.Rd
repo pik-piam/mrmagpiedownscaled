@@ -4,7 +4,7 @@
 \alias{calcNonlandHarmonizedCategories}
 \title{calcNonlandHarmonizedCategories}
 \usage{
-calcNonlandHarmonizedCategories(input = "magpie", target = "luh2")
+calcNonlandHarmonizedCategories(input = "magpie", target = "luh2mod")
 }
 \arguments{
 \item{input}{name of the input dataset, currently only "magpie"}
@@ -19,5 +19,5 @@ Harmonize categories by mapping nonland input data categories to the categories 
 See \code{\link{calcLandHarmonizedCategories}} for an explanation of the mapping procedure.
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }

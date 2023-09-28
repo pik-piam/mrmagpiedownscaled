@@ -5,7 +5,7 @@
 #'
 #' @param subtype ignored, exists for technical reasons
 #' @return metadata list with URL, DOI, title, description, author, unit, version, release date
-#' @author Pascal Führlich
+#' @author Pascal Sauer
 downloadLUH2v2h <- function(subtype = NULL) {
   fileNames <- c("states.nc",
                  "transitions.nc",

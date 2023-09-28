@@ -4,7 +4,7 @@
 #'
 #' @param subtype type of data to be read in. Available options are "land",
 #' "crop", "woodHarvest" and "fertilizer"
-#' @author Pascal Führlich, Jan Philipp Dietrich
+#' @author Pascal Sauer, Jan Philipp Dietrich
 
 readMagpie <- function(subtype = "land") {
   "!# @monitor magpie4:::addGeometry"

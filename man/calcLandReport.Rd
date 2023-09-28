@@ -16,5 +16,5 @@ land use data
 Convert the downscaled land use data to the format required by the given project.
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }

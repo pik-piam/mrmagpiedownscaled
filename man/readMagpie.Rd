@@ -14,5 +14,5 @@ readMagpie(subtype = "land")
 Read function for data coming from the MAgPIE model.
 }
 \author{
-Pascal Führlich, Jan Philipp Dietrich
+Pascal Sauer, Jan Philipp Dietrich
 }

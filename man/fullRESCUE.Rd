@@ -4,7 +4,7 @@
 \alias{fullRESCUE}
 \title{fullRESCUE}
 \usage{
-fullRESCUE(rev = 1)
+fullRESCUE(rev = 2)
 }
 \arguments{
 \item{rev}{revision number of the data}
@@ -15,5 +15,5 @@ Data is calculated for every 5th year, fill years inbetween with linear interpol
 Write .nc files, print full report on consistency checks and write it to report.log.
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }

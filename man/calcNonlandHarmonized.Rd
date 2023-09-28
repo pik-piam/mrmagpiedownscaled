@@ -6,7 +6,7 @@
 \usage{
 calcNonlandHarmonized(
   input = "magpie",
-  target = "luh2",
+  target = "luh2mod",
   harmonizeYear = 2015,
   finalYear = 2050,
   method = "extrapolateFade"
@@ -33,5 +33,5 @@ Harmonize nonland input data to target data using the specified method, checking
 data for consistency before returning.
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }

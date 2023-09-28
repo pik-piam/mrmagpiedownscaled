@@ -27,6 +27,10 @@ toolDownscaleMagpieClassic <- function(x, xTarget) {
   map <- .getDownscaleMap(x, xTarget)
 
   mTarget <- as.magpie(xTarget)
+
+  rm(xTarget)
+  gc()
+
   intersect <- intersect(getItems(mTarget, dim = 1), map$cell)
   missingInTarget <- (length(map$cell) - length(intersect)) / length(map$cell)
   if (missingInTarget > 0) {

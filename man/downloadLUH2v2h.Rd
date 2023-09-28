@@ -17,5 +17,5 @@ Download the LUH2v2h dataset (states.nc, transitions.nc,
 management.nc, staticData_quarterdeg.nc).
 }
 \author{
-Pascal Führlich
+Pascal Sauer
 }
