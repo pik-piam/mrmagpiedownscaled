@@ -1,0 +1,39 @@
+name,long_name,standard_name
+primf,forested primary land,area_fraction
+primn,non-forested primary land,area_fraction
+secdf,potentially forested secondary land,area_fraction
+manaf,managed forest fraction of potentially forested secondary land,area_fraction
+secdn,potentially non-forested secondary land,area_fraction
+urban,urban land,area_fraction
+c3ann,C3 annual crops,area_fraction
+c4ann,C4 annual crops,area_fraction
+c3per,C3 perennial crops,area_fraction
+c4per,C4 perennial crops,area_fraction
+c3nfx,C3 nitrogen-fixing crops,area_fraction
+pastr,managed pasture,area_fraction
+range,rangeland,area_fraction
+secmb,secondary mean biomass carbon density,vegetation_carbon_content
+secma,secondary mean age,
+fertl_c3ann,fertilization rate for C3 annual crops,
+irrig_c3ann,irrigated fraction of C3 annual crops,
+crpbf_c3ann,C3 annual crops fraction of crop type area grown as biofuels,area_fraction
+fertl_c4ann,fertilization rate for C4 annual crops,
+irrig_c4ann,irrigated fraction of C4 annual crops,
+crpbf_c4ann,C4 annual crops fraction of crop type area grown as biofuels,area_fraction
+fertl_c3per,fertilization rate for C3 perennial crops,
+irrig_c3per,irrigated fraction of C3 perennial crops,
+crpbf_c3per,C3 perennial crops fraction of crop type area grown as biofuels,area_fraction
+crpbf2_c3per,C3 perennial crops fraction of crop type area grown as 2nd generation biofuels,area_fraction
+fertl_c4per,fertilization rate for C4 perennial crops,
+irrig_c4per,irrigated fraction of C4 perennial crops,
+crpbf_c4per,C4 perennial crops fraction of crop type area grown as biofuels,area_fraction
+crpbf2_c4per,C4 perennial crops fraction of crop type area grown as 2nd generation biofuels,area_fraction
+fertl_c3nfx,fertilization rate for C3 nitrogen-fixing crops,
+irrig_c3nfx,irrigated fraction of C3 nitrogen-fixing crops,
+crpbf_c3nfx,C3 nitrogen-fixing crops fraction of crop type area grown as biofuels,area_fraction
+fharv_c3per,fraction of C3 perennial crops biomass carbon harvested annually,vegetation_carbon_content
+fharv_c4per,fraction of C4 perennial crops biomass carbon harvested annually,vegetation_carbon_content
+flood,flooded fraction of C3 annual crop area (e.g. for paddy rice,area_fraction
+rndwd,industrial roundwood fraction of wood harvest biomass carbon,vegetation_carbon_content
+fulwd,fuelwood fraction of wood harvest biomass carbon,vegetation_carbon_content
+combf,commercial biofuels fraction of wood harvest biomass carbon,vegetation_carbon_content

@@ -18,7 +18,7 @@ calcNonlandReport <- function(project = "RESCUE") {
 
     return(list(x = x,
                 isocountries = FALSE,
-                unit = "fertl_*: kg ha-1 yr-1",
+                unit = "kg ha-1 yr-1",
                 min = 0,
                 description = "Downscaled nonland data report for RESCUE"))
   } else {
