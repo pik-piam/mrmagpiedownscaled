@@ -17,7 +17,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Pascal Sauer \email{pascal.fuehrlich@pik-potsdam.de}
+\strong{Maintainer}: Pascal Sauer \email{pascal.sauer@pik-potsdam.de}
 
 Authors:
 \itemize{

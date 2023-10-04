@@ -4,22 +4,26 @@
 #' Write .nc files, print full report on consistency checks and write it to report.log.
 #'
 #' @param rev revision number of the data
+#' @param ... reserved for future use
+#' @param compression compression level of the resulting .nc files, possible values are integers from 1-9,
+#' 1 = fastest, 9 = best compression
 #'
 #' @author Pascal Sauer
-fullRESCUE <- function(rev = 2) {
+fullRESCUE <- function(rev = 2, ..., compression = NA) {
+  stopifnot(...length() == 0)
   missingValue <- 1e20
   extent <- terra::ext(-180, 180, -55.5, 83.25)
 
-  .writeNC <- function(x, fileName) {
+  .writeNC <- function(x, fileName, compression) {
     # setting chunksizes might speed up nc access, but
-    # terra::writeCDF only allows setting one global set of chunksizes, but e.g. "time" needs a different one
-    terra::writeCDF(x, fileName, overwrite = TRUE, missval = missingValue)
+    # terra::writeCDF allows setting one set of chunksizes for all variables, but e.g. "time" needs a different one
+    terra::writeCDF(x, fileName, overwrite = TRUE, missval = missingValue, compression = compression)
   }
 
-  .convertExtendUnitWrite <- function(x, fileName) {
+  .convertExtendUnitWrite <- function(x, fileName, compression) {
     xRaster <- toolSpatRasterToDataset(terra::extend(as.SpatRaster(x), extent))
     terra::units(xRaster) <- sub(" unit: ", "", grep(" unit: ", getComment(x), value = TRUE))
-    .writeNC(xRaster, fileName)
+    .writeNC(xRaster, fileName, compression)
   }
 
   # set terra::units on a SpatRasterDataset using the units specified in individual SpatRasters
@@ -39,7 +43,7 @@ fullRESCUE <- function(rev = 2) {
     # global
     ncdf4::ncatt_put(nc, 0, "activity_id", "RESCUE")
     ncdf4::ncatt_put(nc, 0, "comment", comment)
-    ncdf4::ncatt_put(nc, 0, "contact", "pascal.fuehrlich@pik-potsdam.de, dietrich@pik-potsdam.de")
+    ncdf4::ncatt_put(nc, 0, "contact", "pascal.sauer@pik-potsdam.de, dietrich@pik-potsdam.de")
     ncdf4::ncatt_put(nc, 0, "Conventions", "CF-1.6")
     now <- strftime(Sys.time(), format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
     ncdf4::ncatt_put(nc, 0, "creation_date", now)
@@ -84,13 +88,13 @@ fullRESCUE <- function(rev = 2) {
   for (i in seq_along(statesVariables)) {
     statesVariable <- statesVariables[i]
     message(i, "/", length(statesVariables), " writing ", statesVariable, ".nc")
-    .convertExtendUnitWrite(land[, , statesVariable], paste0(statesVariable, ".nc"))
+    .convertExtendUnitWrite(land[, , statesVariable], paste0(statesVariable, ".nc"), compression = NA)
   }
   states <- terra::sds(paste0(statesVariables, ".nc"))
   states <- .setUnits(states)
   statesFile <- paste0("multiple-states_input4MIPs_landState_RESCUE_PIK-MAgPIE4.6.11-", rev,
                        "_gn_1995-2100.nc")
-  .writeNC(states, statesFile)
+  .writeNC(states, statesFile, compression)
   unlink(paste0(statesVariables, ".nc"))
   .addMetadata(statesFile, "states")
 
@@ -108,13 +112,13 @@ fullRESCUE <- function(rev = 2) {
     } else {
       x <- nonland[, , managementVariable]
     }
-    .convertExtendUnitWrite(x, paste0(managementVariable, ".nc"))
+    .convertExtendUnitWrite(x, paste0(managementVariable, ".nc"), compression = NA)
   }
   management <- terra::sds(paste0(managementVariables, ".nc"))
   management <- .setUnits(management)
   managementFile <- paste0("multiple-management_input4MIPs_landState_RESCUE_PIK-MAgPIE4.6.11-", rev,
                            "_gn_1995-2100.nc")
-  .writeNC(management, managementFile)
+  .writeNC(management, managementFile, compression)
   unlink(paste0(managementVariables, ".nc"))
   .addMetadata(managementFile, "management")
 }
