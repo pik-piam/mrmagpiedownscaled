@@ -20,6 +20,7 @@ Imports:
     luscale,
     magpie4 (>= 1.188.0),
     mip,
+    ncdf4,
     terra,
     withr
 Suggests:
