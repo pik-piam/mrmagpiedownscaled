@@ -4,14 +4,18 @@
 \alias{fullRESCUE}
 \title{fullRESCUE}
 \usage{
-fullRESCUE(rev = 2)
+fullRESCUE(rev = 2, ..., compression = NA)
 }
 \arguments{
 \item{rev}{revision number of the data}
+
+\item{...}{reserved for future use}
+
+\item{compression}{compression level of the resulting .nc files, possible values are integers from 1-9,
+1 = fastest, 9 = best compression}
 }
 \description{
 Run the pipeline to generate harmonized and downscaled data to report for the RESCUE project.
-Data is calculated for every 5th year, fill years inbetween with linear interpolation.
 Write .nc files, print full report on consistency checks and write it to report.log.
 }
 \author{
