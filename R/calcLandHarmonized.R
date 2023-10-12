@@ -44,6 +44,7 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
 
   harmonizer <- toolGetHarmonizer(method)
   out <- harmonizer(input, target, harmonizeYear = harmonizeYear, finalYear = finalYear)
+  out[is.na(out)] <- 0 # why are NAs introduced here? input and target have no NAs
 
   attr(out, "geometry") <- geometry
   attr(out, "crs")      <- crs

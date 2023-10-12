@@ -3,20 +3,22 @@
 #' Run the pipeline to generate harmonized and downscaled data to report for the RESCUE project.
 #' Write .nc files, print full report on consistency checks and write it to report.log.
 #'
-#' @param rev revision number of the data
+#' @param rev revision number of the data, by default current date is used
 #' @param ... reserved for future use
 #' @param compression compression level of the resulting .nc files, possible values are integers from 1-9,
 #' 1 = fastest, 9 = best compression
 #'
 #' @author Pascal Sauer
-fullRESCUE <- function(rev = 2, ..., compression = NA) {
+fullRESCUE <- function(rev = NULL, ..., compression = 2) {
   stopifnot(...length() == 0)
   missingValue <- 1e20
-  extent <- terra::ext(-180, 180, -55.5, 83.25)
+  extent <- terra::ext(-180, 180, -90, 90)
+  now <- Sys.time()
+  if (is.null(rev)) {
+    rev <- format(now, "%Y-%m-%d")
+  }
 
   .writeNC <- function(x, fileName, compression) {
-    # setting chunksizes might speed up nc access, but
-    # terra::writeCDF allows setting one set of chunksizes for all variables, but e.g. "time" needs a different one
     terra::writeCDF(x, fileName, overwrite = TRUE, missval = missingValue, compression = compression)
   }
 
@@ -27,15 +29,30 @@ fullRESCUE <- function(rev = 2, ..., compression = NA) {
   }
 
   # set terra::units on a SpatRasterDataset using the units specified in individual SpatRasters
-  .setUnits <- function(x) {
+  .setUnitsRemoveCrs <- function(x) {
     terra::units(x) <- vapply(x, function(spatRaster) {
       stopifnot(length(unique(terra::units(spatRaster))) == 1) # assert each year-layer has the same unit
       return(terra::units(spatRaster)[1])
     }, character(1))
+    # crs is not needed by ESMs, but it is always written by writeCDF
+    # by removing it from the SpatRasters here writeCDF won't write the crs attribute for each variable
+    n <- names(x) # setting crs to NULL appends _1 to all names, so need to store and reset actual names
+    for (i in seq_along(x)) {
+      terra::crs(x[i]) <- NULL
+    }
+    names(x) <- n
     return(x)
   }
 
   .addMetadata <- function(ncFile, comment) {
+    # try to remove crs variable, which is not needed by ESMs
+    if (Sys.which("ncks") != "") {
+      system2("ncks", c("-C", "-O", "-x", "-v", "crs", ncFile, paste0(ncFile, "-no-crs")))
+      file.rename(paste0(ncFile, "-no-crs"), ncFile)
+    } else {
+      message("Cannot remove crs variable, ncks not found")
+    }
+
     nc <- ncdf4::nc_open(ncFile, write = TRUE)
     withr::defer({
       ncdf4::nc_close(nc)
@@ -45,9 +62,9 @@ fullRESCUE <- function(rev = 2, ..., compression = NA) {
     ncdf4::ncatt_put(nc, 0, "comment", comment)
     ncdf4::ncatt_put(nc, 0, "contact", "pascal.sauer@pik-potsdam.de, dietrich@pik-potsdam.de")
     ncdf4::ncatt_put(nc, 0, "Conventions", "CF-1.6")
-    now <- strftime(Sys.time(), format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
-    ncdf4::ncatt_put(nc, 0, "creation_date", now)
-    ncdf4::ncatt_put(nc, 0, "date", now)
+    dateTime <- strftime(now, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+    ncdf4::ncatt_put(nc, 0, "creation_date", dateTime)
+    ncdf4::ncatt_put(nc, 0, "date", dateTime)
     ncdf4::ncatt_put(nc, 0, "data_structure", "grid")
     ncdf4::ncatt_put(nc, 0, "frequency", "yr")
     ncdf4::ncatt_put(nc, 0, "further_info_url", "https://github.com/pik-piam/mrdownscale")
@@ -74,9 +91,12 @@ fullRESCUE <- function(rev = 2, ..., compression = NA) {
       ncdf4::ncatt_put(nc, varname, "_fillvalue", missingValue, prec = "float")
       ncdf4::ncatt_put(nc, varname, "missing_value", missingValue, prec = "float")
       ncdf4::ncatt_put(nc, varname, "cell_methods", "time:mean")
-      stopifnot(varname %in% luhNames$name)
-      ncdf4::ncatt_put(nc, varname, "long_name", luhNames$long_name[luhNames$name == varname])
-      ncdf4::ncatt_put(nc, varname, "standard_name", luhNames$standard_name[luhNames$name == varname])
+      if (varname %in% luhNames$name) {
+        ncdf4::ncatt_put(nc, varname, "long_name", luhNames$long_name[luhNames$name == varname])
+        ncdf4::ncatt_put(nc, varname, "standard_name", luhNames$standard_name[luhNames$name == varname])
+      } else {
+        warning(varname, " not found in luhNames.csv")
+      }
     }
   }
 
@@ -91,8 +111,8 @@ fullRESCUE <- function(rev = 2, ..., compression = NA) {
     .convertExtendUnitWrite(land[, , statesVariable], paste0(statesVariable, ".nc"), compression = NA)
   }
   states <- terra::sds(paste0(statesVariables, ".nc"))
-  states <- .setUnits(states)
-  statesFile <- paste0("multiple-states_input4MIPs_landState_RESCUE_PIK-MAgPIE4.6.11-", rev,
+  states <- .setUnitsRemoveCrs(states)
+  statesFile <- paste0("multiple-states_input4MIPs_landState_RESCUE_PIK-MAgPIE67k-", rev,
                        "_gn_1995-2100.nc")
   .writeNC(states, statesFile, compression)
   unlink(paste0(statesVariables, ".nc"))
@@ -115,7 +135,7 @@ fullRESCUE <- function(rev = 2, ..., compression = NA) {
     .convertExtendUnitWrite(x, paste0(managementVariable, ".nc"), compression = NA)
   }
   management <- terra::sds(paste0(managementVariables, ".nc"))
-  management <- .setUnits(management)
+  management <- .setUnitsRemoveCrs(management)
   managementFile <- paste0("multiple-management_input4MIPs_landState_RESCUE_PIK-MAgPIE4.6.11-", rev,
                            "_gn_1995-2100.nc")
   .writeNC(management, managementFile, compression)
