@@ -11,7 +11,7 @@
 
 toolTransitionsBasic <- function(x) {
 
-  diff <- x[, 2:dim(x)[2], ] - setYears(x[, 1:(dim(x)[2] - 1), ], getYears(x)[2:dim(x)[2]])
+  diff <- x[, 2:dim(x)[2], ] - setItems(x[, 1:(dim(x)[2] - 1), ], getItems(x, dim = 2)[2:dim(x)[2]], dim = 2)
   reduce <- expand <- diff
   reduce[reduce > 0] <- 0
   reduce <- -reduce
