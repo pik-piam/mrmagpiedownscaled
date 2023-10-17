@@ -103,5 +103,22 @@ o <- extractStatesMean("../../mrdownscale_data/LUH2v2/states.nc")
 write.magpie(o, "../../mrdownscale_data/meanStates_1995to2016.mz")
 
 
+getSmallerPartnerArea <- function(a) {
+  # a: states data
+  i <- getItems(a, dim = 3)
+  ii <- paste(i,i,sep=".")
+  withr::local_options(list(magclass_setMatching = TRUE))
+  options(magclass_setMatching=TRUE)
+  b <- a
+  getSets(a, fulldim=FALSE)[3] <- "type1"
+  getSets(b, fulldim=FALSE)[3] <- "type2"
+  a <- magpie_expand(a,b)
+  b <- magpie_expand(b,a)
+  a <- a[,,ii,invert = TRUE]
+  b <- b[,,ii,invert = TRUE]
+  out <- pmin(a,b)
+  return(out)
+}
+
 
 
