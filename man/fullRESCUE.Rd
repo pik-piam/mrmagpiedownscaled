@@ -4,10 +4,10 @@
 \alias{fullRESCUE}
 \title{fullRESCUE}
 \usage{
-fullRESCUE(rev = 2, ..., compression = NA)
+fullRESCUE(rev = NULL, ..., compression = 2)
 }
 \arguments{
-\item{rev}{revision number of the data}
+\item{rev}{revision number of the data, by default current date is used}
 
 \item{...}{reserved for future use}
 
