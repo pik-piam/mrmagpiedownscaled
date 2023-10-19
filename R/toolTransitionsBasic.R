@@ -21,7 +21,6 @@ toolTransitionsBasic <- function(x, gross = NULL) {
   reduce <- -reduce
   expand[expand < 0] <- 0
 
-
   split <- expand / dimSums(expand, dim = 3)
   rm(expand, x, diff)
   gc()
