@@ -7,9 +7,13 @@
 #'
 #' @param x magpie dataset containing land data with at least two time steps
 #' to extract net transitions from
+#' @param gross a magpie object containing bidirectional transition shares relative
+#' to the smaller land pool the transistions happen between (bidirectional means
+#' here that a transition of the same size happens in both directions so that
+#' the net transistion is zero)
 #' @author Jan Philipp Dietrich
 
-toolTransitionsBasic <- function(x) {
+toolTransitionsBasic <- function(x, gross = NULL) {
 
   diff <- x[, 2:dim(x)[2], ] - setItems(x[, 1:(dim(x)[2] - 1), ], getItems(x, dim = 2)[2:dim(x)[2]], dim = 2)
   reduce <- expand <- diff
@@ -31,6 +35,12 @@ toolTransitionsBasic <- function(x) {
   })
 
   out <- out[, , paste0(getItems(reduce, dim = 3), ".", getItems(reduce, dim = 3)), invert = TRUE]
+
+  if (!is.null(gross)) {
+    if (!is.magpie(gross)) stop('"gross" must be a MAgPIE object containing bidirectional transistion shares!')
+    smallerArea <- toolGetSmallerArea(x)
+    out <- out + gross * smallerArea
+  }
 
   return(out)
 }

@@ -117,14 +117,12 @@ write.magpie(states, file.path(computationFolder, "meanStates_1995to2016.mz"))
 
 # for every possible transition between two states select the smaller state area
 # of the two as reference area for the corresponding transition
-smallerArea <- mrdownscale:::toolGetSmallerArea(states)
-smallerArea <- smallerArea[,,getItems(meanBi, dim = 3)]
+smallerArea <- toolGetSmallerArea(states)
+smallerArea <- smallerArea[, , getItems(meanBi, dim = 3)]
 
 # remove very small values
 meanBi[meanBi < 10^-6] <- 0
 
 # compute transformation share relative to the smaller area to have a
 # area-scalable representative value of the bidirectional transistions
-x <- meanBi/(smallerArea+10^-10)
-
-
+x <- meanBi / (smallerArea + 10^-10)

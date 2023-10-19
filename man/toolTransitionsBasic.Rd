@@ -4,11 +4,16 @@
 \alias{toolTransitionsBasic}
 \title{toolTransitionsBasic}
 \usage{
-toolTransitionsBasic(x)
+toolTransitionsBasic(x, gross = NULL)
 }
 \arguments{
 \item{x}{magpie dataset containing land data with at least two time steps
 to extract net transitions from}
+
+\item{gross}{a magpie object containing bidirectional transition shares relative
+to the smaller land pool the transistions happen between (bidirectional means
+here that a transition of the same size happens in both directions so that
+the net transistion is zero)}
 }
 \description{
 tool function to extract net transitions between categories from a land
