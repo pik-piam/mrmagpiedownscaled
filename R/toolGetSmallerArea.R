@@ -11,6 +11,7 @@
 #' @return A land type x land type data set containing for each possible combination
 #' the smaller area of the two land types
 #' @author Jan Philipp Dietrich
+#' @export
 
 toolGetSmallerArea <- function(states) {
   i <- getItems(states, dim = 3)
