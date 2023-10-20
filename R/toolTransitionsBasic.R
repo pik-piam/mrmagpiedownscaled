@@ -56,6 +56,12 @@ toolTransitionsBasic <- function(x, gross = NULL) {
     dummy[, , ] <- 0
     dummy <- setItems(dummy[, , rep(1, length(missing))], missing, dim = 3, raw = TRUE)
     gross <- mbind(gross, dummy)
+    gross <- gross[getItems(smallerArea, dim = 1), , ] * smallerArea
+    # ToDo: 1. annual transistions (net + gross, but also gross standalone)
+    #          can currently be bigger than the area available for transformation
+    #       2. bidirectional transistions needs to be multiplied by number of years
+    #          (after that the transitions between two time steps could be bigger
+    #          than the available area!)
     out <- out + gross[getItems(smallerArea, dim = 1), , ] * smallerArea
   }
 
