@@ -2,5 +2,6 @@
 
 export(toolGetSmallerArea)
 export(toolSpatRasterToDataset)
+export(toolTransitionsBasic)
 import(madrat)
 import(magclass)

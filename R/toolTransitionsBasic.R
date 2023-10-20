@@ -12,9 +12,11 @@
 #' here that a transition of the same size happens in both directions so that
 #' the net transistion is zero)
 #' @author Jan Philipp Dietrich
+#' @export
 
 toolTransitionsBasic <- function(x, gross = NULL) {
 
+  x <- x[, , grep("(_|manaf)", getItems(x, dim = 3), invert = TRUE, value = TRUE)]
   diff <- x[, 2:dim(x)[2], ] - setItems(x[, 1:(dim(x)[2] - 1), ], getItems(x, dim = 2)[2:dim(x)[2]], dim = 2)
   reduce <- expand <- diff
   reduce[reduce > 0] <- 0
@@ -22,7 +24,7 @@ toolTransitionsBasic <- function(x, gross = NULL) {
   expand[expand < 0] <- 0
 
   split <- expand / dimSums(expand, dim = 3)
-  rm(expand, x, diff)
+  rm(expand, diff)
   gc()
   split[is.na(split)] <- 0
 
@@ -33,12 +35,28 @@ toolTransitionsBasic <- function(x, gross = NULL) {
     out <- reduce * split
   })
 
-  out <- out[, , paste0(getItems(reduce, dim = 3), ".", getItems(reduce, dim = 3)), invert = TRUE]
+  # remove entries for transitions to itself (1) as well as transitions to primn
+  # or primf (2) as they are not allowed
+  remove <- union(paste0(getItems(reduce, dim = 3), ".", getItems(reduce, dim = 3)),
+                  grep("\\.(primn|primf)$", getItems(out, dim = 3), value = TRUE))
+
+  out <- out[, , remove, invert = TRUE]
 
   if (!is.null(gross)) {
     if (!is.magpie(gross)) stop('"gross" must be a MAgPIE object containing bidirectional transistion shares!')
-    smallerArea <- toolGetSmallerArea(x)
-    out <- out + gross * smallerArea
+    # boost gross data set to all transistions
+    invertSet <- sub("^(.*)\\.(.*)$", "\\2.\\1", getItems(gross, dim = 3))
+    if (any(invertSet %in% getItems(gross, dim = 3))) {
+      stop("The gross transistion data set should only contain a single value for any bidirectional connection!")
+    }
+    gross <- mbind(gross, setItems(gross, invertSet, dim = 3, raw = TRUE))
+    smallerArea <- toolGetSmallerArea(x)[, 2:dim(x)[2], getItems(out, dim = 3)]
+    missing <- setdiff(getItems(smallerArea, dim = 3), getItems(gross, dim = 3))
+    dummy <- gross[, , 1]
+    dummy[, , ] <- 0
+    dummy <- setItems(dummy[, , rep(1, length(missing))], missing, dim = 3, raw = TRUE)
+    gross <- mbind(gross, dummy)
+    out <- out + gross[getItems(smallerArea, dim = 1), , ] * smallerArea
   }
 
   return(out)
