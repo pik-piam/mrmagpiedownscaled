@@ -1,9 +1,20 @@
 #' toolTransitionsBasic
 #'
-#' tool function to extract net transitions between categories from a land
+#' tool function to extract transitions between categories from a land
 #' dataset with at least 2 time steps. The approach is rather simplistic by
 #' assuming that expansion happens proportionally in all affected classes (equal
 #' preference of transistions across all categories).
+#'
+#' In addition to the net effect it can also estimate gross transistion. For that
+#' purpose a reference data set containing bidirectional transistion shares
+#' must be provided.
+#'
+#' If the time step length is longer than 1 year the returned object contains
+#' reference years for each period which can be repeated to retrieve the
+#' full transistion between two time periods, e.g. if you provide two time steps
+#' 2000 and 2005 the return value will be the transition for year 2001. Repeating
+#' the same transistion also in 2002, 2003, 2004 and 2005 will give the full
+#' transistion from 2000 to 2005.
 #'
 #' @param x magpie dataset containing land data with at least two time steps
 #' to extract net transitions from
@@ -17,7 +28,9 @@
 toolTransitionsBasic <- function(x, gross = NULL) {
 
   x <- x[, , grep("(_|manaf)", getItems(x, dim = 3), invert = TRUE, value = TRUE)]
-  diff <- x[, 2:dim(x)[2], ] - setItems(x[, 1:(dim(x)[2] - 1), ], getItems(x, dim = 2)[2:dim(x)[2]], dim = 2)
+  # assign transistions of a period to the first year in this transistion period
+  years <- paste0("y", getYears(x, as.integer = TRUE)[1:(dim(x)[2] - 1)] + 1)
+  diff <- setItems(x[, 2:dim(x)[2], ], years, dim = 2) - setItems(x[, 1:(dim(x)[2] - 1), ], years, dim = 2)
   reduce <- expand <- diff
   reduce[reduce > 0] <- 0
   reduce <- -reduce
@@ -42,6 +55,12 @@ toolTransitionsBasic <- function(x, gross = NULL) {
 
   out <- out[, , remove, invert = TRUE]
 
+  # correct for timestep length (transistions should reflect a single representative
+  # year, not the full transistion.)
+  tLengths <- new.magpie(years = getYears(out))
+  tLengths[, , ] <- diff(getYears(x, as.integer = TRUE))
+  if (any(tLengths != 1)) out <- out / tLengths
+
   if (!is.null(gross)) {
     if (!is.magpie(gross)) stop('"gross" must be a MAgPIE object containing bidirectional transistion shares!')
     # boost gross data set to all transistions
@@ -59,9 +78,6 @@ toolTransitionsBasic <- function(x, gross = NULL) {
     gross <- gross[getItems(smallerArea, dim = 1), , ] * smallerArea
     # ToDo: 1. annual transistions (net + gross, but also gross standalone)
     #          can currently be bigger than the area available for transformation
-    #       2. bidirectional transistions needs to be multiplied by number of years
-    #          (after that the transitions between two time steps could be bigger
-    #          than the available area!)
     out <- out + gross[getItems(smallerArea, dim = 1), , ] * smallerArea
   }
 
