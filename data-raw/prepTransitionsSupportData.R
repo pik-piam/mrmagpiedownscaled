@@ -104,6 +104,7 @@ write.magpie(out, file.path(computationFolder, "transitions_1995to2015.mz"))
 # compute bidirectional transitions (transitions which happen in a cell in the
 # same size in both directions or in other words: transitions, which don't lead
 # to net transitions)
+
 a <- read.magpie(file.path(computationFolder, "transitions_1995to2015.mz"))
 abi <- getBidirectionalTransistions(a)
 write.magpie(abi, file.path(computationFolder, "bidirectionalTransistions_1995to2015.mz"))
@@ -115,14 +116,41 @@ write.magpie(meanBi, file.path(computationFolder, "meanBidirectionalTransistions
 states <- extractStatesMean(file.path(ncFolder, "states.nc"), years = 1995:2016)
 write.magpie(states, file.path(computationFolder, "meanStates_1995to2016.mz"))
 
-# for every possible transition between two states select the smaller state area
-# of the two as reference area for the corresponding transition
-smallerArea <- toolGetSmallerArea(states)
-smallerArea <- smallerArea[, , getItems(meanBi, dim = 3)]
+### New bilateral share calculation approach     ###
+### (provide shares to both involved land types) ###
 
-# remove very small values
-meanBi[meanBi < 10^-6] <- 0
+computeMeanBiShares <- function(meanBi, states) {
+  # remove very small values
+  meanBi[meanBi < 10^-6] <- 0
 
-# compute transformation share relative to the smaller area to have a
-# area-scalable representative value of the bidirectional transistions
-x <- meanBi / (smallerArea + 10^-10)
+  # expand meanBi to have every transistion for both directions
+  direction2 <- sub("^(.*)\\.(.*)$", "\\2.\\1", getItems(meanBi, dim = 3))
+  meanBi <- mbind(meanBi, setItems(meanBi, direction2, raw = TRUE, dim = 3))
+
+  getSets(states)[4] <- "from"
+  withr::with_options(list(magclass_setMatching = TRUE, magclass_sizeLimit = 10e+10), {
+    x <- meanBi / (states + 10^-10)
+  })
+
+  # make sure that sum of shares for all categories the land comes from are not
+  # above 0.95 (not more land is distributed than available + some safety
+  # threshold of 5%)
+  test <- dimSums(x, dim = "to")
+  if (any(test > 0.95)) {
+    corr <- test
+    corr[test > 0.95] <- 0.95 / test[test > 0.95]
+    corr[test <= 0.95] <- 1
+    withr::with_options(list(magclass_setMatching = TRUE, magclass_sizeLimit = 10e+10), {
+      x <- x * corr
+    })
+    test2 <- dimSums(x, dim = "to")
+    if (any(test2 > 0.951)) stop("Something went wrong in the share correction!")
+  }
+  return(x)
+}
+
+computationFolder <- "../../mrdownscale_data/"
+meanBi <- read.magpie(file.path(computationFolder, "meanBidirectionalTransistions_1995to2015.mz"))
+states <- read.magpie(file.path(computationFolder, "meanStates_1995to2016.mz"))
+x <- computeMeanBiShares(meanBi, states)
+write.magpie(x, file.path(computationFolder, "meanBidirectionalTransistionsShares_1995to2015.mz"))
