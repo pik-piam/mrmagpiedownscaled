@@ -1,8 +1,8 @@
 Type: Package
 Package: mrdownscale
 Title: Downscale and harmonize MAgPIE output using LUH2 as reference data
-Version: 0.8.0.9001
-Date: 2023-10-20
+Version: 0.9.0
+Date: 2023-11-04
 Authors@R: c(
     person("Pascal", "Sauer", , "pascal.sauer@pik-potsdam.de", role = c("aut", "cre")),
     person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = "aut")

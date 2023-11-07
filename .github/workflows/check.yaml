@@ -23,6 +23,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: |
+            gamstransfer=?ignore
             any::lucode2
             any::covr
             any::madrat
@@ -57,7 +58,7 @@ jobs:
       - name: Test coverage
         shell: Rscript {0}
         run: |
-          print(list.files("./tests/testthat/"))
-          if(length(setdiff(list.files("./tests/testthat/"), "test-dummy.R")) > 0) covr::codecov(quiet = FALSE)
+          nonDummyTests <- setdiff(list.files("./tests/testthat/"), c("test-dummy.R", "_snaps"))
+          if(length(nonDummyTests) > 0) covr::codecov(quiet = FALSE)
         env:
           NOT_CRAN: "true"

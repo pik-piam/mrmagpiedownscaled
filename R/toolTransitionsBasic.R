@@ -1,23 +1,38 @@
 #' toolTransitionsBasic
 #'
-#' tool function to extract net transitions between categories from a land
-#' dataset with at least 2 time steps. The approach is rather simplistic by
+#' tool function to extract transitions between categories from a land
+#' data set with at least 2 time steps. The approach is rather simplistic by
 #' assuming that expansion happens proportionally in all affected classes (equal
-#' preference of transistions across all categories).
+#' preference of transitions across all categories).
 #'
-#' @param x magpie dataset containing land data with at least two time steps
+#' In addition to the net effect it can also estimate gross transition. For that
+#' purpose a reference data set containing bidirectional transition shares
+#' must be provided.
+#'
+#' If the time step length is longer than 1 year the returned object contains
+#' reference years for each period which can be repeated to retrieve the
+#' full transition between two time periods, e.g. if you provide two time steps
+#' 2000 and 2005 the return value will be the transition for year 2001. Repeating
+#' the same transition also in 2002, 2003, 2004 and 2005 will give the full
+#' transition from 2000 to 2005.
+#'
+#' @param x magpie data set containing land data with at least two time steps
 #' to extract net transitions from
-#' @param gross a magpie object containing bidirectional transition shares relative
-#' to the smaller land pool the transistions happen between (bidirectional means
-#' here that a transition of the same size happens in both directions so that
-#' the net transistion is zero)
+#' @param gross either boolean or a magpie object containing bidirectional
+#' transition shares relative to the area of the involved land pools (transition
+#' divided by the area of the land pool in the "from" sub dimension). If set to
+#' FALSE only net transitions will be returned. If set to TRUE an internal
+#' gross transition estimate based on average gross transitions in LUH2 in the
+#' period from 1995 to 2015 will be used.
 #' @author Jan Philipp Dietrich
 #' @export
 
-toolTransitionsBasic <- function(x, gross = NULL) {
+toolTransitionsBasic <- function(x, gross = FALSE) {
 
   x <- x[, , grep("(_|manaf)", getItems(x, dim = 3), invert = TRUE, value = TRUE)]
-  diff <- x[, 2:dim(x)[2], ] - setItems(x[, 1:(dim(x)[2] - 1), ], getItems(x, dim = 2)[2:dim(x)[2]], dim = 2)
+  # assign transitions of a period to the first year in this transition period
+  years <- paste0("y", getYears(x, as.integer = TRUE)[1:(dim(x)[2] - 1)] + 1)
+  diff <- setItems(x[, 2:dim(x)[2], ], years, dim = 2) - setItems(x[, 1:(dim(x)[2] - 1), ], years, dim = 2)
   reduce <- expand <- diff
   reduce[reduce > 0] <- 0
   reduce <- -reduce
@@ -42,27 +57,52 @@ toolTransitionsBasic <- function(x, gross = NULL) {
 
   out <- out[, , remove, invert = TRUE]
 
+  # correct for timestep length (transistions should reflect a single representative
+  # year, not the full transistion.)
+  tLengths <- new.magpie(years = getYears(out))
+  tLengths[, , ] <- diff(getYears(x, as.integer = TRUE))
+  if (any(tLengths != 1)) out <- out / tLengths
+
   if (!is.null(gross)) {
-    if (!is.magpie(gross)) stop('"gross" must be a MAgPIE object containing bidirectional transistion shares!')
-    # boost gross data set to all transistions
-    invertSet <- sub("^(.*)\\.(.*)$", "\\2.\\1", getItems(gross, dim = 3))
-    if (any(invertSet %in% getItems(gross, dim = 3))) {
-      stop("The gross transistion data set should only contain a single value for any bidirectional connection!")
+    if (isTRUE(gross)) {
+      gross <- read.magpie(system.file("extdata/meanBidirectionalTransistionsShares1995to2015.mz",
+                                       package = "mrdownscale"))
     }
-    gross <- mbind(gross, setItems(gross, invertSet, dim = 3, raw = TRUE))
-    smallerArea <- toolGetSmallerArea(x)[, 2:dim(x)[2], getItems(out, dim = 3)]
-    missing <- setdiff(getItems(smallerArea, dim = 3), getItems(gross, dim = 3))
-    dummy <- gross[, , 1]
-    dummy[, , ] <- 0
-    dummy <- setItems(dummy[, , rep(1, length(missing))], missing, dim = 3, raw = TRUE)
-    gross <- mbind(gross, dummy)
-    gross <- gross[getItems(smallerArea, dim = 1), , ] * smallerArea
-    # ToDo: 1. annual transistions (net + gross, but also gross standalone)
-    #          can currently be bigger than the area available for transformation
-    #       2. bidirectional transistions needs to be multiplied by number of years
-    #          (after that the transitions between two time steps could be bigger
-    #          than the available area!)
-    out <- out + gross[getItems(smallerArea, dim = 1), , ] * smallerArea
+    if (!is.magpie(gross)) stop('"gross" must be a MAgPIE object containing bidirectional transistion shares!')
+
+    # add (empty) self-transitions to enable following computations
+    selfTransistions <- paste0(getItems(gross, dim = 3.1), ".", getItems(gross, dim = 3.1))
+    tmp <- gross[, , 1]
+    tmp[, , ] <- 0
+    tmp <- setItems(tmp[, , rep(1, length(selfTransistions))], selfTransistions, dim = 3, raw = TRUE)
+    gross <- mbind(gross, tmp)
+    rm(tmp)
+    getSets(x)[4] <- "from"
+    withr::with_options(list(magclass_setMatching = TRUE, magclass_sizeLimit = 10e+10), {
+      x2 <- magpie_expand(x[, , getItems(gross, dim = "from")], gross[getItems(x, dim = 1), , ])
+      gross2 <- magpie_expand(gross[getItems(x, dim = 1), , ], x2)
+      getSets(gross2)[3] <- "year"
+      grossOptions <- x2 * gross2
+    })
+    rm(x2, gross, gross2)
+
+    # remove irrelevant entries
+    grossOptions <- grossOptions[, , selfTransistions, invert = TRUE]
+
+    # grossOptions contains now 4 (2x2) options for gross transistions for every
+    # connection: values computed as shares relative to each both involved landtypes
+    # computed relative to the land at start and end of the transistion
+    # (2 land types x 2 time steps)
+    # in the following always the smallest of these 4 values is being selected
+    # as gross transition to prevent overbooking of land areas
+    invItems <- sub("^(.*)\\.(.*)$", "\\2.\\1", getItems(grossOptions, dim = 3))
+    years <- paste0("y", getYears(grossOptions, as.integer = TRUE)[1:(dim(grossOptions)[2] - 1)] + 1)
+    opt1 <- setItems(grossOptions[, 2:dim(grossOptions)[2], ], dim = 2, years)
+    opt2 <- setItems(grossOptions[, 1:(dim(grossOptions)[2] - 1), ], dim = 2, years)[, , getItems(opt1, dim = 3)]
+    opt3 <- setItems(opt1, dim = 3, invItems, raw = TRUE)[, , getItems(opt1, dim = 3)]
+    opt4 <- setItems(opt2, dim = 3, invItems, raw = TRUE)[, , getItems(opt1, dim = 3)]
+    gross <- pmin(opt1, opt2, opt3, opt4)
+    out[, , getItems(gross, dim = 3)] <- out[, , getItems(opt1, dim = 3)] + gross
   }
 
   return(out)
