@@ -45,7 +45,7 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
       for (i in which(terra::datatype(out) == "double")) {
         out[[i]] <- out[[i]] * elementSize
       }
-      out <- terra::aggregate(out, by = ".id", fun = "sum", count = FALSE)
+      out <- terra::aggregate(out, by = ".id", fun = "sum", count = FALSE, na.rm = TRUE)
       names(out) <- sub("^sum\\_", "", names(out))
     } else if (inherits(x, "SpatRaster")) {
       out  <- terra::extract(x, target, "sum", bind = TRUE, na.rm = TRUE)
