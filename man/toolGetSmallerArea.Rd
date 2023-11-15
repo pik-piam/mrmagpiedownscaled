@@ -19,7 +19,7 @@ contains for every possible connection (land type A <-> land type B) the
 area of the smaller of these land types.
 This information is relevant if transitional shares should be calculated
 based on the smaller area of the two (assuming that the smaller area
-is determining how much transistions there will be).
+is determining how much transitions there will be).
 }
 \author{
 Jan Philipp Dietrich

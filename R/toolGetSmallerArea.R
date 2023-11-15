@@ -5,7 +5,7 @@
 #' area of the smaller of these land types.
 #' This information is relevant if transitional shares should be calculated
 #' based on the smaller area of the two (assuming that the smaller area
-#' is determining how much transistions there will be).
+#' is determining how much transitions there will be).
 #'
 #' @param states magpie dataset containing states information
 #' @return A land type x land type data set containing for each possible combination

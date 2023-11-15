@@ -1,6 +1,6 @@
 #' toolHarmonizeExtrapolateFade
 #'
-#' Tool function for creating a harmonized land data set with a smooth transistion
+#' Tool function for creating a harmonized land data set with a smooth tranistion
 #' from historic target data to simulated input data.
 #'
 #' A smooth transition is achieved in 2 steps: 1) extrapolating the target data

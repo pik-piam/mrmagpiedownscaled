@@ -21,4 +21,7 @@ fullRESCUE <- function(rev = NULL, ..., compression = 2) {
 
   toolWriteStates(land, fileSuffix = fileSuffix, now = now, compression = compression)
   toolWriteManagement(land, nonland, fileSuffix = fileSuffix, now = now, compression = compression)
+
+  calcOutput("LandTransitions", project = "RESCUE", aggregate = FALSE, file = "transitions.mz")
+
 }
