@@ -17,11 +17,20 @@ calcLandTransitions <- function(project = "RESCUE", gross = TRUE) {
   if (project != "RESCUE") stop("Can only report for project = 'RESCUE'")
 
   land <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)
-  out <- NULL
+  land <- land[, , grep("(_|manaf)", getItems(land, dim = 3), invert = TRUE, value = TRUE)]
+
   l <- 2
-  for (i in seq(1, nyears(land), l)) {
-    out <- mbind(out, toolTransitionsBasic(land[, i:min(nyears(land), i + l), ], gross = gross))
+  sequence <- seq(1, nyears(land) - 1, l)
+  for (i in sequence) {
+    message("Compute ", getYears(land)[i], " to ", getYears(land)[min(nyears(land), i + l)])
+    write.magpie(toolTransitionsBasic(land[, i:min(nyears(land), i + l), ], gross = gross), paste0(i, ".mz"))
   }
+  out <- list()
+  for (i in sequence) {
+    out[[i]] <- read.magpie(paste0(i, ".mz"))
+    unlink(paste0(i, ".mz"))
+  }
+  out <- mbind(out)
 
   return(list(x = out,
               isocountries = FALSE,
