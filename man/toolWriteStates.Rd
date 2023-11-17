@@ -2,12 +2,12 @@
 % Please edit documentation in R/toolWriteStates.R
 \name{toolWriteStates}
 \alias{toolWriteStates}
-\title{toolWriteManagement}
+\title{toolWriteStates}
 \usage{
 toolWriteStates(land, fileSuffix, now = Sys.time(), compression = 2)
 }
 \arguments{
-\item{land}{land data the management information should be extracted from}
+\item{land}{land data the information should be extracted from}
 
 \item{fileSuffix}{second half of the resulting file name for the output NetCDF file}
 

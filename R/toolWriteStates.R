@@ -1,8 +1,8 @@
-#' toolWriteManagement
+#' toolWriteStates
 #'
 #' Tool function to write LUH2-style states data in NetCDF format
 #'
-#' @param land land data the management information should be extracted from
+#' @param land land data the information should be extracted from
 #' @param fileSuffix second half of the resulting file name for the output NetCDF file
 #' @param now time that should be used as time stamp in metadata
 #' @param compression compression level of the resulting .nc files, possible values are integers from 1-9,

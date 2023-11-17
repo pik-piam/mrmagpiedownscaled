@@ -14,7 +14,7 @@ fullRESCUE <- function(rev = NULL, ..., compression = 2) {
 
   now <- Sys.time()
   version <- ifelse(is.null(rev), format(now, "%Y-%m-%d"), rev)
-  fileSuffix <- paste0("_input4MIPs_landState_RESCUE_PIK-MAgPIE67k-", version, "_gn_1995-2100.nc")
+  fileSuffix <- paste0("_input4MIPs_landState_RESCUE_PIK-MAgPIE67k-", version, "_gn_1995-2100")
 
   land <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)
   nonland <- calcOutput("NonlandReport", project = "RESCUE", aggregate = FALSE, try = TRUE)
@@ -22,6 +22,7 @@ fullRESCUE <- function(rev = NULL, ..., compression = 2) {
   toolWriteStates(land, fileSuffix = fileSuffix, now = now, compression = compression)
   toolWriteManagement(land, nonland, fileSuffix = fileSuffix, now = now, compression = compression)
 
-  calcOutput("LandTransitions", project = "RESCUE", aggregate = FALSE, file = "transitions.mz")
+  trans <- calcOutput("LandTransitions", project = "RESCUE", aggregate = FALSE, file = "transitions.mz")
+  toolWriteTransitions(trans, fileSuffix = fileSuffix, now = now, compression = compression)
 
 }

@@ -13,6 +13,8 @@
 
 toolWriteNC <- function(x, variables, fileName, now = Sys.time(), compression = 2) {
 
+  if (!grepl("\\.nc$", fileName)) fileName <- paste0(fileName, ".nc")
+
   missingValue <- 1e20
 
   .convertExtendUnitWrite <- function(x, fileName, compression, missingValue) {
