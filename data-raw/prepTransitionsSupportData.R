@@ -2,7 +2,7 @@ library(terra) # nolint: undesirable_function_linter
 library(magclass) # nolint: undesirable_function_linter
 
 
-extractTransitions <- function(file = "transistions.nc", years = 2014:2015, filterPrimary = TRUE) {
+extractTransitions <- function(file = "transitions.nc", years = 2014:2015, filterPrimary = TRUE) {
   # correct years to "years since 850"
   years <- years - 850
   # extract years from transitions.nc and return them in magpie format
@@ -55,7 +55,7 @@ extractStatesMean <- function(file = "states.nc", years = 1995:2016, filterPrima
   return(out)
 }
 
-getBidirectionalTransistions <- function(b) {
+getBidirectionalTransitions <- function(b) {
   # get transition pairs
   pairs <- data.frame(from = getItems(b, dim = 3))
   pairs$to <- sub("^(.*)\\.(.*)$", "\\2.\\1", pairs$from)
@@ -106,11 +106,11 @@ write.magpie(out, file.path(computationFolder, "transitions_1995to2015.mz"))
 # to net transitions)
 
 a <- read.magpie(file.path(computationFolder, "transitions_1995to2015.mz"))
-abi <- getBidirectionalTransistions(a)
-write.magpie(abi, file.path(computationFolder, "bidirectionalTransistions_1995to2015.mz"))
+abi <- getBidirectionalTransitions(a)
+write.magpie(abi, file.path(computationFolder, "bidirectionalTransitions_1995to2015.mz"))
 # compute mean bilateral transitions over the selected time period
 meanBi <- dimSums(abi, dim = 2) / dim(abi)[2]
-write.magpie(meanBi, file.path(computationFolder, "meanBidirectionalTransistions_1995to2015.mz"))
+write.magpie(meanBi, file.path(computationFolder, "meanBidirectionalTransitions_1995to2015.mz"))
 
 # calculate corresponding mean state levels for the corresponding period
 states <- extractStatesMean(file.path(ncFolder, "states.nc"), years = 1995:2016)
@@ -123,7 +123,7 @@ computeMeanBiShares <- function(meanBi, states) {
   # remove very small values
   meanBi[meanBi < 10^-6] <- 0
 
-  # expand meanBi to have every transistion for both directions
+  # expand meanBi to have every transition for both directions
   direction2 <- sub("^(.*)\\.(.*)$", "\\2.\\1", getItems(meanBi, dim = 3))
   meanBi <- mbind(meanBi, setItems(meanBi, direction2, raw = TRUE, dim = 3))
 
@@ -150,7 +150,7 @@ computeMeanBiShares <- function(meanBi, states) {
 }
 
 computationFolder <- "../../mrdownscale_data/"
-meanBi <- read.magpie(file.path(computationFolder, "meanBidirectionalTransistions_1995to2015.mz"))
+meanBi <- read.magpie(file.path(computationFolder, "meanBidirectionalTransitions_1995to2015.mz"))
 states <- read.magpie(file.path(computationFolder, "meanStates_1995to2016.mz"))
 x <- computeMeanBiShares(meanBi, states)
-write.magpie(x, file.path(computationFolder, "meanBidirectionalTransistionsShares_1995to2015.mz"))
+write.magpie(x, file.path(computationFolder, "meanBidirectionalTransitionsShares_1995to2015.mz"))

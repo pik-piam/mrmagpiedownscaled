@@ -17,7 +17,7 @@ data begins}
 \item{finalYear}{year in which the transition shall be completed}
 }
 \description{
-Tool function for creating a harmonized land data set with a smooth transistion
+Tool function for creating a harmonized land data set with a smooth tranistion
 from historic target data to simulated input data.
 }
 \details{

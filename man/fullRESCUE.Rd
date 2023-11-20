@@ -7,7 +7,7 @@
 fullRESCUE(rev = NULL, ..., compression = 2)
 }
 \arguments{
-\item{rev}{revision number of the data, by default current date is used}
+\item{rev}{revision number of the data. If not provided the current date will be used instead}
 
 \item{...}{reserved for future use}
 
@@ -19,5 +19,5 @@ Run the pipeline to generate harmonized and downscaled data to report for the RE
 Write .nc files, print full report on consistency checks and write it to report.log.
 }
 \author{
-Pascal Sauer
+Pascal Sauer, Jan Philipp Dietrich
 }

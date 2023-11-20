@@ -57,24 +57,24 @@ toolTransitionsBasic <- function(x, gross = FALSE) {
 
   out <- out[, , remove, invert = TRUE]
 
-  # correct for timestep length (transistions should reflect a single representative
-  # year, not the full transistion.)
+  # correct for timestep length (transitions should reflect a single representative
+  # year, not the full transition.)
   tLengths <- new.magpie(years = getYears(out))
   tLengths[, , ] <- diff(getYears(x, as.integer = TRUE))
   if (any(tLengths != 1)) out <- out / tLengths
 
   if (!is.null(gross)) {
     if (isTRUE(gross)) {
-      gross <- read.magpie(system.file("extdata/meanBidirectionalTransistionsShares1995to2015.mz",
+      gross <- read.magpie(system.file("extdata/meanBidirectionalTransitionsShares1995to2015.mz",
                                        package = "mrdownscale"))
     }
-    if (!is.magpie(gross)) stop('"gross" must be a MAgPIE object containing bidirectional transistion shares!')
+    if (!is.magpie(gross)) stop('"gross" must be a MAgPIE object containing bidirectional transition shares!')
 
     # add (empty) self-transitions to enable following computations
-    selfTransistions <- paste0(getItems(gross, dim = 3.1), ".", getItems(gross, dim = 3.1))
+    selfTransitions <- paste0(getItems(gross, dim = 3.1), ".", getItems(gross, dim = 3.1))
     tmp <- gross[, , 1]
     tmp[, , ] <- 0
-    tmp <- setItems(tmp[, , rep(1, length(selfTransistions))], selfTransistions, dim = 3, raw = TRUE)
+    tmp <- setItems(tmp[, , rep(1, length(selfTransitions))], selfTransitions, dim = 3, raw = TRUE)
     gross <- mbind(gross, tmp)
     rm(tmp)
     getSets(x)[4] <- "from"
@@ -87,11 +87,11 @@ toolTransitionsBasic <- function(x, gross = FALSE) {
     rm(x2, gross, gross2)
 
     # remove irrelevant entries
-    grossOptions <- grossOptions[, , selfTransistions, invert = TRUE]
+    grossOptions <- grossOptions[, , selfTransitions, invert = TRUE]
 
-    # grossOptions contains now 4 (2x2) options for gross transistions for every
+    # grossOptions contains now 4 (2x2) options for gross transitions for every
     # connection: values computed as shares relative to each both involved landtypes
-    # computed relative to the land at start and end of the transistion
+    # computed relative to the land at start and end of the transition
     # (2 land types x 2 time steps)
     # in the following always the smallest of these 4 values is being selected
     # as gross transition to prevent overbooking of land areas
