@@ -4,20 +4,29 @@
 \alias{toolHarmonizeExtrapolateFade}
 \title{toolHarmonizeExtrapolateFade}
 \usage{
-toolHarmonizeExtrapolateFade(input, target, harmonizeYear, finalYear)
+toolHarmonizeExtrapolateFade(
+  input,
+  target,
+  harmonizeYear,
+  finalYear,
+  constantSum
+)
 }
 \arguments{
-\item{input}{name of the land input source to be used (default "magpie")}
+\item{input}{input data}
 
-\item{target}{name of the land target source to be used (default "luh2")}
+\item{target}{target data}
 
 \item{harmonizeYear}{year in which the transition from target to input
 data begins}
 
 \item{finalYear}{year in which the transition shall be completed}
+
+\item{constantSum}{boolean indicating whether the total sum over all layers
+is suppossed to stay contstant (e.g. sum over all land types) or not.}
 }
 \description{
-Tool function for creating a harmonized land data set with a smooth tranistion
+Tool function for creating a harmonized data set with a smooth transition
 from historic target data to simulated input data.
 }
 \details{
@@ -26,9 +35,12 @@ into the future so that it covers the whole transition period and 2) fade
 over from the extrapolated target data to the input data.
 
 Extrapolation of target data is achieved by taking the historically observed
-growth rates of the different land categories, dampen them (to avoid overestimation
-of trends), apply them into the future and finally normalize the result
-to the total area of each spatial entity.
+growth rates of the different categories, dampen them (to avoid overestimation
+of trends), apply them into the future and finally, if \code{constantSum} is
+set to TRUE, normalize the result to the total sum of each spatial entity.
+
+Please note that it is crucial to set the switch \code{constantSum} correctly
+for the specific application as otherwise the results will be inconsistent.
 }
 \author{
 Jan Philipp Dietrich
