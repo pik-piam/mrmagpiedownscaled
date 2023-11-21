@@ -16,8 +16,8 @@
 #' @examples
 #' mrdownscale:::toolExpectTrue(is.numeric(1), "data is numeric", level = -1)
 #' getMadratMessage("status")
-
 toolExpectTrue <- function(check, description, level = 0) {
   status <- ifelse(isTRUE(check), "ok", "warn")
+  if (!isTRUE(check)) description <- paste0("Check failed: ", description)
   toolStatusMessage(status, description, level = 1 + level)
 }

@@ -42,6 +42,7 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
                                      ", min ratio = ", round(min(corr), 2),  ")"))
   }
 
+  if (method == "extrapolateFade") method <- "extrapolateFadeConstantSum"
   harmonizer <- toolGetHarmonizer(method)
   out <- harmonizer(input, target, harmonizeYear = harmonizeYear, finalYear = finalYear)
   out[is.na(out)] <- 0 # why are NAs introduced here? input and target have no NAs

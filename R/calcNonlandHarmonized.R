@@ -42,6 +42,7 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   stopifnot(setequal(getItems(input, 3), getItems(target, 3)))
   target <- target[, , getItems(input, 3)] # harmonize order of dim 3
 
+  if (method == "extrapolateFade") method <- "extrapolateFadeDynamicSum"
   harmonizer <- toolGetHarmonizer(method)
   out <- harmonizer(input, target, harmonizeYear = harmonizeYear, finalYear = finalYear)
 

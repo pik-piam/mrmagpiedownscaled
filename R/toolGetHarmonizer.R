@@ -6,9 +6,13 @@
 #' @return harmonizer function
 #' @author Pascal Sauer
 toolGetHarmonizer <- function(harmonizerName) {
+  toolHarmonizeExtrapolateFadeConstantSum <- function(...) toolHarmonizeExtrapolateFade(..., constantSum = TRUE)
+  toolHarmonizeExtrapolateFadeDynamicSum  <- function(...) toolHarmonizeExtrapolateFade(..., constantSum = FALSE)
+
   harmonizers <- list(offset = toolHarmonizeOffset,
                       fade = toolHarmonizeFade,
-                      extrapolateFade = toolHarmonizeExtrapolateFade)
+                      extrapolateFadeConstantSum = toolHarmonizeExtrapolateFadeConstantSum,
+                      extrapolateFadeDynamicSum = toolHarmonizeExtrapolateFadeDynamicSum)
   stopifnot(harmonizerName %in% names(harmonizers))
   return(harmonizers[[harmonizerName]])
 }
