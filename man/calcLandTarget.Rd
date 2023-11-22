@@ -7,7 +7,8 @@
 calcLandTarget(target = "luh2mod")
 }
 \arguments{
-\item{target}{name of the target dataset, options are: luh2, luh2mod}
+\item{target}{name of the target dataset, options are: luh2, luh2mod
+luh2mod will split secdf into forestry and secdf}
 }
 \value{
 land target data

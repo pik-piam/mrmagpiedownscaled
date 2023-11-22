@@ -4,6 +4,7 @@
 #' harmonization and downscaling, checking data for consistency before returning.
 #'
 #' @param target name of the target dataset, options are: luh2, luh2mod
+#' luh2mod will split secdf into forestry and secdf
 #' @return land target data
 #' @author Pascal Sauer
 calcLandTarget <- function(target = "luh2mod") {
