@@ -18,6 +18,12 @@ readLUH2v2h <- function(subtype = "states", subset = seq(1995, 2015, 5)) {
     unit <- "1"
   } else if (subtype == "management") {
     x <- terra::rast("management.nc")
+
+    # combf is a share of wood harvest like rndwd and fulwd, but we can ignore it as long as it is 0 everywhere
+    if (!identical(subset, seq(1995, 2015, 5))) { # check takes long, so skip for default subset (was tested before)
+      stopifnot(identical(max(terra::values(max(x["combf"])), na.rm = TRUE), 0))
+    }
+
     x <- x["crpbf|rndwd|fulwd|fertl|irrig"]
     unit <- "1, except fertl: kg ha-1 yr-1"
   } else {

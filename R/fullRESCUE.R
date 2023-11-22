@@ -24,5 +24,4 @@ fullRESCUE <- function(rev = NULL, ..., compression = 2) {
 
   trans <- calcOutput("LandTransitions", project = "RESCUE", aggregate = FALSE, file = "transitions.mz")
   toolWriteTransitions(trans, fileSuffix = fileSuffix, now = now, compression = compression)
-
 }
