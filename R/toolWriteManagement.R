@@ -8,9 +8,10 @@
 #' @param now time that should be used as time stamp in metadata
 #' @param compression compression level of the resulting .nc files, possible values are integers from 1-9,
 #' 1 = fastest, 9 = best compression
+#' @param interpolate boolean defining whether the data should be interpolated to annual values or not
 #'
 #' @author Pascal Sauer, Jan Philipp Dietrich
-toolWriteManagement <- function(land, nonland, fileSuffix, now = Sys.time(), compression = 2) {
+toolWriteManagement <- function(land, nonland, fileSuffix, now = Sys.time(), compression = 2, interpolate = FALSE) {
 
   if (inherits(nonland, "try-error") || inherits(land, "try-error")) {
     warning("Management data incomplete, management file not created!")
@@ -26,5 +27,12 @@ toolWriteManagement <- function(land, nonland, fileSuffix, now = Sys.time(), com
   landVariables    <- intersect(getItems(land, dim = 3), managementVariables)
   nonlandVariables <- intersect(getItems(nonland, dim = 3), managementVariables)
   x <- mbind(land[, , landVariables], nonland[, , nonlandVariables])
-  toolWriteNC(x, managementVariables, paste0("multiple-management", fileSuffix), now, compression)
+
+  if (interpolate) {
+    interpolationType <- "linear"
+  } else {
+    interpolationType <- NULL
+  }
+  toolWriteNC(x, managementVariables, paste0("multiple-management", fileSuffix), now, compression,
+              interpolationType = interpolationType, years = 1995:2100)
 }

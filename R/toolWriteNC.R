@@ -8,16 +8,45 @@
 #' @param now time that should be used as time stamp in metadata
 #' @param compression compression level of the resulting .nc files, possible values are integers from 1-9,
 #' 1 = fastest, 9 = best compression
+#' @param interpolationType Either NULL (no interpolation), "linear" (linear interpolation), or "constant"
+#' (last available year is being repeated)
+#' @param years years to be returned. Will only be considered if a interpolation type is selected
 #'
 #' @author Pascal Sauer, Jan Philipp Dietrich
 
-toolWriteNC <- function(x, variables, fileName, now = Sys.time(), compression = 2) {
+toolWriteNC <- function(x, variables, fileName, now = Sys.time(), compression = 2,
+                        interpolationType = NULL, years = 1995:2100) {
 
   if (!grepl("\\.nc$", fileName)) fileName <- paste0(fileName, ".nc")
 
   missingValue <- 1e20
 
-  .convertExtendUnitWrite <- function(x, fileName, compression, missingValue) {
+  .convertExtendUnitWrite <- function(x, fileName, compression, missingValue, interpolationType, years) {
+    if (!is.null(interpolationType)) {
+      if (interpolationType == "linear") {
+        x <- time_interpolate(x, interpolated_year = years)
+      } else if (interpolationType == "constant") {
+        .constInterpolate <- function(x, years) {
+          .vec <- function(years, y) {
+            i <- match(sort(years), y)
+            k <- NULL
+            for (j in seq_len(i)) {
+              if (!is.na(i[j])) {
+                k <- i[j]
+              } else {
+                i[j] <- k
+              }
+            }
+            return(y[i])
+          }
+          t <- .vec(years, getYears(x, as.integer = TRUE))
+          return(setYears(x[, t, ], years))
+        }
+        x <- .constInterpolate(x, years)
+      } else {
+        stop("Unsupported interpolation type")
+      }
+    }
     extent <- terra::ext(-180, 180, -90, 90)
     xRaster <- toolSpatRasterToDataset(terra::extend(as.SpatRaster(x), extent))
     terra::units(xRaster) <- sub(" unit: ", "", grep(" unit: ", getComment(x), value = TRUE))
@@ -100,7 +129,8 @@ toolWriteNC <- function(x, variables, fileName, now = Sys.time(), compression = 
   for (i in seq_along(variables)) {
     variable <- variables[i]
     message(i, "/", length(variables), " writing ", variable, ".nc")
-    .convertExtendUnitWrite(x[, , variable], paste0(variable, ".nc"), compression = NA, missingValue = missingValue)
+    .convertExtendUnitWrite(x[, , variable], paste0(variable, ".nc"), compression = NA, missingValue = missingValue,
+                            interpolationType = interpolationType, years = years)
   }
   y <- terra::sds(paste0(variables, ".nc"))
   y <- .setUnitsRemoveCrs(y)

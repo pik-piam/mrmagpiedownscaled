@@ -4,7 +4,13 @@
 \alias{toolWriteStates}
 \title{toolWriteStates}
 \usage{
-toolWriteStates(land, fileSuffix, now = Sys.time(), compression = 2)
+toolWriteStates(
+  land,
+  fileSuffix,
+  now = Sys.time(),
+  compression = 2,
+  interpolate = FALSE
+)
 }
 \arguments{
 \item{land}{land data the information should be extracted from}
@@ -15,6 +21,8 @@ toolWriteStates(land, fileSuffix, now = Sys.time(), compression = 2)
 
 \item{compression}{compression level of the resulting .nc files, possible values are integers from 1-9,
 1 = fastest, 9 = best compression}
+
+\item{interpolate}{boolean defining whether the data should be interpolated to annual values or not}
 }
 \description{
 Tool function to write LUH2-style states data in NetCDF format

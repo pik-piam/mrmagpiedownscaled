@@ -9,7 +9,8 @@ toolWriteManagement(
   nonland,
   fileSuffix,
   now = Sys.time(),
-  compression = 2
+  compression = 2,
+  interpolate = FALSE
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ toolWriteManagement(
 
 \item{compression}{compression level of the resulting .nc files, possible values are integers from 1-9,
 1 = fastest, 9 = best compression}
+
+\item{interpolate}{boolean defining whether the data should be interpolated to annual values or not}
 }
 \description{
 Tool function to write LUH2-style management data in NetCDF format

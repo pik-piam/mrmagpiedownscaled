@@ -7,9 +7,10 @@
 #' @param ... reserved for future use
 #' @param compression compression level of the resulting .nc files, possible values are integers from 1-9,
 #' 1 = fastest, 9 = best compression
+#' @param interpolate boolean defining whether the data should be interpolated to annual values or not
 #'
 #' @author Pascal Sauer, Jan Philipp Dietrich
-fullRESCUE <- function(rev = NULL, ..., compression = 2) {
+fullRESCUE <- function(rev = NULL, ..., compression = 2, interpolate = FALSE) {
   stopifnot(...length() == 0)
 
   now <- Sys.time()
@@ -19,9 +20,10 @@ fullRESCUE <- function(rev = NULL, ..., compression = 2) {
   land <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)
   nonland <- calcOutput("NonlandReport", project = "RESCUE", aggregate = FALSE, try = TRUE)
 
-  toolWriteStates(land, fileSuffix = fileSuffix, now = now, compression = compression)
-  toolWriteManagement(land, nonland, fileSuffix = fileSuffix, now = now, compression = compression)
+  toolWriteStates(land, fileSuffix = fileSuffix, now = now, compression = compression, interpolate = interpolate)
+  toolWriteManagement(land, nonland, fileSuffix = fileSuffix, now = now, compression = compression,
+                      interpolate = interpolate)
 
   trans <- calcOutput("LandTransitions", project = "RESCUE", aggregate = FALSE, file = "transitions.mz")
-  toolWriteTransitions(trans, fileSuffix = fileSuffix, now = now, compression = compression)
+  toolWriteTransitions(trans, fileSuffix = fileSuffix, now = now, compression = compression, interpolate = interpolate)
 }
