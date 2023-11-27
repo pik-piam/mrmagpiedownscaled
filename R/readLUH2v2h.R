@@ -2,8 +2,9 @@
 #'
 #' Read LUH2v2h data. For the states subtype, the secma and secmb categories are removed.
 #' For the management subtype, only the categories crpbf, rndwd, fulwd, fertl and irrig are read.
+#' For the transitions subtype, only the wood harvest categories bioh and harv are read.
 #'
-#' @param subtype one of states, management, cellArea
+#' @param subtype one of states, management, transitions, cellArea
 #' @param subset subset of years to read
 readLUH2v2h <- function(subtype = "states", subset = seq(1995, 2015, 5)) {
   if (subtype == "cellArea") {
@@ -26,8 +27,12 @@ readLUH2v2h <- function(subtype = "states", subset = seq(1995, 2015, 5)) {
 
     x <- x["crpbf|rndwd|fulwd|fertl|irrig"]
     unit <- "1, except fertl: kg ha-1 yr-1"
+  } else if (subtype == "transitions") {
+    x <- terra::rast("transitions.nc")
+    x <- x["bioh|harv"]
+    unit <- "*_bioh: kg C, *_harv: 1"
   } else {
-    stop("subtype must be states, management or cellArea")
+    stop("subtype must be states, management, transitions or cellArea")
   }
 
   names(x) <- paste0("y", terra::time(x), "..", sub("_[0-9]+$", "", names(x)))
