@@ -1,4 +1,7 @@
-raw <- terra::rast("data-raw/raw/harvested_area_GADM_timeseries_2000-2009_20200417_20200127.nc",
+# the data was originally located at /p/projects/rd3mod/inputdata/sources/LandInG/landuse_paper/tmp/work_5min/
+# note this is harvested area, physical area might be slightly better, but was not readily available
+raw <- terra::rast(paste0("data-raw/raw/harvested_area_GADM_timeseries_2000-2009_20200417_20200127",
+                          "_madrat_multicropping_LUH2v2_disaggregated.nc"),
                    c("rainfed_harvested_area", "irrigated_harvested_area"))
 year <- 2000
 raw <- raw[[terra::time(raw) == year]]
@@ -55,5 +58,9 @@ remove <- c("Tobacco, unmanufactured, irrigated", "Bastfibres, other, irrigated"
             "Pyrethrum, dried, rainfed", "Gums, natural, rainfed", "Ramie, rainfed",
             "Agave fibres nes, rainfed", "Manila fibre (abaca), rainfed")
 x <- x[, , remove, invert = TRUE]
+
+# coords are stored as strings, round to prevent coords like "-79p75.-0p249999999999986"
+getCoords(x) <- round(getCoords(x), 2)
+
 magclass::write.magpie(x, paste0("inst/extdata/toolbox", year, ".mz"), overwrite = TRUE)
 unlink(Sys.glob("loop-*.tif"))
