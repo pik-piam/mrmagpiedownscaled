@@ -7,10 +7,17 @@
 #' @param now time that should be used as time stamp in metadata
 #' @param compression compression level of the resulting .nc files, possible values are integers from 1-9,
 #' 1 = fastest, 9 = best compression
+#' @param interpolate boolean defining whether the data should be interpolated to annual values or not
 #'
 #' @author Jan Philipp Dietrich
-toolWriteTransitions <- function(trans, fileSuffix, now = Sys.time(), compression = 2) {
+toolWriteTransitions <- function(trans, fileSuffix, now = Sys.time(), compression = 2, interpolate = FALSE) {
   getItems(trans, raw = TRUE, dim = 3) <- sub("\\.", "_to_", getItems(trans, dim = 3))
   getSets(trans, fulldim = FALSE)[3] <- "transitions"
-  toolWriteNC(trans, getItems(trans, dim = 3), paste0("multiple-transitions", fileSuffix), now, compression)
+  if (interpolate) {
+    interpolationType <- "linear"
+  } else {
+    interpolationType <- NULL
+  }
+  toolWriteNC(trans, getItems(trans, dim = 3), paste0("multiple-transitions", fileSuffix), now, compression,
+              interpolationType = interpolationType, years = 1995:2100)
 }

@@ -7,11 +7,12 @@
 readLUH2v2h(subtype = "states", subset = seq(1995, 2015, 5))
 }
 \arguments{
-\item{subtype}{one of states, management, cellArea}
+\item{subtype}{one of states, management, transitions, cellArea}
 
 \item{subset}{subset of years to read}
 }
 \description{
 Read LUH2v2h data. For the states subtype, the secma and secmb categories are removed.
 For the management subtype, only the categories crpbf, rndwd, fulwd, fertl and irrig are read.
+For the transitions subtype, only the wood harvest categories bioh and harv are read.
 }

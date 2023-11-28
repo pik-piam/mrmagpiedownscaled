@@ -4,7 +4,15 @@
 \alias{toolWriteNC}
 \title{toolWriteNC}
 \usage{
-toolWriteNC(x, variables, fileName, now = Sys.time(), compression = 2)
+toolWriteNC(
+  x,
+  variables,
+  fileName,
+  now = Sys.time(),
+  compression = 2,
+  interpolationType = NULL,
+  years = 1995:2100
+)
 }
 \arguments{
 \item{x}{data to be written to file}
@@ -17,6 +25,11 @@ toolWriteNC(x, variables, fileName, now = Sys.time(), compression = 2)
 
 \item{compression}{compression level of the resulting .nc files, possible values are integers from 1-9,
 1 = fastest, 9 = best compression}
+
+\item{interpolationType}{Either NULL (no interpolation), "linear" (linear interpolation), or "constant"
+(last available year is being repeated)}
+
+\item{years}{years to be returned. Will only be considered if a interpolation type is selected}
 }
 \description{
 Tool function to write LUH2-style NetCDF files

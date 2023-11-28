@@ -1,8 +1,8 @@
 Type: Package
 Package: mrdownscale
 Title: Downscale and harmonize MAgPIE output using LUH2 as reference data
-Version: 0.11.2
-Date: 2023-11-21
+Version: 0.11.3
+Date: 2023-11-27
 Authors@R: c(
     person("Pascal", "Sauer", , "pascal.sauer@pik-potsdam.de", role = c("aut", "cre")),
     person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = "aut")
@@ -17,6 +17,7 @@ Depends:
     madrat (>= 3.6.0),
     magclass (>= 6.9.1)
 Imports:
+    gdx,
     luscale,
     magpie4 (>= 1.188.0),
     mip,

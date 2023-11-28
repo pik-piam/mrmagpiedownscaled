@@ -4,7 +4,7 @@
 \alias{fullRESCUE}
 \title{fullRESCUE}
 \usage{
-fullRESCUE(rev = NULL, ..., compression = 2)
+fullRESCUE(rev = NULL, ..., compression = 2, interpolate = FALSE)
 }
 \arguments{
 \item{rev}{revision number of the data. If not provided the current date will be used instead}
@@ -13,6 +13,8 @@ fullRESCUE(rev = NULL, ..., compression = 2)
 
 \item{compression}{compression level of the resulting .nc files, possible values are integers from 1-9,
 1 = fastest, 9 = best compression}
+
+\item{interpolate}{boolean defining whether the data should be interpolated to annual values or not}
 }
 \description{
 Run the pipeline to generate harmonized and downscaled data to report for the RESCUE project.
