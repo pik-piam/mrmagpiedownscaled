@@ -2,10 +2,9 @@
 #'
 #' Read function for data coming from the MAgPIE model.
 #'
-#' @param subtype type of data to be read in. Available options are "land",
-#' "crop", "woodHarvest" and "fertilizer"
+#' @param subtype type of data to be read in. Available options are land,
+#' crop, woodHarvestWeight, woodHarvestArea and fertilizer
 #' @author Pascal Sauer, Jan Philipp Dietrich
-
 readMagpie <- function(subtype = "land") {
   "!# @monitor magpie4:::addGeometry"
 
@@ -50,7 +49,7 @@ readMagpie <- function(subtype = "land") {
     getSets(x) <- c("region", "id", "year", "source", "woodType")
 
     return(list(x = x,
-                unit = "mio. t DM",
+                unit = "mio. t DM yr-1",
                 min = 0,
                 description = "roundwood and fuelwood harvest weight separated by source"))
   } else if (subtype == "woodHarvestArea") {

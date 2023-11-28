@@ -11,7 +11,7 @@ calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2mod"
   x <- calcOutput("NonlandInput", input = input, aggregate = FALSE)
 
   # separate categories that need to be mapped from those that don't
-  wood <- x[, , c("rndwd", "fulwd")]
+  # wood <- x[, , c("rndwd", "fulwd")]
   x <- x[, , c("rndwd", "fulwd"), invert = TRUE]
 
   # map categories using weights from land categorization
@@ -46,13 +46,13 @@ calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2mod"
   out <- out[, , c("c3per_biofuel_2nd_gen", "c4per_biofuel_2nd_gen"), invert = TRUE]
   getItems(out, 3) <- paste0(getItems(out, 3), "_fertilizer")
 
-  out <- mbind(out, wood)
+  out <- mbind(out)#, wood)
   attr(out, "crs") <- attr(x, "crs")
   attr(out, "geometry") <- attr(x, "geometry")
 
   # check data for consistency
   toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
-  expectedCategories <- c(paste0(c("c3ann", "c4ann", "c3per", "c4per", "c3nfx"), "_fertilizer"), "rndwd", "fulwd")
+  expectedCategories <- c(paste0(c("c3ann", "c4ann", "c3per", "c4per", "c3nfx"), "_fertilizer"))#, "rndwd", "fulwd")
   toolExpectTrue(setequal(getItems(out, dim = 3), expectedCategories), "Nonland categories match target definition")
   toolExpectTrue(all(out >= 0), "All values are >= 0")
 

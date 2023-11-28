@@ -11,17 +11,17 @@
 #' @author Pascal Sauer
 calcNonlandInput <- function(input = "magpie") {
   if (input == "magpie") {
-    wood <- readSource("Magpie", subtype = "woodHarvest")
-    geometry <- attr(wood, "geometry")
-    crs <- attr(wood, "crs")
+    # wood <- readSource("Magpie", subtype = "woodHarvest")
 
-    stopifnot(!is.na(wood),
-              identical(getNames(wood), c("wood", "woodfuel")))
-    getNames(wood) <- c("rndwd", "fulwd")
-    wood <- wood / dimSums(wood, dim = 3)
-    wood[is.na(wood)] <- 0.5 # for cells without wood harvest, assume equal shares
+    # stopifnot(!is.na(wood),
+    #           identical(getNames(wood), c("wood", "woodfuel")))
+    # getNames(wood) <- c("rndwd", "fulwd")
+    # wood <- wood / dimSums(wood, dim = 3)
+    # wood[is.na(wood)] <- 0.5 # assume equal shares for cells without wood harvest, so they still sum up to 1
 
     fertilizer <- readSource("Magpie", subtype = "fertilizer")
+    geometry <- attr(fertilizer, "geometry")
+    crs <- attr(fertilizer, "crs")
     # clusters without crop area are NA, replace with 0
     fertilizer[is.na(fertilizer)] <- 0
     # there are some negative values very close to zero, replace with 0
@@ -31,7 +31,8 @@ calcNonlandInput <- function(input = "magpie") {
     fertilizer <- fertilizer * 10^9
     getItems(fertilizer, 3) <- paste0(getItems(fertilizer, 3), "_fertilizer")
 
-    out <- mbind(wood, fertilizer)
+    out <- mbind(#wood,
+                 fertilizer)
     attr(out, "geometry") <- geometry
     attr(out, "crs") <- crs
   } else {
@@ -43,7 +44,7 @@ calcNonlandInput <- function(input = "magpie") {
   toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
   toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
   toolExpectTrue(all(out >= 0), "All values are >= 0")
-  toolExpectTrue(all(round(dimSums(out[, , c("rndwd", "fulwd")]), 14) == 1), "Wood harvest shares sum up to 1")
+  # toolExpectTrue(all(round(dimSums(out[, , c("rndwd", "fulwd")]), 14) == 1), "Wood harvest shares sum up to 1")
 
   return(list(x = out,
               isocountries = FALSE,
