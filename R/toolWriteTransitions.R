@@ -14,7 +14,7 @@ toolWriteTransitions <- function(trans, fileSuffix, now = Sys.time(), compressio
   getItems(trans, raw = TRUE, dim = 3) <- sub("\\.", "_to_", getItems(trans, dim = 3))
   getSets(trans, fulldim = FALSE)[3] <- "transitions"
   if (interpolate) {
-    interpolationType <- "linear"
+    interpolationType <- "constant"
   } else {
     interpolationType <- NULL
   }

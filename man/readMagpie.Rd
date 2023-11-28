@@ -7,8 +7,8 @@
 readMagpie(subtype = "land")
 }
 \arguments{
-\item{subtype}{type of data to be read in. Available options are "land",
-"crop", "woodHarvest" and "fertilizer"}
+\item{subtype}{type of data to be read in. Available options are land,
+crop, woodHarvestWeight, woodHarvestArea and fertilizer}
 }
 \description{
 Read function for data coming from the MAgPIE model.
