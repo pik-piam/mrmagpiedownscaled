@@ -19,5 +19,5 @@ toolWriteTransitions <- function(trans, fileSuffix, now = Sys.time(), compressio
     interpolationType <- NULL
   }
   toolWriteNC(trans, getItems(trans, dim = 3), paste0("multiple-transitions", fileSuffix), now, compression,
-              interpolationType = interpolationType, years = 1995:2100)
+              interpolationType = interpolationType, years = 1996:2100)
 }
