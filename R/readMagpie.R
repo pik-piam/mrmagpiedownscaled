@@ -81,10 +81,14 @@ readMagpie <- function(subtype = "land") {
                 min = 0,
                 description = "wood harvest area separated by source and age classes"))
   } else if (subtype == "fertilizer") {
-    x <- magpie4::NitrogenBudget(gdx, level = "cell", cropTypes = TRUE)
+    # suppressing the warning:
+    # due to non-iteration of fertilizer distribution, residual fertilizer deficit is moved to balanceflow.
+    suppressWarnings({
+      x <- magpie4::NitrogenBudget(gdx, level = "cell", cropTypes = TRUE)
+    })
     x <- collapseDim(x[, , "fertilizer"])
     x <- magpie4::addGeometry(x, clustermap)
-    getSets(x) <- c("region", "id", "year", "data")
+    getSets(x) <- c("region", "id", "year", "cropType")
     return(list(x = x,
                 unit = "Tg yr-1",
                 min = 0,

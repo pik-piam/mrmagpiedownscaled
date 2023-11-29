@@ -2,7 +2,8 @@
 #'
 #' Read LUH2v2h data. For the states subtype, the secma and secmb categories are removed.
 #' For the management subtype, only the categories crpbf, rndwd, fulwd, fertl and irrig are read.
-#' For the transitions subtype, only the wood harvest categories bioh and harv are read.
+#' For the transitions subtype, only the wood harvest categories bioh and harv are read. To
+#' match magpie semantics years are shifted by 1 when reading transitions.
 #'
 #' @param subtype one of states, management, transitions, cellArea
 #' @param subset subset of years to read
@@ -30,7 +31,8 @@ readLUH2v2h <- function(subtype = "states", subset = seq(1995, 2015, 5)) {
   } else if (subtype == "transitions") {
     x <- terra::rast("transitions.nc")
     x <- x["bioh|harv"]
-    unit <- "*_bioh: kg C, *_harv: 1"
+    unit <- "*_bioh: kg C yr-1, *_harv: 1"
+    terra::time(x, tstep = "years") <- terra::time(x) + 1
   } else {
     stop("subtype must be states, management, transitions or cellArea")
   }
@@ -46,3 +48,7 @@ readLUH2v2h <- function(subtype = "states", subset = seq(1995, 2015, 5)) {
               cache = FALSE,
               unit = unit))
 }
+
+# TODO we should average fertl/bioh from years before and after 1995 if we
+# read 5 year timestep data only, e.g. bioh jumps from 36mio to 17mio from
+# one year to the nextin some cells

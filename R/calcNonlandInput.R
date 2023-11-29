@@ -11,17 +11,34 @@
 #' @author Pascal Sauer
 calcNonlandInput <- function(input = "magpie") {
   if (input == "magpie") {
-    # wood <- readSource("Magpie", subtype = "woodHarvest")
+    woodHarvestWeight <- readSource("Magpie", subtype = "woodHarvestWeight")
+    stopifnot(identical(getNames(woodHarvestWeight, dim = "woodType"), c("wood", "woodfuel")))
+    getNames(woodHarvestWeight, dim = "woodType") <- c("roundwood", "fuelwood")
+    # convert from mio. t DM yr-1 to kg C yr-1
+    woodHarvestWeight <- woodHarvestWeight * 10^9 * 0.5
 
-    # stopifnot(!is.na(wood),
-    #           identical(getNames(wood), c("wood", "woodfuel")))
-    # getNames(wood) <- c("rndwd", "fulwd")
-    # wood <- wood / dimSums(wood, dim = 3)
-    # wood[is.na(wood)] <- 0.5 # assume equal shares for cells without wood harvest, so they still sum up to 1
+    woodHarvestWeightSource <- dimSums(woodHarvestWeight, dim = "woodType")
+    woodHarvestWeightSource <- add_dimension(woodHarvestWeightSource, dim = 3.1,
+                                             add = "category", "wood_harvest_weight")
+    getSets(woodHarvestWeightSource)[["d3.2"]] <- "data"
+
+    woodHarvestWeightType <- dimSums(woodHarvestWeight, dim = "source")
+    woodHarvestWeightType <- add_dimension(woodHarvestWeightType, dim = 3.1,
+                                           add = "category", "wood_harvest_weight_type")
+    getSets(woodHarvestWeightType)[["d3.2"]] <- "data"
+
+    woodHarvestArea <- readSource("Magpie", subtype = "woodHarvestArea")
+    woodHarvestArea <- dimSums(woodHarvestArea, dim = "ageClass")
+    woodHarvestArea <- add_dimension(woodHarvestArea, dim = 3.1,
+                                     add = "category", "wood_harvest_area")
+    getSets(woodHarvestArea)[["d3.2"]] <- "data"
 
     fertilizer <- readSource("Magpie", subtype = "fertilizer")
     geometry <- attr(fertilizer, "geometry")
     crs <- attr(fertilizer, "crs")
+    fertilizer <- add_dimension(fertilizer, dim = 3.1,
+                                add = "category", "fertilizer")
+    getSets(fertilizer)[["d3.2"]] <- "data"
     # clusters without crop area are NA, replace with 0
     fertilizer[is.na(fertilizer)] <- 0
     # there are some negative values very close to zero, replace with 0
@@ -29,10 +46,8 @@ calcNonlandInput <- function(input = "magpie") {
     fertilizer[fertilizer < 0] <- 0
     # convert from Tg yr-1 to kg yr-1
     fertilizer <- fertilizer * 10^9
-    getItems(fertilizer, 3) <- paste0(getItems(fertilizer, 3), "_fertilizer")
 
-    out <- mbind(#wood,
-                 fertilizer)
+    out <- mbind(woodHarvestWeightSource, woodHarvestWeightType, woodHarvestArea, fertilizer)
     attr(out, "geometry") <- geometry
     attr(out, "crs") <- crs
   } else {
@@ -42,13 +57,13 @@ calcNonlandInput <- function(input = "magpie") {
   # check data for consistency
   toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
   toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
-  toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
+  toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "category", "data")),
+                 "Dimensions are named correctly")
   toolExpectTrue(all(out >= 0), "All values are >= 0")
-  # toolExpectTrue(all(round(dimSums(out[, , c("rndwd", "fulwd")]), 14) == 1), "Wood harvest shares sum up to 1")
 
   return(list(x = out,
               isocountries = FALSE,
-              unit = "rndwd, fulwd: 1; *_fertilizer: kg yr-1",
+              unit = "harvest_weight: kg C yr-1; harvest_area: Mha; fertilizer: kg yr-1",
               min = 0,
               description = "Nonland input data for data harmonization and downscaling pipeline"))
 }
