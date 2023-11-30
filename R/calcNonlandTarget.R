@@ -29,9 +29,9 @@ calcNonlandTarget <- function(target = "luh2mod") {
       total <- sum(woodHarvestWeight[[terra::time(woodHarvestWeight) == year]])
       roundwood <- total * management[[paste0("y", year, "..rndwd")]]
       names(roundwood) <- paste0("y", year, "..roundwood_harvest_weight_type")
-      fulwd <- total * management[[paste0("y", year, "..fulwd")]]
-      names(fulwd) <- paste0("y", year, "..fuelwood_harvest_weight_type")
-      return(c(roundwood, fulwd))
+      fuelwood <- total * management[[paste0("y", year, "..fulwd")]]
+      names(fuelwood) <- paste0("y", year, "..fuelwood_harvest_weight_type")
+      return(c(roundwood, fuelwood))
     }))
     terra::units(woodHarvestWeightType) <- "kg C yr-1"
 

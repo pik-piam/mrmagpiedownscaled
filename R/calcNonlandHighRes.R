@@ -40,6 +40,8 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod") {
     return(result)
   })
   out <- do.call(c, out)
+  # write tif to reduce memory usage when loading from cache
+  out <- terra::writeRaster(out, file = tempfile(fileext = ".tif"))
 
   return(list(x = out,
               class = "SpatRaster",
