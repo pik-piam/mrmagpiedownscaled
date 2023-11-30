@@ -9,39 +9,40 @@
 #' @author Pascal Sauer
 calcNonlandHighRes <- function(input = "magpie", target = "luh2mod") {
   xInput <- calcOutput("NonlandHarmonized", input = input, target = target, aggregate = FALSE)
+
   xTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
 
-  # simple weighted disaggregation for fertl
-  cropTypes <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per")
-  downscaledFertilizer <- lapply(cropTypes, function(cropType) {
-    fertilizer <- as.SpatVector(xInput[, , grep(paste0(cropType, "_fertilizer"), getNames(xInput))])
-    fertilizer$.region <- NULL
-    fertilizer$.id <- NULL
+  # use latest year of historical data as weight
+  weight <- xTarget[[terra::time(xTarget) == max(terra::time(xTarget))]]
+  weight <- weight + 10^-10 # add 10^-10 to prevent weight 0
+  names(weight) <- sub("^y[0-9]+\\.\\.", "", names(weight))
+  stopifnot(setequal(getNames(xInput), names(weight)))
 
-    # use latest year of historical data as weight
-    weight <- xTarget[[terra::time(xTarget) == max(terra::time(xTarget))]]
-    weight <- weight[paste0(cropType, "_fertilizer")] + 10^-10 # add 10^-10 to prevent weight 0
-    names(weight) <- sub("^y[0-9]+\\.\\.", "", names(weight))
+  # simple weighted disaggregation
+  out <- lapply(seq_along(getNames(xInput)), function(i) {
+    category <- getNames(xInput)[[i]]
+    message(i, "/", length(getNames(xInput)), " ", category)
+    x <- as.SpatVector(xInput[, , category])
+    x$.region <- NULL
+    x$.id <- NULL
 
     # calculate weight sum in each cluster
-    x <- terra::extract(weight, fertilizer, bind = TRUE, fun = "sum", na.rm = TRUE)
+    clusterTotal <- terra::extract(weight[[category]], x, ID = FALSE, fun = "sum", na.rm = TRUE)
 
     # divide input cluster values by weight sum, now it only needs to be multiplied by weight and we're done
-    for (n in names(fertilizer)) {
-      x[[n]] <- x[[n]] / x[[paste0(cropType, "_fertilizer")]]
+    for (n in names(x)) {
+      x[[n]] <- x[[n]] / clusterTotal
     }
-    x[[paste0(cropType, "_fertilizer")]] <- NULL
 
-    factorRaster <- do.call(c, lapply(names(x), function(name) terra::rasterize(x, weight, name)))
-    result <- factorRaster * weight
+    factorRaster <- do.call(c, lapply(names(x), function(name) terra::rasterize(x, weight[[category]], name)))
+    result <- factorRaster * weight[[category]]
     terra::time(result, tstep = "years") <- as.integer(sub("^y([0-9]+)\\.\\..+$", "\\1", names(result)))
     return(result)
   })
-  downscaledFertilizer <- do.call(c, downscaledFertilizer)
-  out <- as.magpie(downscaledFertilizer)
+  out <- do.call(c, out)
+
   return(list(x = out,
-              isocountries = FALSE,
-              unit = "*_fertilizer: kg yr-1",
-              min = 0,
+              class = "SpatRaster",
+              unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha; fertilizer: kg yr-1",
               description = "Downscaled nonland data"))
 }

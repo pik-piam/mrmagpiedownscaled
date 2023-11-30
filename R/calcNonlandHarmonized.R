@@ -47,7 +47,6 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   toolExpectTrue(all(out >= 0), "All values are >= 0")
 
   return(list(x = out,
-              class = "magpie",
               isocountries = FALSE,
               unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha; fertilizer: kg yr-1",
               min = 0,
