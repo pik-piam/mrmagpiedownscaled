@@ -5,28 +5,49 @@
 #'
 #' @param input name of the input dataset, currently only "magpie"
 #' @param target name of the target dataset, currently only "luh2"
+#' @param youngShareWoodHarvestArea share of wood harvest area taken from young (instead of mature) secondary forest;
+#' default value is based on LUH value from 2014; used to disaggregate wood harvest area from secondary forest to
+#' secondary young and mature forest
+#' @param youngShareWoodHarvestWeight analogue to youngShareWoodHarvestArea for wood harvest weight instead of area
 #' @return nonland data with target categories
 #' @author Pascal Sauer
-calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2mod") {
+calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2mod",
+                                            youngShareWoodHarvestArea = 0.95,
+                                            youngShareWoodHarvestWeight = 0.5) {
   x <- calcOutput("NonlandInput", input = input, aggregate = FALSE)
+  crs <- attr(x, "crs")
+  geometry <- attr(x, "geometry")
 
-  # separate categories that need to be mapped from those that don't
-  # wood <- x[, , c("rndwd", "fulwd")]
-  x <- x[, , c("rndwd", "fulwd"), invert = TRUE]
+  # aggregate secdforest and forestry, because LUH does not report wood harvest for forestry
+  x[, , "secdforest"] <- add_dimension(dimSums(x[, , c("secdforest", "forestry")], "data"),
+                                       3.2, "data", "secdforest")
+  x <- x[, , "forestry", invert = TRUE]
 
-  # map categories using weights from land categorization
-  getItems(x, 3) <- sub("_fertilizer", "", getItems(x, 3))
+  # disaggregate wood harvest weight and area from secondary forest to secondary young and mature forest
+  youngWeight <- youngShareWoodHarvestWeight * x[, , "wood_harvest_weight.secdforest"]
+  getNames(youngWeight) <- "wood_harvest_weight.secyf"
+  matureWeight <- x[, , "wood_harvest_weight.secdforest"] - youngWeight
+  getNames(matureWeight) <- "wood_harvest_weight.secmf"
+
+  youngArea <- youngShareWoodHarvestArea * x[, , "wood_harvest_area.secdforest"]
+  getNames(youngArea) <- "wood_harvest_area.secyf"
+  matureArea <- x[, , "wood_harvest_area.secdforest"] - youngArea
+  getNames(matureArea) <- "wood_harvest_area.secmf"
+
+  x <- mbind(youngWeight, matureWeight, youngArea, matureArea, x[, , "secdforest", invert = TRUE])
+
+  # map fertilizer using weights from land categorization
+  fertilizer <- collapseDim(x[, , "fertilizer"])
+
   map <- toolLandCategoriesMapping(input, target)
-
-  # get weights for disaggregation to reference categories
-  ref <- calcOutput("LandCategorizationWeight", map = map, geometry = attr(x, "geometry"),
-                    crs = attr(x, "crs"), aggregate = FALSE)
+  ref <- calcOutput("LandCategorizationWeight", map = map, geometry = geometry, crs = crs, aggregate = FALSE)
 
   # sum up weights for irrigated/rainfed
   irrigatedNames <- grep("irrigated", getItems(ref, 3), value = TRUE)
-  rainfedNames <- gsub("irrigated", "rainfed", irrigatedNames)
   irrigated <- ref[, , irrigatedNames]
   getItems(irrigated, 3) <- gsub("_irrigated", "", irrigatedNames)
+
+  rainfedNames <- gsub("irrigated", "rainfed", irrigatedNames)
   rainfed <- ref[, , rainfedNames]
   getItems(rainfed, 3) <- gsub("_rainfed", "", rainfedNames)
   ref <- mbind(ref[, , c(irrigatedNames, rainfedNames), invert = TRUE], irrigated + rainfed)
@@ -36,29 +57,59 @@ calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2mod"
   map$dataInput <- sub("_irrigated", "", map$dataInput)
   map$dataOutput <- sub("_irrigated", "", map$dataOutput)
   map$merge <- gsub("_irrigated", "", map$merge)
-  map <- map[map$dataInput %in% getItems(x, 3), ]
+  mapFertilizer <- map[map$dataInput %in% getItems(fertilizer, 3), ]
 
-  ref <- ref[, , unique(map$merge)]
-  y   <- toolAggregate(x, map, dim = 3, from = "dataInput", to = "merge", weight = ref)
-  out <- toolAggregate(y, map, dim = 3, from = "merge",     to = "dataOutput")
-  out[, , "c3per"] <- out[, , "c3per"] + out[, , "c3per_biofuel_2nd_gen"]
-  out[, , "c4per"] <- out[, , "c4per"] + out[, , "c4per_biofuel_2nd_gen"]
-  out <- out[, , c("c3per_biofuel_2nd_gen", "c4per_biofuel_2nd_gen"), invert = TRUE]
-  getItems(out, 3) <- paste0(getItems(out, 3), "_fertilizer")
+  fertilizerMerge <- toolAggregate(fertilizer, mapFertilizer, dim = 3, from = "dataInput", to = "merge",
+                                   weight = ref[, , unique(mapFertilizer$merge)])
+  fertilizer <- toolAggregate(fertilizerMerge, mapFertilizer, dim = 3, from = "merge", to = "dataOutput")
+  fertilizer[, , "c3per"] <- fertilizer[, , "c3per"] + fertilizer[, , "c3per_biofuel_2nd_gen"]
+  fertilizer[, , "c4per"] <- fertilizer[, , "c4per"] + fertilizer[, , "c4per_biofuel_2nd_gen"]
+  fertilizer <- fertilizer[, , c("c3per_biofuel_2nd_gen", "c4per_biofuel_2nd_gen"), invert = TRUE]
+  fertilizer <- add_dimension(fertilizer, 3.1, "category", "fertilizer")
+  x <- mbind(fertilizer, x[, , "fertilizer", invert = TRUE])
 
-  out <- mbind(out)#, wood)
-  attr(out, "crs") <- attr(x, "crs")
-  attr(out, "geometry") <- attr(x, "geometry")
+  # map other wood harvest to primn and secdn using land as weights
+  mapOther <- map[map$dataInput == "other", ]
+
+  otherWoodHarvestWeight <- collapseDim(x[, , "wood_harvest_weight.other"], dim = 3.1)
+  otherWoodHarvestWeight <- toolAggregate(otherWoodHarvestWeight, mapOther, dim = 3, from = "dataInput", to = "merge",
+                                          weight = ref[, , unique(mapOther$merge)])
+  otherWoodHarvestWeight <- toolAggregate(otherWoodHarvestWeight, mapOther, dim = 3, from = "merge", to = "dataOutput")
+  otherWoodHarvestWeight <- add_dimension(otherWoodHarvestWeight, 3.1, "category", "wood_harvest_weight")
+
+  otherWoodHarvestArea <- collapseDim(x[, , "wood_harvest_area.other"], dim = 3.1)
+  otherWoodHarvestArea <- toolAggregate(otherWoodHarvestArea, mapOther, dim = 3, from = "dataInput", to = "merge",
+                                        weight = ref[, , unique(mapOther$merge)])
+  otherWoodHarvestArea <- toolAggregate(otherWoodHarvestArea, mapOther, dim = 3, from = "merge", to = "dataOutput")
+  otherWoodHarvestArea <- add_dimension(otherWoodHarvestArea, 3.1, "category", "wood_harvest_area")
+
+  x <- mbind(otherWoodHarvestWeight, otherWoodHarvestArea, x[, , "other", invert = TRUE])
+
+  getNames(x) <- paste0(getItems(x, 3.2, full = TRUE), "_", getItems(x, 3.1, full = TRUE))
+  getNames(x) <- sub("_wood_harvest_weight_type", "_harvest_weight_type", getNames(x))
+  getNames(x) <- sub("_wood_harvest_weight", "_bioh", getNames(x))
+  getNames(x) <- sub("secdn", "secnf", getNames(x))
+  getNames(x) <- sub("primforest", "primf", getNames(x))
+  x <- collapseDim(x)
+  getSets(x)["d3.1"] <- "data"
+
+  attr(x, "crs") <- crs
+  attr(x, "geometry") <- geometry
 
   # check data for consistency
-  toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
-  expectedCategories <- c(paste0(c("c3ann", "c4ann", "c3per", "c4per", "c3nfx"), "_fertilizer"))#, "rndwd", "fulwd")
-  toolExpectTrue(setequal(getItems(out, dim = 3), expectedCategories), "Nonland categories match target definition")
-  toolExpectTrue(all(out >= 0), "All values are >= 0")
+  toolExpectTrue(identical(unname(getSets(x)), c("region", "id", "year", "data")),
+                 "Dimensions are named correctly")
+  toolExpectTrue(setequal(getNames(x),
+                          c(paste0(c("primf", "primn", "secmf", "secyf", "secnf"), "_wood_harvest_area"),
+                            paste0(c("primf", "primn", "secmf", "secyf", "secnf"), "_bioh"),
+                            paste0(c("roundwood", "fuelwood"), "_harvest_weight_type"),
+                            paste0(c("c3ann", "c4ann", "c3per", "c4per", "c3nfx"), "_fertilizer"))),
+                 "Nonland categories match target definition")
+  toolExpectTrue(all(x >= 0), "All values are >= 0")
 
-  return(list(x = out,
+  return(list(x = x,
               isocountries = FALSE,
-              unit = "rndwd, fulwd: 1; *_fertilizer: kg yr-1",
+              unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha; fertilizer: kg yr-1",
               min = 0,
               description = "Input data with nonland categories remapped to categories of target dataset"))
 }

@@ -28,9 +28,9 @@ calcNonlandTarget <- function(target = "luh2mod") {
     woodHarvestWeightType <- do.call(c, lapply(years, function(year) {
       total <- sum(woodHarvestWeight[[terra::time(woodHarvestWeight) == year]])
       roundwood <- total * management[[paste0("y", year, "..rndwd")]]
-      names(roundwood) <- paste0("y", year, "_roundwood_harvest_weight_type")
+      names(roundwood) <- paste0("y", year, "..roundwood_harvest_weight_type")
       fulwd <- total * management[[paste0("y", year, "..fulwd")]]
-      names(fulwd) <- paste0("y", year, "_fuelwood_harvest_weight_type")
+      names(fulwd) <- paste0("y", year, "..fuelwood_harvest_weight_type")
       return(c(roundwood, fulwd))
     }))
     terra::units(woodHarvestWeightType) <- "kg C yr-1"
@@ -40,7 +40,6 @@ calcNonlandTarget <- function(target = "luh2mod") {
 
     return(list(x = out,
                 class = "SpatRaster",
-                cache = FALSE,
                 unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha; fertilizer: kg yr-1",
                 description = "Nonland target data for data harmonization"))
   } else {
