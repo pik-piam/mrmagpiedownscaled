@@ -24,7 +24,9 @@ calcNonlandReport <- function(project = "RESCUE") {
 
     # calculate wood harvest type shares
     years <- unique(terra::time(x))
-    woodTypeShares <- do.call(c, lapply(years, function(year) {
+    woodTypeShares <- do.call(c, lapply(seq_along(years), function(i) {
+      year <- years[[i]]
+      message(i, "/", length(years), " - ", year)
       total <- sum(x[[terra::time(x) == year]]["(roundwood|fuelwood)_harvest_weight_type"])
       rndwd <- x[[paste0("y", year, "..roundwood_harvest_weight_type")]] / total
       names(rndwd) <- paste0("y", year, "..rndwd")
