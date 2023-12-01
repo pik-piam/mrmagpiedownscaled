@@ -30,7 +30,7 @@ toolWriteNC <- function(x, variables, fileName, now = Sys.time(), compression = 
           .vec <- function(years, y) {
             i <- match(sort(years), y)
             k <- NULL
-            for (j in seq_len(i)) {
+            for (j in seq_along(i)) {
               if (!is.na(i[j])) {
                 k <- i[j]
               } else {

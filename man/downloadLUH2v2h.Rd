@@ -7,7 +7,7 @@
 downloadLUH2v2h(subtype = NULL)
 }
 \arguments{
-\item{subtype}{ignored, exists for technical reasons}
+\item{subtype}{one of states, management, transitions, cellArea}
 }
 \value{
 metadata list with URL, DOI, title, description, author, unit, version, release date
