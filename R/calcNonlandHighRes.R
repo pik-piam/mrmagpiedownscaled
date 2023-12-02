@@ -19,7 +19,7 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod") {
   stopifnot(setequal(getNames(xInput), names(weight)))
 
   # simple weighted disaggregation
-  out <- lapply(seq_along(getNames(xInput)), function(i) {
+  out <- do.call(mbind, lapply(seq_along(getNames(xInput)), function(i) {
     category <- getNames(xInput)[[i]]
     message(i, "/", length(getNames(xInput)), " ", category)
     x <- as.SpatVector(xInput[, , category])
@@ -28,23 +28,24 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod") {
 
     # calculate weight sum in each cluster
     clusterTotal <- terra::extract(weight[[category]], x, ID = FALSE, fun = "sum", na.rm = TRUE)
+    stopifnot(all(clusterTotal[[1]] > 0))
 
     # divide input cluster values by weight sum, now it only needs to be multiplied by weight and we're done
     for (n in names(x)) {
       x[[n]] <- x[[n]] / clusterTotal
     }
 
-    factorRaster <- do.call(c, lapply(names(x), function(name) terra::rasterize(x, weight[[category]], name)))
-    result <- factorRaster * weight[[category]]
-    terra::time(result, tstep = "years") <- as.integer(sub("^y([0-9]+)\\.\\..+$", "\\1", names(result)))
+    factorRaster <- do.call(c, lapply(names(x), function(name) {
+      return(terra::rasterize(x, weight[[category]], field = name, fun = "max"))
+    }))
+    result <- as.magpie(factorRaster * weight[[category]])
+
     return(result)
-  })
-  out <- do.call(c, out)
-  # write tif to reduce memory usage when loading from cache
-  out <- terra::writeRaster(out, file = tempfile(fileext = ".tif"))
+  }))
 
   return(list(x = out,
-              class = "SpatRaster",
+              min = 0,
+              isocountries = FALSE,
               unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha; fertilizer: kg yr-1",
               description = "Downscaled nonland data"))
 }

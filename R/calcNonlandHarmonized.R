@@ -15,11 +15,13 @@
 calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
                                   harmonizeYear = 2015, finalYear = 2050,
                                   method = "extrapolateFade") {
-  xInput <- calcOutput("NonlandHarmonizedCategories", input = input, aggregate = FALSE)
+  xInput <- calcOutput("NonlandHarmonizedCategories", input = input, aggregate = FALSE) # max(xInput) == 1.33188e+11
   geometry <- attr(xInput, "geometry")
   crs <- attr(xInput, "crs")
 
-  xTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
+  xTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE) # max(xTarget) == 1.425575168e+9
+  # TODO factor 100 input vs target
+
   # bring target data to spatial resolution of input data
   ref <- as.SpatVector(xInput[, 1, 1])[, c(".region", ".id")]
   xTarget <- terra::extract(xTarget, ref, sum, na.rm = TRUE, bind = TRUE)
@@ -45,6 +47,8 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
   toolExpectTrue(setequal(getItems(out, dim = 3), getItems(xTarget, dim = 3)), "Nonland categories remain unchanged")
   toolExpectTrue(all(out >= 0), "All values are >= 0")
+  
+  # TODO max(a) == 3.071588e+78 -> this is way too high
 
   return(list(x = out,
               isocountries = FALSE,

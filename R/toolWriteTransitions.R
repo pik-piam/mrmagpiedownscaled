@@ -11,6 +11,7 @@
 #'
 #' @author Jan Philipp Dietrich
 toolWriteTransitions <- function(trans, fileSuffix, now = Sys.time(), compression = 2, interpolate = FALSE) {
+  # TODO - 1 for years to undo offset introduced in readLUH2v2h
   getItems(trans, raw = TRUE, dim = 3) <- sub("\\.", "_to_", getItems(trans, dim = 3))
   getSets(trans, fulldim = FALSE)[3] <- "transitions"
   if (interpolate) {

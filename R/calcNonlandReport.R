@@ -6,6 +6,7 @@
 #' @return nonland data
 #' @author Pascal Sauer
 calcNonlandReport <- function(project = "RESCUE") {
+  # TODO assuming SpatRaster at the moment, switch back to magclass
   if (project == "RESCUE") {
     x <- calcOutput("NonlandHighRes", input = "magpie", target = "luh2mod", aggregate = FALSE)
 
@@ -22,9 +23,17 @@ calcNonlandReport <- function(project = "RESCUE") {
     harv <- x["wood_harvest_area"] / cellAreaMha
     names(harv) <- sub("wood_harvest_area$", "harv", names(harv))
 
+    system.time({
+    m <- as.magpie(x["(roundwood|fuelwood)_harvest_weight_type"])
+    total <- dimSums(m, 3)
+    m2 <- m / total
+    wts <- as.SpatRaster(m2)
+    })
+
     # calculate wood harvest type shares
     years <- unique(terra::time(x))
     woodTypeShares <- do.call(c, lapply(seq_along(years), function(i) {
+      print(system.time({
       year <- years[[i]]
       message(i, "/", length(years), " - ", year)
       total <- sum(x[[terra::time(x) == year]]["(roundwood|fuelwood)_harvest_weight_type"])
@@ -32,6 +41,7 @@ calcNonlandReport <- function(project = "RESCUE") {
       names(rndwd) <- paste0("y", year, "..rndwd")
       fulwd <- x[[paste0("y", year, "..fuelwood_harvest_weight_type")]] / total
       names(fulwd) <- paste0("y", year, "..fulwd")
+      }))
       return(c(rndwd, fulwd))
     }))
 
