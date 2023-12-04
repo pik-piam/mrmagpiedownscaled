@@ -18,7 +18,9 @@ fullRESCUE <- function(rev = NULL, ..., compression = 2, interpolate = FALSE) {
   fileSuffix <- paste0("_input4MIPs_landState_RESCUE_PIK-MAgPIE67k-", version, "_gn_1995-2100")
 
   land <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)
-  nonland <- calcOutput("NonlandReport", project = "RESCUE", aggregate = FALSE, try = TRUE)
+  nonland <- calcOutput("NonlandReport", project = "RESCUE",
+                        warnNA = FALSE, # rndwd & fulwd include NAs
+                        aggregate = FALSE, try = TRUE)
 
   toolWriteStates(land, fileSuffix = fileSuffix, now = now, compression = compression, interpolate = interpolate)
   toolWriteManagement(land, nonland, fileSuffix = fileSuffix, now = now, compression = compression,

@@ -6,50 +6,38 @@
 #' @return nonland data
 #' @author Pascal Sauer
 calcNonlandReport <- function(project = "RESCUE") {
-  # TODO assuming SpatRaster at the moment, switch back to magclass
   if (project == "RESCUE") {
     x <- calcOutput("NonlandHighRes", input = "magpie", target = "luh2mod", aggregate = FALSE)
 
-    cellAreaKm2 <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
+    cellArea <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
+    cellArea <- as.magpie(cellArea)
+    stopifnot(getItems(x, 1) %in% getItems(cellArea, 1))
+    cellArea <- collapseDim(cellArea[getItems(x, 1), , ], 3)
     # convert from km2 to ha
-    cellAreaHa <- cellAreaKm2 * 100
-    cellAreaMha <- cellAreaKm2 / 10000
+    cellAreaHa <- cellArea * 100
+    cellAreaMha <- cellArea / 10000
 
     # convert from kg yr-1 to kg ha-1 yr-1
-    fertl <- x["fertilizer"] / cellAreaHa
-    names(fertl) <- sub("\\.\\.(.+)_fertilizer$", "..fertl_\\1", names(fertl))
+    fertl <- x[, , grep("fertilizer$", getNames(x))] / cellAreaHa
+    getNames(fertl) <- sub("(.+)_fertilizer$", "fertl_\\1", getNames(fertl))
 
     # convert from Mha to shares
-    harv <- x["wood_harvest_area"] / cellAreaMha
-    names(harv) <- sub("wood_harvest_area$", "harv", names(harv))
+    harv <- x[, , grep("wood_harvest_area$", getNames(x))] / cellAreaMha
+    getNames(harv) <- sub("wood_harvest_area$", "harv", getNames(harv))
 
-    system.time({
-    m <- as.magpie(x["(roundwood|fuelwood)_harvest_weight_type"])
-    total <- dimSums(m, 3)
-    m2 <- m / total
-    wts <- as.SpatRaster(m2)
-    })
+    woodTypeShares <- x[, , c("roundwood_harvest_weight_type", "fuelwood_harvest_weight_type")]
+    total <- dimSums(woodTypeShares, 3) # 1269815 cells with total == 0
+    woodTypeShares <- woodTypeShares / total # NAs introduced by cells with total == 0
+    getNames(woodTypeShares) <- c("rndwd", "fulwd")
 
-    # calculate wood harvest type shares
-    years <- unique(terra::time(x))
-    woodTypeShares <- do.call(c, lapply(seq_along(years), function(i) {
-      print(system.time({
-      year <- years[[i]]
-      message(i, "/", length(years), " - ", year)
-      total <- sum(x[[terra::time(x) == year]]["(roundwood|fuelwood)_harvest_weight_type"])
-      rndwd <- x[[paste0("y", year, "..roundwood_harvest_weight_type")]] / total
-      names(rndwd) <- paste0("y", year, "..rndwd")
-      fulwd <- x[[paste0("y", year, "..fuelwood_harvest_weight_type")]] / total
-      names(fulwd) <- paste0("y", year, "..fulwd")
-      }))
-      return(c(rndwd, fulwd))
-    }))
+    out <- mbind(fertl, harv, woodTypeShares, x[, , grep("bioh$", getNames(x))])
 
-    x <- c(fertl, harv, woodTypeShares, x["_bioh$"])
-    x <- terra::writeRaster(x, file = tempfile(fileext = ".tif"))
+    stopifnot(all(out[, , grep("(harv|rndwd|fulwd)$", getNames(x))] < 1.0001, na.rm = TRUE),
+              !is.na(out[, , c("rndwd", "fulwd"), invert = TRUE]))
 
-    return(list(x = x,
-                class = "SpatRaster",
+    return(list(x = out,
+                isocountries = FALSE,
+                min = 0,
                 unit = "rndwd & fulwd: 1; bioh: kg C yr-1; harv: 1; fertl: kg ha-1 yr-1",
                 description = "Downscaled nonland data report for RESCUE"))
   } else {

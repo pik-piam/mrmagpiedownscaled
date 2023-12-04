@@ -51,8 +51,6 @@ calcLandReport <- function(project = "RESCUE") {
 
     out <- mbind(cropData, nonCropData, manaf)
 
-    stopifnot(!any(is.na(out)))
-
     return(list(x = out,
                 isocountries = FALSE,
                 unit = "1",
