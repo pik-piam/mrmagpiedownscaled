@@ -24,11 +24,11 @@
 #' is suppossed to stay contstant (e.g. sum over all land types) or not.
 #' @author Jan Philipp Dietrich
 
-toolHarmonizeExtrapolateFade <- function(input, target, harmonizeYear, finalYear, constantSum) {
+toolHarmonizeExtrapolateFade <- function(input, target, harmonizeYear, finalYear,
+                                         constantSum, growthAveragePeriod = 10) {
   # extrapolate target data till finalYear and afterwards fade from one dataset to the other
   inputYears <- getYears(input, as.integer = TRUE)
   targetYears <- getYears(target, as.integer = TRUE)
-  growthAveragePeriod <- 10
   stopifnot(round(harmonizeYear) == harmonizeYear,
             round(finalYear) == finalYear,
             finalYear > harmonizeYear,

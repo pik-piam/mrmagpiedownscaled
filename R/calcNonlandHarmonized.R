@@ -15,14 +15,12 @@
 calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
                                   harmonizeYear = 2015, finalYear = 2050,
                                   method = "extrapolateFade") {
-  xInput <- calcOutput("NonlandHarmonizedCategories", input = input, aggregate = FALSE) # max(xInput) == 1.33188e+11
+  xInput <- calcOutput("NonlandHarmonizedCategories", input = input, aggregate = FALSE)
   geometry <- attr(xInput, "geometry")
   crs <- attr(xInput, "crs")
 
-  xTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE) # max(xTarget) == 1.425575168e+9
-  # TODO factor 100 input vs target
-
-  # bring target data to spatial resolution of input data
+  # get target data in spatial resolution of input data
+  xTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
   ref <- as.SpatVector(xInput[, 1, 1])[, c(".region", ".id")]
   xTarget <- terra::extract(xTarget, ref, sum, na.rm = TRUE, bind = TRUE)
   xTarget <- as.magpie(xTarget)
@@ -31,8 +29,10 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   xTarget <- xTarget[, , getItems(xInput, 3)] # harmonize order of dim 3
 
   if (method == "extrapolateFade") {
-    out <- toolHarmonizeExtrapolateFade(xInput, xTarget, harmonizeYear = harmonizeYear,
-                                        finalYear = finalYear, constantSum = FALSE)
+    # growthAveragePeriod = 10 would lead to insane growth rate due to
+    # edge case (CHA.12 has 0 in 2005 but 8*10^7 in 2015), workaround by setting it to 15
+    out <- toolHarmonizeExtrapolateFade(xInput, xTarget, harmonizeYear = harmonizeYear, finalYear = finalYear,
+                                        constantSum = FALSE, growthAveragePeriod = 15)
   } else {
     harmonizer <- toolGetHarmonizer(method)
     out <- harmonizer(xInput, xTarget, harmonizeYear = harmonizeYear, finalYear = finalYear)
@@ -46,9 +46,9 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
   toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
   toolExpectTrue(setequal(getItems(out, dim = 3), getItems(xTarget, dim = 3)), "Nonland categories remain unchanged")
-  toolExpectTrue(all(out >= 0), "All values are >= 0")
-  
-  # TODO max(a) == 3.071588e+78 -> this is way too high
+  toolExpectTrue(min(out) >= 0, "All values are >= 0")
+  # SpatRaster can hold values up to ~10^40 before replacing with Inf, so check we are well below that
+  toolExpectTrue(max(out) < 10^30, "All values are < 10^30")
 
   return(list(x = out,
               isocountries = FALSE,
