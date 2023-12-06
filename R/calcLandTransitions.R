@@ -25,12 +25,11 @@ calcLandTransitions <- function(project = "RESCUE", gross = TRUE) {
     message("Compute ", getYears(land)[i], " to ", getYears(land)[min(nyears(land), i + l)])
     write.magpie(toolTransitionsBasic(land[, i:min(nyears(land), i + l), ], gross = gross), paste0(i, ".mz"))
   }
-  out <- list()
-  for (i in sequence) {
-    out[[i]] <- read.magpie(paste0(i, ".mz"))
-    unlink(paste0(i, ".mz"))
-  }
-  out <- mbind(out)
+  out <- lapply(paste0(sequence, ".mz"), read.magpie)
+  withr::with_options(list(magclass_setMatching = TRUE, magclass_sizeLimit = 10^11), {
+    out <- mbind(out)
+  })
+  unlink(paste0(sequence, ".mz"))
 
   return(list(x = out,
               isocountries = FALSE,
