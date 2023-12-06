@@ -8,4 +8,4 @@
 #SBATCH --mem-per-cpu=0
 #SBATCH --partition=priority
 
-Rscript startRun.R
+Rscript data-raw/startRun.R

@@ -14,7 +14,7 @@ fullRESCUE <- function(rev = NULL, ..., compression = 2, interpolate = FALSE) {
   stopifnot(...length() == 0)
 
   now <- Sys.time()
-  version <- ifelse(is.null(rev), format(now, "%Y-%m-%d"), rev)
+  version <- if (is.null(rev)) format(now, "%Y-%m-%d") else rev
   fileSuffix <- paste0("_input4MIPs_landState_RESCUE_PIK-MAgPIE67k-", version, "_gn_1995-2100")
 
   land <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)
@@ -26,6 +26,9 @@ fullRESCUE <- function(rev = NULL, ..., compression = 2, interpolate = FALSE) {
   toolWriteManagement(land, nonland, fileSuffix = fileSuffix, now = now, compression = compression,
                       interpolate = interpolate)
 
-  trans <- calcOutput("LandTransitions", project = "RESCUE", aggregate = FALSE, file = "transitions.mz")
-  toolWriteTransitions(trans, fileSuffix = fileSuffix, now = now, compression = compression, interpolate = interpolate)
+  transitions <- calcOutput("LandTransitions", project = "RESCUE", aggregate = FALSE, file = "transitions.mz")
+  toolWriteTransitions(transitions, nonland, fileSuffix = fileSuffix, now = now,
+                       compression = compression, interpolate = interpolate)
 }
+
+# TODO check bioh and harv are written

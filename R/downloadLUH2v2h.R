@@ -8,7 +8,7 @@
 #' @author Pascal Sauer
 downloadLUH2v2h <- function(subtype = NULL) {
   fileNames <- list(states = c("states.nc", "staticData_quarterdeg.nc"),
-                    transitions = "transitions.nc",
+                    transitions = c("transitions.nc", "staticData_quarterdeg.nc"),
                     management = "management.nc",
                     cellArea = "staticData_quarterdeg.nc")
 
