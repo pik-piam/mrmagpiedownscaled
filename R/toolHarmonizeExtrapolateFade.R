@@ -22,6 +22,8 @@
 #' @param finalYear year in which the transition shall be completed
 #' @param constantSum boolean indicating whether the total sum over all layers
 #' is suppossed to stay contstant (e.g. sum over all land types) or not.
+#' @param growthAveragePeriod when projecting into the future, how many years
+#' to look back from last year to determine growth rate
 #' @author Jan Philipp Dietrich
 
 toolHarmonizeExtrapolateFade <- function(input, target, harmonizeYear, finalYear,

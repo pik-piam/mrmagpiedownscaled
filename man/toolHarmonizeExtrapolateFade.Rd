@@ -25,6 +25,9 @@ data begins}
 
 \item{constantSum}{boolean indicating whether the total sum over all layers
 is suppossed to stay contstant (e.g. sum over all land types) or not.}
+
+\item{growthAveragePeriod}{when projecting into the future, how many years
+to look back from last year to determine growth rate}
 }
 \description{
 Tool function for creating a harmonized data set with a smooth transition

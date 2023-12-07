@@ -3,6 +3,7 @@
 #' Tool function to write LUH2-style land transition data in NetCDF format
 #'
 #' @param transitions land transition data the information should be extracted from
+#' @param nonland nonland data to get wood harvest data
 #' @param fileSuffix second half of the resulting file name for the output NetCDF file
 #' @param now time that should be used as time stamp in metadata
 #' @param compression compression level of the resulting .nc files, possible values are integers from 1-9,

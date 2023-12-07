@@ -16,6 +16,8 @@ toolWriteTransitions(
 \arguments{
 \item{transitions}{land transition data the information should be extracted from}
 
+\item{nonland}{nonland data to get wood harvest data}
+
 \item{fileSuffix}{second half of the resulting file name for the output NetCDF file}
 
 \item{now}{time that should be used as time stamp in metadata}
