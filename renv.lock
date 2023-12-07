@@ -1084,7 +1084,7 @@
     },
     "magpie4": {
       "Package": "magpie4",
-      "Version": "1.192.24",
+      "Version": "1.192.27",
       "Source": "Repository",
       "Repository": "https://rse.pik-potsdam.de/r/packages",
       "Requirements": [
@@ -1107,7 +1107,7 @@
         "stringr",
         "utils"
       ],
-      "Hash": "549a6fae532196550ee0a55ffcfab1d9"
+      "Hash": "c31a723018d66757a5ae28a6c3ba9226"
     },
     "magpiesets": {
       "Package": "magpiesets",
@@ -1216,10 +1216,10 @@
     },
     "ncdf4": {
       "Package": "ncdf4",
-      "Version": "1.21",
+      "Version": "1.22",
       "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "a7b262641ef4659767d415c6bb78413f"
+      "Repository": "CRAN",
+      "Hash": "004b5219ae6d8ff53a3dcd2c89e56139"
     },
     "nlme": {
       "Package": "nlme",
