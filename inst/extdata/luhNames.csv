@@ -152,3 +152,8 @@ primn_harv,area_fraction,wood harvest area from primary non forest land
 secmf_harv,area_fraction,wood harvest area from secondary mature forest land
 secyf_harv,area_fraction,wood harvest area from secondary young forest land
 secnf_harv,area_fraction,wood harvest area from secondary non forest land
+primf_bioh,vegetation_carbon_content,wood harvest biomass carbon from primary forest land
+primn_bioh,vegetation_carbon_content,wood harvest biomass carbon from primary non forest land
+secmf_bioh,vegetation_carbon_content,wood harvest biomass carbon from secondary mature forest land
+secyf_bioh,vegetation_carbon_content,wood harvest biomass carbon from secondary young forest land
+secnf_bioh,vegetation_carbon_content,wood harvest biomass carbon from secondary non forest land

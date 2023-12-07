@@ -18,6 +18,10 @@ calcLandTransitions <- function(project = "RESCUE", gross = TRUE) {
   land <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)
   land <- land[, , grep("(_|manaf)", getItems(land, dim = 3), invert = TRUE, value = TRUE)]
 
+  # add extra year as copy of last year to get gross transitions (net zero) for 2100 and after
+  lastYear <- max(getYears(land, as.integer = TRUE))
+  land <- mbind(land, setYears(land[, lastYear, ], lastYear + 1))
+
   l <- 2
   sequence <- seq(1, nyears(land) - 1, l)
   tempfolder <- withr::local_tempdir()

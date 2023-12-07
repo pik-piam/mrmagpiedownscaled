@@ -14,14 +14,16 @@ toolWriteTransitions <- function(transitions, nonland, fileSuffix, now = Sys.tim
                                  compression = 2, interpolate = FALSE) {
   getItems(transitions, raw = TRUE, dim = 3) <- sub("\\.", "_to_", getItems(transitions, dim = 3))
   getSets(transitions, fulldim = FALSE)[3] <- "transitions"
+  getYears(transitions) <- getYears(transitions, as.integer = TRUE) - 1
 
   woodSources <- c("primf", "secyf", "secmf", "primn", "secnf")
   woodHarvestVariables <- c(paste0(woodSources, "_bioh"), paste0(woodSources, "_harv"))
-  transitions <- mbind(transitions, nonland[, , woodHarvestVariables])
-  getYears(transitions) <- getYears(transitions, as.integer = TRUE) - 1
-  # TODO - 1 for years to undo offset introduced in readLUH2v2h
+  woodHarvest <- nonland[, , woodHarvestVariables]
+
+  out <- mbind(transitions, woodHarvest)
 
   interpolationType <- if (interpolate) "constant" else NULL
-  toolWriteNC(transitions, getItems(transitions, dim = 3), paste0("multiple-transitions", fileSuffix), now, compression,
-              interpolationType = interpolationType, years = 1996:2100)
+  toolWriteNC(out, getItems(out, dim = 3),
+              paste0("multiple-transitions", fileSuffix), now, compression,
+              interpolationType = interpolationType, years = 1995:2100)
 }
