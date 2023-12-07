@@ -36,7 +36,7 @@ toolDownscaleMagpieClassic <- function(x, xTarget) {
   if (missingInTarget > 0) {
     map <- map[map$cell %in% intersect, ]
     message <- paste0(round(missingInTarget * 100, 2),
-                      "% of cells missing in target data and thus removed from input data!")
+                      "% of cells from downscale mapping do not exist in target data and thus will be ignored!")
     toolStatusMessage("warn", message)
   }  else {
     toolStatusMessage("ok", "input data area is fully covered by target data")
