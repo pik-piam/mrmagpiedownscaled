@@ -4,12 +4,23 @@
 \alias{calcNonlandHarmonizedCategories}
 \title{calcNonlandHarmonizedCategories}
 \usage{
-calcNonlandHarmonizedCategories(input = "magpie", target = "luh2mod")
+calcNonlandHarmonizedCategories(
+  input = "magpie",
+  target = "luh2mod",
+  youngShareWoodHarvestArea = 0.95,
+  youngShareWoodHarvestWeight = 0.5
+)
 }
 \arguments{
 \item{input}{name of the input dataset, currently only "magpie"}
 
 \item{target}{name of the target dataset, currently only "luh2"}
+
+\item{youngShareWoodHarvestArea}{share of wood harvest area taken from young (instead of mature) secondary forest;
+default value is based on LUH value from 2014; used to disaggregate wood harvest area from secondary forest to
+secondary young and mature forest}
+
+\item{youngShareWoodHarvestWeight}{analogue to youngShareWoodHarvestArea for wood harvest weight instead of area}
 }
 \value{
 nonland data with target categories

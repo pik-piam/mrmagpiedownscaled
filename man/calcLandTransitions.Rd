@@ -24,5 +24,5 @@ Ex-Post estimation of land use transitions based on land use state
 information
 }
 \author{
-Jan Philipp Dietrich
+Jan Philipp Dietrich, Pascal Sauer
 }

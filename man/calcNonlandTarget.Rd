@@ -7,7 +7,7 @@
 calcNonlandTarget(target = "luh2mod")
 }
 \arguments{
-\item{target}{name of the target dataset, currently only "luh2"}
+\item{target}{name of the target dataset, currently only "luh2" and "luh2mod" are supported}
 }
 \value{
 nonland target data

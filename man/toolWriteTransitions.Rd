@@ -5,7 +5,8 @@
 \title{toolWriteTransitions}
 \usage{
 toolWriteTransitions(
-  trans,
+  transitions,
+  nonland,
   fileSuffix,
   now = Sys.time(),
   compression = 2,
@@ -13,7 +14,7 @@ toolWriteTransitions(
 )
 }
 \arguments{
-\item{trans}{land transition data the information should be extracted from}
+\item{transitions}{land transition data the information should be extracted from}
 
 \item{fileSuffix}{second half of the resulting file name for the output NetCDF file}
 

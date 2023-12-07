@@ -14,3 +14,4 @@
 ^\.Rproj\.user$
 ^.*CITATION.cff$
 ^extdata$
+^Rprofile$

@@ -9,7 +9,8 @@ toolHarmonizeExtrapolateFade(
   target,
   harmonizeYear,
   finalYear,
-  constantSum
+  constantSum,
+  growthAveragePeriod = 10
 )
 }
 \arguments{
