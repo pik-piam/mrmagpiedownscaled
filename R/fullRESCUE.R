@@ -20,9 +20,8 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", compression = 2, interpol
                        scenario, if (scenario == "") "" else "-", version, "_gn_1995-2100")
 
   land <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)
-  nonland <- calcOutput("NonlandReport", project = "RESCUE",
-                        warnNA = FALSE, # rndwd & fulwd include NAs
-                        aggregate = FALSE, try = TRUE)
+  nonland <- calcOutput("NonlandReport", project = "RESCUE", aggregate = FALSE,
+                        warnNA = FALSE) # rndwd & fulwd include NAs
 
   toolWriteStates(land, fileSuffix = fileSuffix, now = now, compression = compression, interpolate = interpolate)
   toolWriteManagement(land, nonland, fileSuffix = fileSuffix, now = now, compression = compression,

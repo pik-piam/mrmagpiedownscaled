@@ -24,5 +24,5 @@ for (scenario in scenarios) {
                    c("fulldata.gdx", "clustermap_rev4.94_c200_67420_h12.rds")),
             file.path(getConfig("sourcefolder"), "Magpie"),
             overwrite = TRUE)
-  retrieveData("RESCUE", rev = now, scenario = gsub("_", "-", scenario))
+  try(retrieveData("RESCUE", rev = now, scenario = gsub("_", "-", scenario)))
 }

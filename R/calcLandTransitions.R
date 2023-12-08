@@ -31,12 +31,12 @@ calcLandTransitions <- function(project = "RESCUE", gross = TRUE) {
                  paste0(tempfolder, "/", i, ".mz"))
   }
 
-  # allocate enough memory for everything instead of mbinding to avoid memory problems
+  # allocate enough memory for everything instead of mbinding to reduce memory requirement
   message("allocating memory...")
   coords <- getItems(land, dim = 1)
   years <- utils::head(getYears(land, as.integer = TRUE), -1) + 1
   variables <- getItems(read.magpie(paste0(tempfolder, "/", sequence[1], ".mz")), dim = 3)
-  out <- new.magpie(coords, years, variables, fill = NA_real_)
+  out <- new.magpie(coords, years, variables, fill = NA_real_, sets = c("x", "y", "year", "from", "to"))
 
   for (j in seq_along(sequence)) {
     i <- sequence[j]
