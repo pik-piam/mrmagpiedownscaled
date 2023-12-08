@@ -4,12 +4,20 @@
 \alias{fullRESCUE}
 \title{fullRESCUE}
 \usage{
-fullRESCUE(rev = NULL, ..., compression = 2, interpolate = FALSE)
+fullRESCUE(
+  rev = NULL,
+  ...,
+  scenario = "",
+  compression = 2,
+  interpolate = FALSE
+)
 }
 \arguments{
 \item{rev}{revision number of the data. If not provided the current date will be used instead}
 
 \item{...}{reserved for future use}
+
+\item{scenario}{scenario name to be included in filenames}
 
 \item{compression}{compression level of the resulting .nc files, possible values are integers from 1-9,
 1 = fastest, 9 = best compression}
