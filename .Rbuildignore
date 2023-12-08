@@ -1,5 +1,4 @@
-^renv$
-^renv\.lock$
+^runner$
 ^\.buildlibrary$
 ^\.pre-commit-config\.yaml$
 ^Makefile$
@@ -14,4 +13,3 @@
 ^\.Rproj\.user$
 ^.*CITATION.cff$
 ^extdata$
-^Rprofile$

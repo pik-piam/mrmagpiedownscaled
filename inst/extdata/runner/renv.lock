@@ -1192,6 +1192,25 @@
       ],
       "Hash": "7df85c58920b1993e92e58e83a8f6587"
     },
+    "mrdownscale": {
+      "Package": "mrdownscale",
+      "Version": "0.12.2",
+      "Source": "Repository",
+      "Repository": "https://rse.pik-potsdam.de/r/packages",
+      "Requirements": [
+        "R",
+        "gdx",
+        "luscale",
+        "madrat",
+        "magclass",
+        "magpie4",
+        "mip",
+        "ncdf4",
+        "terra",
+        "withr"
+      ],
+      "Hash": "efb7e8687fe1af44a81f47aba2daf1cc"
+    },
     "mstools": {
       "Package": "mstools",
       "Version": "0.3.0",
@@ -1216,10 +1235,10 @@
     },
     "ncdf4": {
       "Package": "ncdf4",
-      "Version": "1.22",
+      "Version": "1.21",
       "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "004b5219ae6d8ff53a3dcd2c89e56139"
+      "Repository": "RSPM",
+      "Hash": "a7b262641ef4659767d415c6bb78413f"
     },
     "nlme": {
       "Package": "nlme",
@@ -1988,7 +2007,7 @@
     },
     "withr": {
       "Package": "withr",
-      "Version": "2.5.2",
+      "Version": "2.5.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1997,7 +2016,7 @@
         "graphics",
         "stats"
       ],
-      "Hash": "4b25e70111b7d644322e9513f403a272"
+      "Hash": "c0e49a9760983e81e55cdd9be92e7182"
     },
     "writexl": {
       "Package": "writexl",
