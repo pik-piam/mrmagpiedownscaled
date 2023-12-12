@@ -20,9 +20,12 @@ for (scenario in scenarios) {
 now <- format(Sys.time(), "%Y-%m-%d")
 
 for (scenario in scenarios) {
+  message("Copying fulldata.gdx and clustermap from ", basePath, scenario, "-mag-7/")
   file.copy(paste0(basePath, scenario, "-mag-7/",
                    c("fulldata.gdx", "clustermap_rev4.94_c200_67420_h12.rds")),
             file.path(getConfig("sourcefolder"), "Magpie"),
             overwrite = TRUE)
+  message("md5 of copied fulldata.gdx: ",
+          tools::md5sum(file.path(getConfig("sourcefolder"), "Magpie", "fulldata.gdx")))
   try(retrieveData("RESCUE", rev = now, scenario = gsub("_", "-", scenario)))
 }
