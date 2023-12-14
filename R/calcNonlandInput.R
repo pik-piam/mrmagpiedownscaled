@@ -11,7 +11,7 @@
 #' @author Pascal Sauer
 calcNonlandInput <- function(input = "magpie") {
   if (input == "magpie") {
-    woodHarvestWeight <- readSource("Magpie", subtype = "woodHarvestWeight")
+    woodHarvestWeight <- readSource("MagpieFulldataGdx", subtype = "woodHarvestWeight")
     stopifnot(identical(getNames(woodHarvestWeight, dim = "woodType"), c("wood", "woodfuel")))
     getNames(woodHarvestWeight, dim = "woodType") <- c("roundwood", "fuelwood")
     # convert from mio. t DM yr-1 to kg C yr-1
@@ -27,13 +27,13 @@ calcNonlandInput <- function(input = "magpie") {
                                            add = "category", "wood_harvest_weight_type")
     getSets(woodHarvestWeightType)[["d3.2"]] <- "data"
 
-    woodHarvestArea <- readSource("Magpie", subtype = "woodHarvestArea")
+    woodHarvestArea <- readSource("MagpieFulldataGdx", subtype = "woodHarvestArea")
     woodHarvestArea <- dimSums(woodHarvestArea, dim = "ageClass")
     woodHarvestArea <- add_dimension(woodHarvestArea, dim = 3.1,
                                      add = "category", "wood_harvest_area")
     getSets(woodHarvestArea)[["d3.2"]] <- "data"
 
-    fertilizer <- readSource("Magpie", subtype = "fertilizer")
+    fertilizer <- readSource("MagpieFulldataGdx", subtype = "fertilizer")
     geometry <- attr(fertilizer, "geometry")
     crs <- attr(fertilizer, "crs")
     fertilizer <- add_dimension(fertilizer, dim = 3.1,

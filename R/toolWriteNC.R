@@ -69,7 +69,7 @@ toolWriteNC <- function(x, variables, fileName, now = Sys.time(), compression = 
     return(x)
   }
 
-  .addMetadata <- function(ncFile, comment, now = Sys.time(), missingValue = 1e20) {
+  .addMetadata <- function(ncFile, now = Sys.time(), missingValue = 1e20) {
     # try to remove crs variable, which is not needed by ESMs
     if (Sys.which("ncks") != "") {
       system2("ncks", c("-C", "-O", "-x", "-v", "crs", ncFile, paste0(ncFile, "-no-crs")))
@@ -84,7 +84,6 @@ toolWriteNC <- function(x, variables, fileName, now = Sys.time(), compression = 
     })
     # global
     ncdf4::ncatt_put(nc, 0, "activity_id", "RESCUE")
-    ncdf4::ncatt_put(nc, 0, "comment", comment)
     ncdf4::ncatt_put(nc, 0, "contact", "pascal.sauer@pik-potsdam.de, dietrich@pik-potsdam.de")
     ncdf4::ncatt_put(nc, 0, "Conventions", "CF-1.6")
     dateTime <- strftime(now, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
@@ -136,5 +135,5 @@ toolWriteNC <- function(x, variables, fileName, now = Sys.time(), compression = 
   y <- .setUnitsRemoveCrs(y)
   terra::writeCDF(y, fileName, overwrite = TRUE, missval = missingValue, compression = compression)
   unlink(paste0(variables, ".nc"))
-  .addMetadata(fileName, "states", now = now, missingValue = missingValue)
+  .addMetadata(fileName, now = now, missingValue = missingValue)
 }

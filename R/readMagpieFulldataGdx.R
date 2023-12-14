@@ -1,4 +1,4 @@
-#' readMagpie
+#' readMagpieFulldataGdx
 #'
 #' Read function for data coming from the MAgPIE model.
 #'
@@ -6,7 +6,7 @@
 #' crop, woodHarvestWeight, woodHarvestArea and fertilizer
 #' @param subset Available years (usually timestep is 5+ years) are only returned if they are in subset.
 #' @author Pascal Sauer, Jan Philipp Dietrich
-readMagpie <- function(subtype = "land", subset = 1995:2100) {
+readMagpieFulldataGdx <- function(subtype = "land", subset = 1995:2100) {
   "!# @monitor magpie4:::addGeometry"
 
   gdx <- "fulldata.gdx"
@@ -86,7 +86,7 @@ readMagpie <- function(subtype = "land", subset = 1995:2100) {
     unit <- "Tg yr-1"
     description <- "fertilization rate per croptype"
   } else {
-    stop("Unknown subtype '", subtype, "' in readMagpie")
+    stop("Unknown subtype '", subtype, "' in readMagpieFulldataGdx")
   }
 
   x <- x[, getYears(x, as.integer = TRUE) %in% subset, ]

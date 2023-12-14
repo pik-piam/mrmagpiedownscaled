@@ -10,8 +10,8 @@
 #' @author Jan Philipp Dietrich, Pascal Sauer
 calcLandInput <- function(input = "magpie") {
   if (input == "magpie") {
-    land <- readSource("Magpie")
-    crop <- readSource("Magpie", subtype = "crop")
+    land <- readSource("MagpieFulldataGdx")
+    crop <- readSource("MagpieFulldataGdx", subtype = "crop")
     getItems(crop, dim = 3.1, full = TRUE) <- sub("\\.", "_", getItems(crop, dim = 3, full = TRUE))
     getItems(crop, dim = 3.2) <- NULL
 
