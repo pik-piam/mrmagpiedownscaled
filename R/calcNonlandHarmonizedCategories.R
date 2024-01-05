@@ -109,7 +109,7 @@ calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2mod"
 
   return(list(x = x,
               isocountries = FALSE,
-              unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha; fertilizer: kg yr-1",
+              unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha yr-1; fertilizer: kg yr-1",
               min = 0,
               description = "Input data with nonland categories remapped to categories of target dataset"))
 }

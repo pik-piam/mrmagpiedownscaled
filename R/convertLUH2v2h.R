@@ -20,14 +20,14 @@ convertLUH2v2h <- function(x, subtype = "states") {
     harv <- x["harv"]
     harv <- harv * cellAreaMha
     names(harv) <- sub("harv", "wood_harvest_area", names(harv))
-    terra::units(harv) <- "Mha"
+    terra::units(harv) <- "Mha yr-1"
 
     bioh <- x["bioh"]
     bioh <- bioh * 1 # force bioh into memory, otherwise the result cannot be cached
     terra::units(bioh) <- "kg C yr-1"
 
     x <- c(harv, bioh)
-    unit <- "*_bioh: kg C yr-1, *_harv: Mha"
+    unit <- "*_bioh: kg C yr-1, *_harv: Mha yr-1"
   } else {
     stop("subtype must be states or transitions, for management and cellArea pass convert = FALSE")
   }

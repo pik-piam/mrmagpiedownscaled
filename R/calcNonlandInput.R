@@ -12,9 +12,7 @@
 calcNonlandInput <- function(input = "magpie") {
   if (input == "magpie") {
     woodHarvestWeight <- readSource("MagpieFulldataGdx", subtype = "woodHarvestWeight")
-    stopifnot(identical(getNames(woodHarvestWeight, dim = "woodType"), c("wood", "woodfuel")))
-    getNames(woodHarvestWeight, dim = "woodType") <- c("roundwood", "fuelwood")
-    # convert from mio. t DM yr-1 to kg C yr-1
+    # convert from Pg DM yr-1 to kg C yr-1
     woodHarvestWeight <- woodHarvestWeight * 10^9 * 0.5
 
     woodHarvestWeightSource <- dimSums(woodHarvestWeight, dim = "woodType")
@@ -63,7 +61,7 @@ calcNonlandInput <- function(input = "magpie") {
 
   return(list(x = out,
               isocountries = FALSE,
-              unit = "harvest_weight: kg C yr-1; harvest_area: Mha; fertilizer: kg yr-1",
+              unit = "harvest_weight: kg C yr-1; harvest_area: Mha yr-1; fertilizer: kg yr-1",
               min = 0,
               description = "Nonland input data for data harmonization and downscaling pipeline"))
 }

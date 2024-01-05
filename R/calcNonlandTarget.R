@@ -40,7 +40,7 @@ calcNonlandTarget <- function(target = "luh2mod") {
 
     return(list(x = out,
                 class = "SpatRaster",
-                unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha; fertilizer: kg yr-1",
+                unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha yr-1; fertilizer: kg yr-1",
                 description = "Nonland target data for data harmonization"))
   } else {
     stop("Unsupported output type \"", target, "\"")
