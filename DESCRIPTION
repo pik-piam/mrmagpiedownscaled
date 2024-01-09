@@ -19,7 +19,7 @@ Depends:
 Imports:
     gdx,
     luscale,
-    magpie4 (>= 1.195.0),
+    magpie4 (>= 1.197.0),
     mip,
     ncdf4,
     terra,

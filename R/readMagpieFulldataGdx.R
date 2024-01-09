@@ -8,6 +8,11 @@
 #' @author Pascal Sauer, Jan Philipp Dietrich
 readMagpieFulldataGdx <- function(subtype = "land", subset = 1995:2100) {
   "!# @monitor magpie4:::addGeometry"
+  "!# @monitor magpie4:::land"
+  "!# @monitor magpie4:::croparea"
+  "!# @monitor magpie4:::woodProduction"
+  "!# @monitor magpie4:::woodHarvestArea"
+  "!# @monitor magpie4:::NitrogenBudget"
 
   gdx <- "fulldata.gdx"
   # to produce these files run MAgPIE via ./scripts/start/forestry.R
