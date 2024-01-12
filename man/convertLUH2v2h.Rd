@@ -9,7 +9,7 @@ convertLUH2v2h(x, subtype = "states")
 \arguments{
 \item{x}{SpatRaster with LUH2 cell area shares}
 
-\item{subtype}{Only "states" and "woodHarvestArea" are converted}
+\item{subtype}{Only "states" is converted}
 }
 \description{
 Convert LUH2 cell area shares to absolute areas by multiplying with cell area, convert to Mha.

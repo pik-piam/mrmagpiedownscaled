@@ -13,12 +13,24 @@ calcNonlandTarget <- function(target = "luh2mod") {
     # need absolute values for downscaling, fertl_* is in kg ha-1 yr-1, convert to kg yr-1
     cellArea <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
     # convert from km2 to ha
-    cellArea <- cellArea * 100
-    fertilizer <- management["fertl"] * cellArea
+    cellAreaHa <- cellArea * 100
+    fertilizer <- management["fertl"] * cellAreaHa
     terra::units(fertilizer) <- "kg yr-1"
     names(fertilizer) <- paste0(sub("fertl_", "", names(fertilizer)), "_fertilizer")
 
-    transitions <- readSource("LUH2v2h", subtype = "transitions")
+    transitions <- readSource("LUH2v2h", subtype = "transitions", convert = FALSE)
+    states <- readSource("LUH2v2h", subtype = "states")
+
+    # convert from shares to Mha yr-1
+    # assuming secmf and secyf are both given relative to total secdf area
+    woodHarvestArea <- c(transitions["primf_harv"] * states["primf"],
+                         transitions["primn_harv"] * states["primn"],
+                         transitions["secmf_harv"] * states["secdf"],
+                         transitions["secyf_harv"] * states["secdf"],
+                         transitions["secnf_harv"] * states["secdn"])
+    names(woodHarvestArea) <- paste0(sub("_harv", "", names(woodHarvestArea)), "_wood_harvest_area")
+    terra::units(woodHarvestArea) <- "Mha yr-1"
+
     woodHarvestWeight <- transitions["bioh"]
     # replace negative weight of wood harvest with 0
     woodHarvestWeight <- terra::classify(woodHarvestWeight, cbind(-Inf, 0, 0))
@@ -35,12 +47,12 @@ calcNonlandTarget <- function(target = "luh2mod") {
     }))
     terra::units(woodHarvestWeightType) <- "kg C yr-1"
 
-    out <- c(transitions["wood_harvest_area"], woodHarvestWeight, woodHarvestWeightType, fertilizer)
+    out <- c(woodHarvestArea, woodHarvestWeight, woodHarvestWeightType, fertilizer)
     terra::time(out, tstep = "years") <- as.integer(sub("^y([0-9]+).+", "\\1", names(out)))
 
     return(list(x = out,
                 class = "SpatRaster",
-                unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha; fertilizer: kg yr-1",
+                unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha yr-1; fertilizer: kg yr-1",
                 description = "Nonland target data for data harmonization"))
   } else {
     stop("Unsupported output type \"", target, "\"")

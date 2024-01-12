@@ -46,6 +46,6 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod") {
   return(list(x = out,
               min = 0,
               isocountries = FALSE,
-              unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha; fertilizer: kg yr-1",
+              unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha yr-1; fertilizer: kg yr-1",
               description = "Downscaled nonland data"))
 }
