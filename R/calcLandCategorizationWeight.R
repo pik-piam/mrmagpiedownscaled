@@ -88,7 +88,7 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
   mluh2 <- as.magpie(pluh2, spatial = which(terra::datatype(pluh2) != "double"))
   mtoolbox  <- as.magpie(ptoolbox, spatial = which(terra::datatype(ptoolbox) != "double"))
   nas <- is.na(mtoolbox) # inlining this makes madrat think we call the tool function "toolbox[is.na"
-  mtoolbox[nas] <- 0 # TODO why are NAs introduced by projection here?
+  mtoolbox[nas] <- 0 # TODO why are NAs introduced by projection here? # nolint
 
   .dummy <- function(x, map, availableItems) {
     # generate empty dummy for missing categories
@@ -116,7 +116,7 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
     } else {
       if (length(dummy) > 3) dummy <- c(dummy[1:3], "..")
       mstools::toolStatusMessage("warn", paste("Some categories contain dummy weight 10^-10:",
-                                      paste(dummy, collapse = ", ")), level = 1)
+                                               paste(dummy, collapse = ", ")), level = 1)
     }
   }
   .dummyCols(out)

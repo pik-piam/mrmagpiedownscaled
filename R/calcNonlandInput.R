@@ -56,7 +56,7 @@ calcNonlandInput <- function(input = "magpie") {
   mstools::toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
   mstools::toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
   mstools::toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "category", "data")),
-                 "Dimensions are named correctly")
+                          "Dimensions are named correctly")
   mstools::toolExpectTrue(all(out >= 0), "All values are >= 0")
 
   return(list(x = out,

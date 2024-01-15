@@ -26,12 +26,14 @@ calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2mod") {
   attr(out, "geometry") <- attr(x, "geometry")
 
   # check data for consistency
-  mstools::toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
+  mstools::toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")),
+                          "Dimensions are named correctly")
   mstools::toolExpectTrue(setequal(getItems(out, dim = 3), map$dataOutput), "Land categories match target definition")
   mstools::toolExpectTrue(all(out >= 0), "All values are >= 0")
   outSum <- dimSums(out, dim = 3)
-  mstools::toolExpectExpectLessDiff(outSum, outSum[, 1, ], 10^-6, "Total areas stay constant over time")
-  mstools::toolExpectExpectLessDiff(outSum, dimSums(x, dim = 3), 10^-6, "Total areas are not affected by recategorization")
+  mstools::toolExpectLessDiff(outSum, outSum[, 1, ], 10^-6, "Total areas stay constant over time")
+  mstools::toolExpectLessDiff(outSum, dimSums(x, dim = 3), 10^-6,
+                              "Total areas are not affected by recategorization")
 
   return(list(x = out,
               isocountries = FALSE,

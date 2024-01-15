@@ -31,15 +31,16 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   # checks and corrections
   inSum <- dimSums(input, dim = 3)
   tSum <- dimSums(target, dim = 3)
-  mstools::toolExpectExpectLessDiff(inSum, inSum[, 1, ], 10^-5, "Total areas in input stay constant over time")
-  mstools::toolExpectExpectLessDiff(tSum, tSum[, 1, ], 10^-5, "Total areas in target stay constant over time")
-  mstools::toolExpectExpectLessDiff(inSum[, 1, ], tSum[, 1, ], 10^-5, "Total areas are the same in target and input data")
+  mstools::toolExpectLessDiff(inSum, inSum[, 1, ], 10^-5, "Total areas in input stay constant over time")
+  mstools::toolExpectLessDiff(tSum, tSum[, 1, ], 10^-5, "Total areas in target stay constant over time")
+  mstools::toolExpectLessDiff(inSum[, 1, ], tSum[, 1, ], 10^-5,
+                              "Total areas are the same in target and input data")
   if (max(abs(inSum[, 1, ] - tSum[, 1, ])) >= 10^-5) {
     corr <- setYears(dimSums(target[, 1, ], dim = 3) / dimSums(input[, 1, ], dim = 3), NULL)
     input <- input * corr
     mstools::toolStatusMessage("warn", paste0("input data multiplied with correction factors to match target areas ",
-                                     "(max ratio = ", round(max(corr), 2),
-                                     ", min ratio = ", round(min(corr), 2),  ")"))
+                                              "(max ratio = ", round(max(corr), 2),
+                                              ", min ratio = ", round(min(corr), 2),  ")"))
   }
 
   if (method == "extrapolateFade") method <- "extrapolateFadeConstantSum"
@@ -53,12 +54,14 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   # checks
   mstools::toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
   mstools::toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
-  mstools::toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
-  mstools::toolExpectTrue(setequal(getItems(out, dim = 3), getItems(input, dim = 3)), "Land categories remain unchanged")
+  mstools::toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")),
+                          "Dimensions are named correctly")
+  mstools::toolExpectTrue(setequal(getItems(out, dim = 3), getItems(input, dim = 3)),
+                          "Land categories remain unchanged")
   mstools::toolExpectTrue(all(out >= 0), "All values are >= 0")
   outSum <- dimSums(out, dim = 3)
-  mstools::toolExpectExpectLessDiff(outSum, outSum[, 1, ], 10^-5, "Total areas in output stay constant over time")
-  mstools::toolExpectExpectLessDiff(outSum, dimSums(input, dim = 3), 10^-5, "Total areas remain unchanged")
+  mstools::toolExpectLessDiff(outSum, outSum[, 1, ], 10^-5, "Total areas in output stay constant over time")
+  mstools::toolExpectLessDiff(outSum, dimSums(input, dim = 3), 10^-5, "Total areas remain unchanged")
 
   return(list(x = out,
               class = "magpie",
