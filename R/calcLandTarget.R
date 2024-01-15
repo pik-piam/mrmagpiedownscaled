@@ -85,15 +85,15 @@ calcLandTarget <- function(target = "luh2mod") {
   }
 
   # checks
-  toolExpectTrue(terra::crs(out) != "", "Data contains CRS information")
+  mstools::toolExpectTrue(terra::crs(out) != "", "Data contains CRS information")
   map <- toolLandCategoriesMapping(input = "magpie", target = target)
-  toolExpectTrue(setequal(sub("y[0-9]+\\.\\.", "", names(out)), map$dataOutput),
+  mstools::toolExpectTrue(setequal(sub("y[0-9]+\\.\\.", "", names(out)), map$dataOutput),
                  "Land target categories match the corresponding mapping")
-  toolExpectTrue(min(terra::values(min(out)), na.rm = TRUE) >= 0, "All values are >= 0")
+  mstools::toolExpectTrue(min(terra::values(min(out)), na.rm = TRUE) >= 0, "All values are >= 0")
   totalAreas <- vapply(unique(terra::time(out)), function(year) {
     sum(terra::values(out[[terra::time(out) == year]]), na.rm = TRUE)
   }, double(1))
-  toolExpectLessDiff(max(totalAreas), min(totalAreas), 10^-4,
+  mstools::toolExpectExpectLessDiff(max(totalAreas), min(totalAreas), 10^-4,
                      "Total area is constant over time")
 
   return(list(x = out,

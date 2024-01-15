@@ -97,15 +97,15 @@ calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2mod"
   attr(x, "geometry") <- geometry
 
   # check data for consistency
-  toolExpectTrue(identical(unname(getSets(x)), c("region", "id", "year", "data")),
+  mstools::toolExpectTrue(identical(unname(getSets(x)), c("region", "id", "year", "data")),
                  "Dimensions are named correctly")
-  toolExpectTrue(setequal(getNames(x),
+  mstools::toolExpectTrue(setequal(getNames(x),
                           c(paste0(c("primf", "primn", "secmf", "secyf", "secnf"), "_wood_harvest_area"),
                             paste0(c("primf", "primn", "secmf", "secyf", "secnf"), "_bioh"),
                             paste0(c("roundwood", "fuelwood"), "_harvest_weight_type"),
                             paste0(c("c3ann", "c4ann", "c3per", "c4per", "c3nfx"), "_fertilizer"))),
                  "Nonland categories match target definition")
-  toolExpectTrue(all(x >= 0), "All values are >= 0")
+  mstools::toolExpectTrue(all(x >= 0), "All values are >= 0")
 
   return(list(x = x,
               isocountries = FALSE,

@@ -37,9 +37,9 @@ toolDownscaleMagpieClassic <- function(x, xTarget) {
     map <- map[map$cell %in% intersect, ]
     message <- paste0(round(missingInTarget * 100, 2),
                       "% of cells from downscale mapping do not exist in target data and thus will be ignored!")
-    toolStatusMessage("warn", message)
+    mstools::toolStatusMessage("warn", message)
   }  else {
-    toolStatusMessage("ok", "input data area is fully covered by target data")
+    mstools::toolStatusMessage("ok", "input data area is fully covered by target data")
   }
 
   missingInX <- (dim(mTarget)[1] - length(intersect)) / dim(mTarget)[1]
@@ -47,9 +47,9 @@ toolDownscaleMagpieClassic <- function(x, xTarget) {
     mTarget <- mTarget[intersect, , ]
     message <- paste0(round(missingInX * 100, 2),
                       "% of cells missing in input data and thus removed from target data!")
-    toolStatusMessage("warn", message)
+    mstools::toolStatusMessage("warn", message)
   } else {
-    toolStatusMessage("ok", "target data area is fully covered by input data")
+    mstools::toolStatusMessage("ok", "target data area is fully covered by input data")
   }
 
   "!# @monitor luscale::interpolate2"

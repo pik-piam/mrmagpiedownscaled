@@ -42,13 +42,13 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   attr(out, "crs")      <- crs
 
   # checks
-  toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
-  toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
-  toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
-  toolExpectTrue(setequal(getItems(out, dim = 3), getItems(xTarget, dim = 3)), "Nonland categories remain unchanged")
-  toolExpectTrue(min(out) >= 0, "All values are >= 0")
+  mstools::toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
+  mstools::toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
+  mstools::toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")), "Dimensions are named correctly")
+  mstools::toolExpectTrue(setequal(getItems(out, dim = 3), getItems(xTarget, dim = 3)), "Nonland categories remain unchanged")
+  mstools::toolExpectTrue(min(out) >= 0, "All values are >= 0")
   # SpatRaster can hold values up to ~10^40 before replacing with Inf, so check we are well below that
-  toolExpectTrue(max(out) < 10^30, "All values are < 10^30")
+  mstools::toolExpectTrue(max(out) < 10^30, "All values are < 10^30")
 
   return(list(x = out,
               isocountries = FALSE,
