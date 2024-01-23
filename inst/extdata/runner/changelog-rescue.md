@@ -1,5 +1,8 @@
 # Land Use Data for RESCUE - Changelog
 
+## unreleased
+- (2024-01-12) fixed wood harvest area (unit) conversion bug
+
 ## 2023-12-08
 
 - dataset for 1995-2100 in 5-year timesteps for all REMIND-MAgPIE scenarios used for the emissions
