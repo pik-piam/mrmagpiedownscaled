@@ -2,7 +2,7 @@
 #'
 #' Tool function to write LUH2-style NetCDF files
 #'
-#' @param x data to be written to file
+#' @param x magpie object to be written to file
 #' @param variables layers that should be selected from \code{x}
 #' @param fileName file name that should be used for the resulting nc file
 #' @param now time that should be used as time stamp in metadata
@@ -16,7 +16,6 @@
 
 toolWriteNC <- function(x, variables, fileName, now = Sys.time(), compression = 2,
                         interpolationType = NULL, years = 1995:2100) {
-
   if (!grepl("\\.nc$", fileName)) fileName <- paste0(fileName, ".nc")
 
   missingValue <- 1e20
