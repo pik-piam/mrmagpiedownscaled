@@ -12,6 +12,7 @@
 #' @param method harmonization method, see \code{\link{toolGetHarmonizer}} for available methods
 #' @return harmonized nonland data
 #' @author Pascal Sauer
+#' @importFrom mstools toolExpectTrue
 calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
                                   harmonizeYear = 2015, finalYear = 2050,
                                   method = "extrapolateFade") {
@@ -42,15 +43,15 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   attr(out, "crs")      <- crs
 
   # checks
-  mstools::toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
-  mstools::toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
-  mstools::toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")),
-                          "Dimensions are named correctly")
-  mstools::toolExpectTrue(setequal(getItems(out, dim = 3), getItems(xTarget, dim = 3)),
-                          "Nonland categories remain unchanged")
-  mstools::toolExpectTrue(min(out) >= 0, "All values are >= 0")
+  toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
+  toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
+  toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")),
+                 "Dimensions are named correctly")
+  toolExpectTrue(setequal(getItems(out, dim = 3), getItems(xTarget, dim = 3)),
+                 "Nonland categories remain unchanged")
+  toolExpectTrue(min(out) >= 0, "All values are >= 0")
   # SpatRaster can hold values up to ~10^40 before replacing with Inf, so check we are well below that
-  mstools::toolExpectTrue(max(out) < 10^30, "All values are < 10^30")
+  toolExpectTrue(max(out) < 10^30, "All values are < 10^30")
 
   return(list(x = out,
               isocountries = FALSE,

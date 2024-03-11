@@ -7,6 +7,7 @@
 #' luh2mod will split secdf into forestry and secdf
 #' @return land target data
 #' @author Pascal Sauer
+#' @importFrom mstools toolExpectTrue toolExpectLessDiff
 calcLandTarget <- function(target = "luh2mod") {
   if (target %in% c("luh2", "luh2mod")) {
     cropTypes <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per")
@@ -85,16 +86,16 @@ calcLandTarget <- function(target = "luh2mod") {
   }
 
   # checks
-  mstools::toolExpectTrue(terra::crs(out) != "", "Data contains CRS information")
+  toolExpectTrue(terra::crs(out) != "", "Data contains CRS information")
   map <- toolLandCategoriesMapping(input = "magpie", target = target)
-  mstools::toolExpectTrue(setequal(sub("y[0-9]+\\.\\.", "", names(out)), map$dataOutput),
-                          "Land target categories match the corresponding mapping")
-  mstools::toolExpectTrue(min(terra::values(min(out)), na.rm = TRUE) >= 0, "All values are >= 0")
+  toolExpectTrue(setequal(sub("y[0-9]+\\.\\.", "", names(out)), map$dataOutput),
+                 "Land target categories match the corresponding mapping")
+  toolExpectTrue(min(terra::values(min(out)), na.rm = TRUE) >= 0, "All values are >= 0")
   totalAreas <- vapply(unique(terra::time(out)), function(year) {
     sum(terra::values(out[[terra::time(out) == year]]), na.rm = TRUE)
   }, double(1))
-  mstools::toolExpectLessDiff(max(totalAreas), min(totalAreas), 10^-4,
-                              "Total area is constant over time")
+  toolExpectLessDiff(max(totalAreas), min(totalAreas), 10^-4,
+                     "Total area is constant over time")
 
   return(list(x = out,
               class = "SpatRaster",

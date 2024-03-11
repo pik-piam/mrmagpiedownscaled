@@ -20,8 +20,7 @@
 #' @param crs the coordinate reference system as returned by \code{attr(x, "crs")} from
 #' a magpie object with coordinates information.
 #' @author Jan Philipp Dietrich
-
-
+#' @importFrom mstools toolExpectTrue toolStatusMessage
 calcLandCategorizationWeight <- function(map, geometry, crs) {
   .getTarget <- function(geometry, crs) {
     target <- new.magpie(names(geometry), sets = c("id", "temporal", "data"))
@@ -105,18 +104,18 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
   attr(out, "geometry") <- geometry
 
   # check data for consistency
-  mstools::toolExpectTrue(identical(unname(getSets(out)[1]), "id"), "Dimensions are named correctly")
-  mstools::toolExpectTrue(setequal(getItems(out, dim = 3), map$merge), "Land categories match merged categories")
-  mstools::toolExpectTrue(all(out >= 10^-10), "All values are >= 10^-10")
+  toolExpectTrue(identical(unname(getSets(out)[1]), "id"), "Dimensions are named correctly")
+  toolExpectTrue(setequal(getItems(out, dim = 3), map$merge), "Land categories match merged categories")
+  toolExpectTrue(all(out >= 10^-10), "All values are >= 10^-10")
   .dummyCols <- function(x) {
     dummy <- magpply(x, function(x) return(all(x == 10^-10)), 3)
     dummy <- getItems(dummy, dim = 3)[dummy]
     if (length(dummy) == 0) {
-      mstools::toolStatusMessage("ok", "No dummy weights detected", level = 1)
+      toolStatusMessage("ok", "No dummy weights detected", level = 1)
     } else {
       if (length(dummy) > 3) dummy <- c(dummy[1:3], "..")
-      mstools::toolStatusMessage("warn", paste("Some categories contain dummy weight 10^-10:",
-                                               paste(dummy, collapse = ", ")), level = 1)
+      toolStatusMessage("warn", paste("Some categories contain dummy weight 10^-10:",
+                                      paste(dummy, collapse = ", ")), level = 1)
     }
   }
   .dummyCols(out)

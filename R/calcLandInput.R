@@ -8,6 +8,7 @@
 #' @param input name of an input dataset, currently only "magpie"
 #' @return land input data
 #' @author Jan Philipp Dietrich, Pascal Sauer
+#' @importFrom mstools toolExpectTrue toolExpectLessDiff
 calcLandInput <- function(input = "magpie") {
   if (input == "magpie") {
     land <- readSource("MagpieFulldataGdx")
@@ -34,16 +35,16 @@ calcLandInput <- function(input = "magpie") {
   }
 
   # check data for consistency
-  mstools::toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
-  mstools::toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
-  mstools::toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")),
-                          "Dimensions are named correctly")
+  toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
+  toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
+  toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")),
+                 "Dimensions are named correctly")
   map <- toolLandCategoriesMapping(input = input, target = "luh2mod")
-  mstools::toolExpectTrue(setequal(getItems(out, dim = 3), map$dataInput),
-                          "Land input categories match the corresponding mapping")
-  mstools::toolExpectTrue(all(out >= 0), "All values are >= 0")
+  toolExpectTrue(setequal(getItems(out, dim = 3), map$dataInput),
+                 "Land input categories match the corresponding mapping")
+  toolExpectTrue(all(out >= 0), "All values are >= 0")
   outSum <- dimSums(out, dim = 3)
-  mstools::toolExpectLessDiff(outSum, outSum[, 1, ], 10^-4, "Total area is constant over time")
+  toolExpectLessDiff(outSum, outSum[, 1, ], 10^-4, "Total area is constant over time")
 
   return(list(x = out,
               isocountries = FALSE,

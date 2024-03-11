@@ -7,6 +7,7 @@
 #' @param xTarget target land use dataset as SpatRaster for initialization year
 #' @return downscaled land use dataset
 #' @author Jan Philipp Dietrich
+#' @importFrom mstools toolStatusMessage
 toolDownscaleMagpieClassic <- function(x, xTarget) {
 
   .getDownscaleMap <- function(x, xTarget) {
@@ -37,9 +38,9 @@ toolDownscaleMagpieClassic <- function(x, xTarget) {
     map <- map[map$cell %in% intersect, ]
     message <- paste0(round(missingInTarget * 100, 2),
                       "% of cells from downscale mapping do not exist in target data and thus will be ignored!")
-    mstools::toolStatusMessage("warn", message)
+    toolStatusMessage("warn", message)
   }  else {
-    mstools::toolStatusMessage("ok", "input data area is fully covered by target data")
+    toolStatusMessage("ok", "input data area is fully covered by target data")
   }
 
   missingInX <- (dim(mTarget)[1] - length(intersect)) / dim(mTarget)[1]
@@ -47,9 +48,9 @@ toolDownscaleMagpieClassic <- function(x, xTarget) {
     mTarget <- mTarget[intersect, , ]
     message <- paste0(round(missingInX * 100, 2),
                       "% of cells missing in input data and thus removed from target data!")
-    mstools::toolStatusMessage("warn", message)
+    toolStatusMessage("warn", message)
   } else {
-    mstools::toolStatusMessage("ok", "target data area is fully covered by input data")
+    toolStatusMessage("ok", "target data area is fully covered by input data")
   }
 
   "!# @monitor luscale::interpolate2"

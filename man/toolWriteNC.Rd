@@ -15,7 +15,7 @@ toolWriteNC(
 )
 }
 \arguments{
-\item{x}{data to be written to file}
+\item{x}{magpie object to be written to file}
 
 \item{variables}{layers that should be selected from \code{x}}
 

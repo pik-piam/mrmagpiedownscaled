@@ -9,6 +9,7 @@
 #' @param input name of an input dataset, currently only "magpie"
 #' @return nonland input data
 #' @author Pascal Sauer
+#' @importFrom mstools toolExpectTrue
 calcNonlandInput <- function(input = "magpie") {
   if (input == "magpie") {
     woodHarvestWeight <- readSource("MagpieFulldataGdx", subtype = "woodHarvestWeight")
@@ -53,11 +54,11 @@ calcNonlandInput <- function(input = "magpie") {
   }
 
   # check data for consistency
-  mstools::toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
-  mstools::toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
-  mstools::toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "category", "data")),
-                          "Dimensions are named correctly")
-  mstools::toolExpectTrue(all(out >= 0), "All values are >= 0")
+  toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
+  toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
+  toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "category", "data")),
+                 "Dimensions are named correctly")
+  toolExpectTrue(all(out >= 0), "All values are >= 0")
 
   return(list(x = out,
               isocountries = FALSE,

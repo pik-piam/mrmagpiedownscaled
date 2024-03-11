@@ -11,7 +11,7 @@
 #' @param interpolate boolean defining whether the data should be interpolated to annual values or not
 #'
 #' @author Pascal Sauer, Jan Philipp Dietrich
-fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
+fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 1995:2100,
                        compression = 2, interpolate = FALSE) {
   stopifnot(...length() == 0)
   missingValue <- 1e20
@@ -24,41 +24,52 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
                        version, "_gn_", min(years), "-", max(years))
 
 
-
   land <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)
   # land <- readRDS("landSample.rds") # TODO remove, comment in line above
-  land <- land[, getYears(land, as.integer = TRUE) %in% years, ]
-  # account for unit "years since 2015-01-01 0:0:0" which addMetadataRESCUE sets
-  land <- setYears(land, getYears(land, as.integer = TRUE) - 2015)
-  land <- magclass::extend(land,
-                           xRange = c(-180 + resolution / 2, 180 - resolution / 2),
-                           yRange = c(90 - resolution / 2, -90 + resolution / 2),
-                           res = resolution)
+  land <- filterExtendRESCUE(land, years, resolution)
 
   statesFile <- paste0("multiple-states", fileSuffix, ".nc")
   statesVariables <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per", "pastr",
                        "primf", "primn", "range", "secdf", "secdn", "urban")
   write.magpie(land[, , statesVariables], statesFile, missval = missingValue, compression = compression)
-  addMetadataRESCUE(statesFile, now = now, missingValue = missingValue, variableId = "multiple-states",
-                    resolution = resolution)
+  addMetadataRESCUE(statesFile, now, missingValue, resolution)
 
-  stop("not implemented yet") # TODO
-
-
+  landManagementVariables <- c("irrig_c3ann", "crpbf_c3ann", "irrig_c3nfx", "crpbf_c3nfx",
+                               "irrig_c3per", "crpbf_c3per", "crpbf2_c3per", "irrig_c4ann",
+                               "crpbf_c4ann", "irrig_c4per", "crpbf_c4per", "crpbf2_c4per", "manaf")
+  land <- land[, , landManagementVariables]
   nonland <- calcOutput("NonlandReport", project = "RESCUE", aggregate = FALSE,
                         warnNA = FALSE) # rndwd & fulwd include NAs
-  toolWriteManagement(land, nonland, fileSuffix = fileSuffix, now = now, compression = compression,
-                      interpolate = interpolate)
-  rm(land)
+  nonland <- filterExtendRESCUE(nonland, years, resolution)
+  nonlandManagementVariables <- c("fertl_c3nfx", "fertl_c3per", "fertl_c3ann", "fertl_c4ann",
+                                  "fertl_c4per", "rndwd", "fulwd")
+  management <- mbind(land, nonland[, , nonlandManagementVariables])
+  # rm(land)
+  managementFile <- paste0("multiple-management", fileSuffix, ".nc")
+  write.magpie(management, managementFile, missval = missingValue, compression = compression)
+  # rm(management)
+  addMetadataRESCUE(managementFile, now, missingValue, resolution)
 
-
+  stop("not implemented yet") # TODO
 
   transitions <- calcOutput("LandTransitions", project = "RESCUE", aggregate = FALSE)
   toolWriteTransitions(transitions, nonland, fileSuffix = fileSuffix, now = now,
                        compression = compression, interpolate = interpolate)
 }
 
-addMetadataRESCUE <- function(ncFile, now, missingValue, variableId, resolution) {
+filterExtendRESCUE <- function(x, years, resolution) {
+  x <- x[, getYears(x, as.integer = TRUE) %in% years, ]
+  # account for unit "years since 2015-01-01 0:0:0" which addMetadataRESCUE sets
+  x <- setYears(x, getYears(x, as.integer = TRUE) - 2015)
+  x <- magclass::extend(x,
+                        xRange = c(-180 + resolution / 2, 180 - resolution / 2),
+                        yRange = c(90 - resolution / 2, -90 + resolution / 2),
+                        res = resolution)
+  return(x)
+}
+
+addMetadataRESCUE <- function(ncFile, now, missingValue, resolution) {
+  variableId <- sub("^(multiple-[^_]+).+^", "\\1", basename(ncFile))
   stopifnot(variableId %in% c("multiple-states", "multiple-management", "multiple-transitions"))
   nc <- ncdf4::nc_open(ncFile, write = TRUE)
   withr::defer({

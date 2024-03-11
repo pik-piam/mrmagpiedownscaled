@@ -8,6 +8,7 @@ fullRESCUE(
   rev = NULL,
   ...,
   scenario = "",
+  years = 1995:2100,
   compression = 2,
   interpolate = FALSE
 )
