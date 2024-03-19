@@ -35,22 +35,24 @@ calcLandTransitions <- function(project = "RESCUE", gross = TRUE) {
   message("allocating memory...")
   coords <- getItems(land, dim = 1)
   years <- utils::head(getYears(land, as.integer = TRUE), -1) + 1
+  rm(land)
   variables <- getItems(read.magpie(paste0(tempfolder, "/", sequence[1], ".mz")), dim = 3)
-  out <- new.magpie(coords, years, variables, fill = NA_real_, sets = c("x", "y", "year", "from", "to"))
-
-  for (j in seq_along(sequence)) {
-    i <- sequence[j]
-    message(j, "/", length(sequence), " combining...")
-    y <- years[i:min(length(years), i + l - 1)]
-    out[, y, ] <- read.magpie(paste0(tempfolder, "/", i, ".mz"))
-  }
-  message("combining done, returning")
-
-  return(list(x = out,
+  out <- list(x = new.magpie(coords, years, variables, fill = NA_real_,
+                             sets = c("x", "y", "year", "from", "to")),
               isocountries = FALSE,
               unit = "1",
               min = 0,
               max = 1.0001,
               description = paste("MAgPIE land use transition data estimated from downscaled land use ",
-                                  "state information. Unit is share of cell area.")))
+                                  "state information. Unit is share of cell area."))
+
+  for (j in seq_along(sequence)) {
+    i <- sequence[j]
+    message(j, "/", length(sequence), " combining...")
+    y <- years[i:min(length(years), i + l - 1)]
+    out$x[, y, ] <- read.magpie(paste0(tempfolder, "/", i, ".mz"))
+  }
+  message("combining done, returning")
+
+  return(out)
 }

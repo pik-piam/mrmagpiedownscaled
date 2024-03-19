@@ -1,7 +1,11 @@
 # Land Use Data for RESCUE - Changelog
 
 ## unreleased
-- (2024-01-12) fixed wood harvest area (unit) conversion bug
+
+- fixed wood harvest area (unit) conversion bug
+- renamed longitude/latitude to lon/lat
+- added bounds variables for lon/lat/time
+- added more metadata
 
 ## 2023-12-08
 

@@ -15,7 +15,8 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 1995:2100,
                        compression = 2, interpolate = FALSE) {
   stopifnot(...length() == 0)
   missingValue <- 1e20
-  resolution <- 0.25
+  gridDefinition <- c(-189.875, 189.875, -89.875, 89.875, 0.25)
+  resolution <- gridDefinition[5]
 
   now <- Sys.time()
   version <- if (is.null(rev)) format(now, "%Y-%m-%d") else rev
@@ -23,16 +24,15 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 1995:2100,
                        scenario, if (scenario == "") "" else "-",
                        version, "_gn_", min(years), "-", max(years))
 
-
   land <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)
-  # land <- readRDS("landSample.rds") # TODO remove, comment in line above
-  land <- filterExtendRESCUE(land, years, resolution)
+  land <- adaptYearsRESCUE(land, years)
 
   statesFile <- paste0("multiple-states", fileSuffix, ".nc")
   statesVariables <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per", "pastr",
                        "primf", "primn", "range", "secdf", "secdn", "urban")
-  write.magpie(land[, , statesVariables], statesFile, missval = missingValue, compression = compression)
-  addMetadataRESCUE(statesFile, now, missingValue, resolution)
+  write.magpie(land[, , statesVariables], statesFile, compression = compression,
+               missval = missingValue, gridDefinition = gridDefinition, progress = TRUE)
+  addMetadataRESCUE(statesFile, now, missingValue, resolution, compression = compression)
 
   landManagementVariables <- c("irrig_c3ann", "crpbf_c3ann", "irrig_c3nfx", "crpbf_c3nfx",
                                "irrig_c3per", "crpbf_c3per", "crpbf2_c3per", "irrig_c4ann",
@@ -40,36 +40,44 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 1995:2100,
   land <- land[, , landManagementVariables]
   nonland <- calcOutput("NonlandReport", project = "RESCUE", aggregate = FALSE,
                         warnNA = FALSE) # rndwd & fulwd include NAs
-  nonland <- filterExtendRESCUE(nonland, years, resolution)
+  nonland <- adaptYearsRESCUE(nonland, years)
   nonlandManagementVariables <- c("fertl_c3nfx", "fertl_c3per", "fertl_c3ann", "fertl_c4ann",
                                   "fertl_c4per", "rndwd", "fulwd")
   management <- mbind(land, nonland[, , nonlandManagementVariables])
-  # rm(land)
+  rm(land)
   managementFile <- paste0("multiple-management", fileSuffix, ".nc")
-  write.magpie(management, managementFile, missval = missingValue, compression = compression)
-  # rm(management)
-  addMetadataRESCUE(managementFile, now, missingValue, resolution)
+  write.magpie(management, managementFile, compression = compression,
+               missval = missingValue, gridDefinition = gridDefinition, progress = TRUE)
+  rm(management)
+  addMetadataRESCUE(managementFile, now, missingValue, resolution, compression = compression)
 
-  stop("not implemented yet") # TODO
+  woodSources <- c("primf", "secyf", "secmf", "primn", "secnf")
+  woodHarvestVariables <- c(paste0(woodSources, "_bioh"), paste0(woodSources, "_harv"))
+  nonland <- nonland[, , woodHarvestVariables]
 
   transitions <- calcOutput("LandTransitions", project = "RESCUE", aggregate = FALSE)
-  toolWriteTransitions(transitions, nonland, fileSuffix = fileSuffix, now = now,
-                       compression = compression, interpolate = interpolate)
+  getItems(transitions, raw = TRUE, dim = 3) <- sub("\\.", "_to_", getItems(transitions, dim = 3))
+  getSets(transitions, fulldim = FALSE)[3] <- "transitions"
+  getYears(transitions) <- getYears(transitions, as.integer = TRUE) - 1
+  transitions <- adaptYearsRESCUE(transitions, years)
+  transitions <- mbind(transitions, nonland)
+  rm(nonland)
+  transitionsFile <- paste0("multiple-transitions", fileSuffix, ".nc")
+  write.magpie(transitions, transitionsFile, compression = compression,
+               missval = missingValue, gridDefinition = gridDefinition, progress = TRUE)
+  rm(transitions)
+  addMetadataRESCUE(transitionsFile, now, missingValue, resolution, compression = compression)
 }
 
-filterExtendRESCUE <- function(x, years, resolution) {
+adaptYearsRESCUE <- function(x, years) {
   x <- x[, getYears(x, as.integer = TRUE) %in% years, ]
-  # account for unit "years since 2015-01-01 0:0:0" which addMetadataRESCUE sets
-  x <- setYears(x, getYears(x, as.integer = TRUE) - 2015)
-  x <- magclass::extend(x,
-                        xRange = c(-180 + resolution / 2, 180 - resolution / 2),
-                        yRange = c(90 - resolution / 2, -90 + resolution / 2),
-                        res = resolution)
+  # account for unit "years since 1970-01-01 0:0:0" which addMetadataRESCUE sets
+  x <- setYears(x, getYears(x, as.integer = TRUE) - 1970)
   return(x)
 }
 
-addMetadataRESCUE <- function(ncFile, now, missingValue, resolution) {
-  variableId <- sub("^(multiple-[^_]+).+^", "\\1", basename(ncFile))
+addMetadataRESCUE <- function(ncFile, now, missingValue, resolution, compression) {
+  variableId <- sub("^(multiple-[^_]+).+$", "\\1", basename(ncFile))
   stopifnot(variableId %in% c("multiple-states", "multiple-management", "multiple-transitions"))
   nc <- ncdf4::nc_open(ncFile, write = TRUE)
   withr::defer({
@@ -105,7 +113,7 @@ addMetadataRESCUE <- function(ncFile, now, missingValue, resolution) {
   ncdf4::ncatt_put(nc, "time", "long_name", "time")
   ncdf4::ncatt_put(nc, "time", "realtopology", "linear")
   ncdf4::ncatt_put(nc, "time", "standard_name", "time")
-  ncdf4::ncatt_put(nc, "time", "units", "years since 2015-01-01 0:0:0")
+  ncdf4::ncatt_put(nc, "time", "units", "years since 1970-01-01 0:0:0")
   # lon
   ncdf4::ncatt_put(nc, "lon", "realtopology", "circular")
   ncdf4::ncatt_put(nc, "lon", "topology", "circular")
@@ -137,13 +145,17 @@ addMetadataRESCUE <- function(ncFile, now, missingValue, resolution) {
   # add bounds
   boundsDim <- ncdf4::ncdim_def("bounds", "", 1:2, create_dimvar = FALSE)
 
-  # TODO pass compression to ncvard_def
-  nc <- ncdf4::ncvar_add(nc, ncdf4::ncvar_def("bounds_lon", units = "",
-                                              dim = list(boundsDim, nc$dim$lon), prec = "double"))
-  nc <- ncdf4::ncvar_add(nc, ncdf4::ncvar_def("bounds_lat", units = "",
-                                              dim = list(boundsDim, nc$dim$lat), prec = "double"))
-  nc <- ncdf4::ncvar_add(nc, ncdf4::ncvar_def("bounds_time", units = "",
-                                              dim = list(boundsDim, nc$dim$time), prec = "integer"))
+  withr::with_options(list(warnPartialMatchDollar = FALSE), {
+    nc <- ncdf4::ncvar_add(nc, ncdf4::ncvar_def("bounds_lon", units = "",
+                                                dim = list(boundsDim, nc$dim$lon),
+                                                prec = "double", compression = compression))
+    nc <- ncdf4::ncvar_add(nc, ncdf4::ncvar_def("bounds_lat", units = "",
+                                                dim = list(boundsDim, nc$dim$lat),
+                                                prec = "double", compression = compression))
+    nc <- ncdf4::ncvar_add(nc, ncdf4::ncvar_def("bounds_time", units = "",
+                                                dim = list(boundsDim, nc$dim$time),
+                                                prec = "integer", compression = compression))
+  })
 
   ncdf4::ncvar_put(nc, "bounds_lon", rbind(nc$dim$lon$vals - resolution / 2,
                                            nc$dim$lon$vals + resolution / 2))

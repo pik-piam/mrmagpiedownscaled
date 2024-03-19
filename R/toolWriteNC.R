@@ -46,29 +46,25 @@ toolWriteNC <- function(x, variables, fileName, now = Sys.time(), compression = 
         stop("Unsupported interpolation type")
       }
     }
-    extent <- terra::ext(-180, 180, -90, 90)
-    xRaster <- toolSpatRasterToDataset(terra::extend(as.SpatRaster(x), extent))
-    terra::units(xRaster) <- sub(" unit: ", "", grep(" unit: ", getComment(x), value = TRUE))
-    terra::writeCDF(xRaster, fileName, overwrite = TRUE, missval = missingValue, compression = compression)
+
+    browser() # TODO check comment is not lost after extend
+    x <- magclass::extend(x,
+                          xRange = c(-179.875, 179.875),
+                          yRange = c(89.875, -89.875),
+                          res = 0.25)
+    write.magpie(x, fileName, missval = missingValue, compression = compression)
   }
 
   # set terra::units on a SpatRasterDataset using the units specified in individual SpatRasters
-  .setUnitsRemoveCrs <- function(x) {
+  .setUnits <- function(x) {
     terra::units(x) <- vapply(x, function(spatRaster) {
       stopifnot(length(unique(terra::units(spatRaster))) == 1) # assert each year-layer has the same unit
       return(terra::units(spatRaster)[1])
     }, character(1))
-    # crs is not needed by ESMs, but it is always written by writeCDF
-    # by removing it from the SpatRasters here writeCDF won't write the crs attribute for each variable
-    n <- names(x) # setting crs to NULL appends _1 to all names, so need to store and reset actual names
-    for (i in seq_along(x)) {
-      terra::crs(x[i]) <- NULL
-    }
-    names(x) <- n
     return(x)
   }
 
-  .addMetadata <- function(ncFile, now = Sys.time(), missingValue = 1e20) {
+  .addMetadata <- function(ncFile, now, missingValue) {
     # try to remove crs variable, which is not needed by ESMs
     if (Sys.which("ncks") != "") {
       system2("ncks", c("-C", "-O", "-x", "-v", "crs", ncFile, paste0(ncFile, "-no-crs")))
@@ -104,6 +100,7 @@ toolWriteNC <- function(x, variables, fileName, now = Sys.time(), compression = 
     ncdf4::ncatt_put(nc, "time", "axis", "T")
     # longitude and latitude
     # renaming to lon/lat is not possible with ncdf4::ncvar_rename
+    # TODO need to rename to lon/lat -> probably need to switch to ncdf4
     ncdf4::ncatt_put(nc, "longitude", "standard_name", "longitude")
     ncdf4::ncatt_put(nc, "longitude", "axis", "Y")
     ncdf4::ncatt_put(nc, "latitude", "standard_name", "latitude")
@@ -131,7 +128,7 @@ toolWriteNC <- function(x, variables, fileName, now = Sys.time(), compression = 
                             interpolationType = interpolationType, years = years)
   }
   y <- terra::sds(paste0(variables, ".nc"))
-  y <- .setUnitsRemoveCrs(y)
+  y <- .setUnits(y)
   terra::writeCDF(y, fileName, overwrite = TRUE, missval = missingValue, compression = compression)
   unlink(paste0(variables, ".nc"))
   .addMetadata(fileName, now = now, missingValue = missingValue)
