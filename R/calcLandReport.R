@@ -3,11 +3,15 @@
 #' Convert the downscaled land use data to the format required by the given project.
 #'
 #' @param project name of the project, currently only "RESCUE"
+#' @param harmonizationPeriod Two integer values, before the first given
+#' year the target dataset is used, after the second given year the input
+#' dataset is used, in between harmonize between the two datasets
 #' @return land use data
 #' @author Pascal Sauer
-calcLandReport <- function(project = "RESCUE") {
+calcLandReport <- function(project = "RESCUE", harmonizationPeriod = c(2015, 2050)) {
   if (project == "RESCUE") {
-    native <- calcOutput("LandHighRes", input = "magpie", target = "luh2mod", aggregate = FALSE)
+    native <- calcOutput("LandHighRes", input = "magpie", target = "luh2mod",
+                         harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
     cellArea <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
     cellArea <- collapseDim(as.magpie(cellArea), 3)
 

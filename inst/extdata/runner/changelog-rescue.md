@@ -5,7 +5,7 @@
 - fixed wood harvest area (unit) conversion bug
 - renamed longitude/latitude to lon/lat
 - added bounds variables for lon/lat/time
-- added more metadata
+- added more metadata, incl. harmonization period
 
 ## 2023-12-08
 

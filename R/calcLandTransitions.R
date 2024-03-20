@@ -4,6 +4,9 @@
 #' information
 #'
 #' @param project name of the project, currently only "RESCUE"
+#' @param harmonizationPeriod Two integer values, before the first given
+#' year the target dataset is used, after the second given year the input
+#' dataset is used, in between harmonize between the two datasets
 #' @param gross either boolean or a magpie object containing bidirectional
 #' transition shares relative to the area of the involved land pools (transition
 #' divided by the area of the land pool in the "from" sub dimension). If set to
@@ -12,10 +15,11 @@
 #' period from 1995 to 2015 will be used.
 #' @return land use transition data
 #' @author Jan Philipp Dietrich, Pascal Sauer
-calcLandTransitions <- function(project = "RESCUE", gross = TRUE) {
+calcLandTransitions <- function(project = "RESCUE", harmonizationPeriod = c(2015, 2050), gross = TRUE) {
   if (project != "RESCUE") stop("Can only report for project = 'RESCUE'")
 
-  land <- calcOutput("LandReport", project = "RESCUE", aggregate = FALSE)
+  land <- calcOutput("LandReport", project = "RESCUE",
+                     harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
   land <- land[, , grep("(_|manaf)", getItems(land, dim = 3), invert = TRUE, value = TRUE)]
 
   # add extra year as copy of last year to get gross transitions (net zero) for 2100 and after

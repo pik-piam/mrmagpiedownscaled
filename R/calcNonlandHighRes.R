@@ -5,10 +5,14 @@
 #'
 #' @param input name of an input dataset, currently only "magpie"
 #' @param target name of a target dataset, currently only "luh2"
+#' @param harmonizationPeriod Two integer values, before the first given
+#' year the target dataset is used, after the second given year the input
+#' dataset is used, in between harmonize between the two datasets
 #' @return downscaled nonland data
 #' @author Pascal Sauer
-calcNonlandHighRes <- function(input = "magpie", target = "luh2mod") {
-  xInput <- calcOutput("NonlandHarmonized", input = input, target = target, aggregate = FALSE)
+calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizationPeriod = c(2015, 2050)) {
+  xInput <- calcOutput("NonlandHarmonized", input = input, target = target,
+                       harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
 
   xTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
 
