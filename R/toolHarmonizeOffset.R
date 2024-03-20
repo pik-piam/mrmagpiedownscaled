@@ -6,12 +6,13 @@
 #' @param input magpie object to fade to, usually model projections
 #' @param target magpie object to fade from, usually historical data, this argument is called "target"
 #' for consistency with argument names of other functions, it is somewhat misleading here,
-#' because data after the finalYear will not be taken from target, but from input
-#' @param harmonizeYear year to start fading, data at and before this year will be taken from target
-#' @param finalYear year to stop fading, data at and after this year will be taken from input
+#' because data after the harmonizationPeriod will not be taken from target, but from input
+#' @param harmonizationPeriod Two integer values, before the first given
+#' year the target dataset is used, after the second given year the input
+#' dataset is used, in between harmonize between the two datasets
 #' @return magpie object with harmonized data
 #' @author Pascal Sauer
-toolHarmonizeOffset <- function(input, target, harmonizeYear, finalYear) {
+toolHarmonizeOffset <- function(input, target, harmonizationPeriod) {
   "!# @monitor mip::harmonize"
 
   .df <- function(input) {
@@ -29,7 +30,8 @@ toolHarmonizeOffset <- function(input, target, harmonizeYear, finalYear) {
   dTarget <- .df(target)
 
   out <- mip::harmonize(dInput, dTarget,
-                        harmonizeYear = as.character(harmonizeYear), finalYear = as.character(finalYear),
+                        harmonizeYear = as.character(harmonizationPeriod[1]),
+                        finalYear = as.character(harmonizationPeriod[2]),
                         method = "offset")
 
   out <- as.magpie(out, spatial = "region", temporal = "period")

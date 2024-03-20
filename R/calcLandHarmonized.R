@@ -7,14 +7,14 @@
 #'
 #' @param input name of the land input source to be used
 #' @param target name of the land target source to be used
-#' @param harmonizeYear year in which the transition from target to input
-#' data begins
-#' @param finalYear year in which the transition shall be completed
+#' @param harmonizationPeriod Two integer values, before the first given
+#' year the target dataset is used, after the second given year the input
+#' dataset is used, in between harmonize between the two datasets
 #' @param method transitioning method
 #' @author Pascal Sauer, Jan Philipp Dietrich
 #' @importFrom mstools toolExpectLessDiff toolStatusMessage toolExpectTrue
 calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
-                               harmonizeYear = 2015, finalYear = 2050,
+                               harmonizationPeriod = c(2015, 2050),
                                method = "extrapolateFade") {
   input    <- calcOutput("LandHarmonizedCategories", input = input,
                          target = target, aggregate = FALSE)
@@ -46,7 +46,7 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
 
   if (method == "extrapolateFade") method <- "extrapolateFadeConstantSum"
   harmonizer <- toolGetHarmonizer(method)
-  out <- harmonizer(input, target, harmonizeYear = harmonizeYear, finalYear = finalYear)
+  out <- harmonizer(input, target, harmonizationPeriod = harmonizationPeriod)
   out[is.na(out)] <- 0 # why are NAs introduced here? input and target have no NAs
 
   attr(out, "geometry") <- geometry

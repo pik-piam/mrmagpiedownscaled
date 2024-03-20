@@ -17,33 +17,36 @@
 #'
 #' @param input input data
 #' @param target target data
-#' @param harmonizeYear year in which the transition from target to input
-#' data begins
-#' @param finalYear year in which the transition shall be completed
+#' @param harmonizationPeriod Two integer values, before the first given
+#' year the target dataset is used, after the second given year the input
+#' dataset is used, in between harmonize between the two datasets
 #' @param constantSum boolean indicating whether the total sum over all layers
 #' is suppossed to stay contstant (e.g. sum over all land types) or not.
 #' @param growthAveragePeriod when projecting into the future, how many years
 #' to look back from last year to determine growth rate
 #' @author Jan Philipp Dietrich
 
-toolHarmonizeExtrapolateFade <- function(input, target, harmonizeYear, finalYear,
+toolHarmonizeExtrapolateFade <- function(input, target, harmonizationPeriod,
                                          constantSum, growthAveragePeriod = 10) {
-  # extrapolate target data till finalYear and afterwards fade from one dataset to the other
+  # extrapolate target data till the end of the harmonization period, then
+  # fade from one dataset to the other
+  a <- harmonizationPeriod[1]
+  b <- harmonizationPeriod[2]
   inputYears <- getYears(input, as.integer = TRUE)
   targetYears <- getYears(target, as.integer = TRUE)
-  stopifnot(round(harmonizeYear) == harmonizeYear,
-            round(finalYear) == finalYear,
-            finalYear > harmonizeYear,
-            harmonizeYear %in% inputYears,
-            harmonizeYear %in% targetYears,
-            finalYear %in% inputYears,
-            min(targetYears) <= harmonizeYear - growthAveragePeriod,
+  stopifnot(length(harmonizationPeriod) == 2,
+            round(harmonizationPeriod) == harmonizationPeriod,
+            b > a,
+            a %in% inputYears,
+            a %in% targetYears,
+            b %in% inputYears,
+            min(targetYears) <= a - growthAveragePeriod,
             all.equal(getItems(input, dim = 1), getItems(target, dim = 1)),
             all.equal(getItems(input, dim = 3), getItems(target, dim = 3)))
 
   # calculate average growth over growth period in target data
-  .growth <- function(target, harmonizeYear, growthAveragePeriod, constantSum) {
-    growthPeriod <- time_interpolate(target, c(harmonizeYear - growthAveragePeriod, harmonizeYear))
+  .growth <- function(target, growthPeriodEnd, growthAveragePeriod, constantSum) {
+    growthPeriod <- time_interpolate(target, c(growthPeriodEnd - growthAveragePeriod, growthPeriodEnd))
     growth <- setYears(growthPeriod[, 2, ] / growthPeriod[, 1, ], NULL)^(1 / growthAveragePeriod)
     growth[is.na(growth) | is.infinite(growth)] <- 1
     if (constantSum) {
@@ -55,8 +58,8 @@ toolHarmonizeExtrapolateFade <- function(input, target, harmonizeYear, finalYear
     }
     return(growth)
   }
-  growth <- .growth(target, harmonizeYear, growthAveragePeriod, constantSum)
-  transitionYears <- inputYears[inputYears >= harmonizeYear & inputYears <= finalYear]
+  growth <- .growth(target, growthPeriodEnd = a, growthAveragePeriod, constantSum)
+  transitionYears <- inputYears[inputYears >= a & inputYears <= b]
   extrapolationYears <- transitionYears[transitionYears > max(targetYears)]
   lastAvailableTransitionYear <-  max(transitionYears[transitionYears <= max(targetYears)])
   extrapolationRange <- (extrapolationYears - lastAvailableTransitionYear)
@@ -72,10 +75,10 @@ toolHarmonizeExtrapolateFade <- function(input, target, harmonizeYear, finalYear
     # in target in the harmonization year (e.g. makes sure that the land changes in a land data set do not alter
     # the total sum of land.)
     exTarget[, extrapolationYears, ] <- exTarget[, extrapolationYears, ] *
-      dimSums(setYears(target[, harmonizeYear, ], NULL), dim = 3) / dimSums(exTarget[, extrapolationYears, ], dim = 3)
+      dimSums(setYears(target[, a, ], NULL), dim = 3) / dimSums(exTarget[, extrapolationYears, ], dim = 3)
   }
   out <- convergence(exTarget[, transitionYears, ], input[, transitionYears, ],
-                     start_year = harmonizeYear, end_year = finalYear)
+                     start_year = a, end_year = b)
   out <- mbind(target[, (getYears(target, as.integer = TRUE) < min(getYears(out, as.integer = TRUE))), ], out,
                input[, (getYears(input, as.integer = TRUE) > max(getYears(out, as.integer = TRUE))), ])
   return(out)

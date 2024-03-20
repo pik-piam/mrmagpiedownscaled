@@ -5,16 +5,15 @@
 #'
 #' @param input name of the input dataset, currently only "magpie"
 #' @param target name of the target dataset, currently only "luh2"
-#' @param harmonizeYear start of the harmonization period, years before
-#' this are taken from the target dataset
-#' @param finalYear end of the harmonization period, years after this are
-#' taken from the input dataset
+#' @param harmonizationPeriod Two integer values, before the first given
+#' year the target dataset is used, after the second given year the input
+#' dataset is used, in between harmonize between the two datasets
 #' @param method harmonization method, see \code{\link{toolGetHarmonizer}} for available methods
 #' @return harmonized nonland data
 #' @author Pascal Sauer
 #' @importFrom mstools toolExpectTrue
 calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
-                                  harmonizeYear = 2015, finalYear = 2050,
+                                  harmonizationPeriod = c(2015, 2050),
                                   method = "extrapolateFade") {
   xInput <- calcOutput("NonlandHarmonizedCategories", input = input, aggregate = FALSE)
   geometry <- attr(xInput, "geometry")
@@ -32,11 +31,11 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   if (method == "extrapolateFade") {
     # growthAveragePeriod = 10 would lead to insane growth rate due to
     # edge case (CHA.12 has 0 in 2005 but 8*10^7 in 2015), workaround by setting it to 15
-    out <- toolHarmonizeExtrapolateFade(xInput, xTarget, harmonizeYear = harmonizeYear, finalYear = finalYear,
+    out <- toolHarmonizeExtrapolateFade(xInput, xTarget, harmonizationPeriod = harmonizationPeriod,
                                         constantSum = FALSE, growthAveragePeriod = 15)
   } else {
     harmonizer <- toolGetHarmonizer(method)
-    out <- harmonizer(xInput, xTarget, harmonizeYear = harmonizeYear, finalYear = finalYear)
+    out <- harmonizer(xInput, xTarget, harmonizationPeriod = harmonizationPeriod)
   }
 
   attr(out, "geometry") <- geometry
