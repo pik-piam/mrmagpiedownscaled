@@ -13,9 +13,9 @@
 #' @author Pascal Sauer, Jan Philipp Dietrich
 fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 1995:2100,
                        compression = 2, interpolate = FALSE) {
-  stopifnot(...length() == 0)
+  stopifnot(...length() == 0, isFALSE(interpolate))
   missingValue <- 1e20
-  gridDefinition <- c(-189.875, 189.875, -89.875, 89.875, 0.25)
+  gridDefinition <- c(-179.875, 179.875, -89.875, 89.875, 0.25)
   resolution <- gridDefinition[5]
 
   now <- Sys.time()
@@ -134,11 +134,15 @@ addMetadataRESCUE <- function(ncFile, now, missingValue, resolution, compression
     ncdf4::ncatt_put(nc, varname, "_Fillvalue", missingValue, prec = "float")
     ncdf4::ncatt_put(nc, varname, "missing_value", missingValue, prec = "float")
     ncdf4::ncatt_put(nc, varname, "cell_methods", "time:mean")
-    if (varname %in% luhNames$name) {
-      ncdf4::ncatt_put(nc, varname, "long_name", luhNames$long_name[luhNames$name == varname])
-      ncdf4::ncatt_put(nc, varname, "standard_name", luhNames$standard_name[luhNames$name == varname])
-    } else {
-      warning(varname, " not found in luhNames.csv")
+
+    varnameLuhNames <- as.vector(luhNames[luhNames$name == varname, ])
+    ncdf4::ncatt_put(nc, varname, "long_name", varnameLuhNames$long_name)
+    ncdf4::ncatt_put(nc, varname, "standard_name", varnameLuhNames$standard_name)
+    if (varnameLuhNames$standard_name_description != "") {
+      ncdf4::ncatt_put(nc, varname, "standard_name_description", varnameLuhNames$standard_name_description)
+    }
+    if (varnameLuhNames$long_name_description != "") {
+      ncdf4::ncatt_put(nc, varname, "long_name_description", varnameLuhNames$long_name_description)
     }
   }
 
