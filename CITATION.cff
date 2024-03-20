@@ -4,7 +4,7 @@ type: software
 title: 'mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference
   data'
 version: 0.15.0
-date-released: '2024-01-15'
+date-released: '2024-03-20'
 abstract: Downscale and harmonize MAgPIE output using LUH2 as reference data.
 authors:
 - family-names: Sauer

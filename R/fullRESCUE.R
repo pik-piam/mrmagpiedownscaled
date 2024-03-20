@@ -6,9 +6,12 @@
 #' @param rev revision number of the data. If not provided the current date will be used instead
 #' @param ... reserved for future use
 #' @param scenario scenario name to be included in filenames
+#' @param years Only years from this vector will be included in the output files, if interpolate is TRUE,
+#' all years given here will be included
 #' @param compression compression level of the resulting .nc files, possible values are integers from 1-9,
 #' 1 = fastest, 9 = best compression
-#' @param interpolate boolean defining whether the data should be interpolated to annual values or not
+#' @param interpolate boolean defining whether the data should be interpolated
+#' to include all years given in the years argument
 #'
 #' @author Pascal Sauer, Jan Philipp Dietrich
 fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 1995:2100,

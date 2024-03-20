@@ -20,10 +20,14 @@ fullRESCUE(
 
 \item{scenario}{scenario name to be included in filenames}
 
+\item{years}{Only years from this vector will be included in the output files, if interpolate is TRUE,
+all years given here will be included}
+
 \item{compression}{compression level of the resulting .nc files, possible values are integers from 1-9,
 1 = fastest, 9 = best compression}
 
-\item{interpolate}{boolean defining whether the data should be interpolated to annual values or not}
+\item{interpolate}{boolean defining whether the data should be interpolated
+to include all years given in the years argument}
 }
 \description{
 Run the pipeline to generate harmonized and downscaled data to report for the RESCUE project.

@@ -39,7 +39,7 @@ In case of questions / problems please contact Pascal Sauer <pascal.sauer@pik-po
 
 To cite package **mrdownscale** in publications use:
 
-Sauer P, Dietrich J (2024). _mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference data_. R package version 0.15.0, <URL: https://github.com/pik-piam/mrdownscale>.
+Sauer P, Dietrich J (2024). _mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference data_. R package version 0.15.0, <https://github.com/pik-piam/mrdownscale>.
 
 A BibTeX entry for LaTeX users is
 
