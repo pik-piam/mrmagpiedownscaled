@@ -11,7 +11,6 @@
 #' @param youngShareWoodHarvestWeight analogue to youngShareWoodHarvestArea for wood harvest weight instead of area
 #' @return nonland data with target categories
 #' @author Pascal Sauer
-#' @importFrom mstools toolExpectTrue
 calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2mod",
                                             youngShareWoodHarvestArea = 0.95,
                                             youngShareWoodHarvestWeight = 0.5) {

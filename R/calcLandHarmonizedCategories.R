@@ -12,7 +12,6 @@
 #' @param input name of the land input source to be used
 #' @param target name of the land target source to be used
 #' @author Jan Philipp Dietrich
-#' @importFrom mstools toolExpectTrue toolExpectLessDiff
 calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2mod") {
   x   <- calcOutput("LandInput", input = input, aggregate = FALSE)
   map <- toolLandCategoriesMapping(input, target)

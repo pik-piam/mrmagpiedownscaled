@@ -20,7 +20,6 @@
 #' @param crs the coordinate reference system as returned by \code{attr(x, "crs")} from
 #' a magpie object with coordinates information.
 #' @author Jan Philipp Dietrich
-#' @importFrom mstools toolExpectTrue toolStatusMessage
 calcLandCategorizationWeight <- function(map, geometry, crs) {
   .getTarget <- function(geometry, crs) {
     target <- new.magpie(names(geometry), sets = c("id", "temporal", "data"))

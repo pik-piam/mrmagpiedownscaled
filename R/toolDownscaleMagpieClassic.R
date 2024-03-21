@@ -7,7 +7,6 @@
 #' @param xTarget target land use dataset as SpatRaster for initialization year
 #' @return downscaled land use dataset
 #' @author Jan Philipp Dietrich
-#' @importFrom mstools toolStatusMessage
 toolDownscaleMagpieClassic <- function(x, xTarget) {
 
   .getDownscaleMap <- function(x, xTarget) {

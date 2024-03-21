@@ -7,7 +7,6 @@
 #' luh2mod will split secdf into forestry and secdf
 #' @return land target data
 #' @author Pascal Sauer
-#' @importFrom mstools toolExpectTrue toolExpectLessDiff
 calcLandTarget <- function(target = "luh2mod") {
   if (target %in% c("luh2", "luh2mod")) {
     cropTypes <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per")

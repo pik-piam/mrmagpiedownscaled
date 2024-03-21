@@ -9,7 +9,6 @@
 #' @param input name of an input dataset, currently only "magpie"
 #' @return nonland input data
 #' @author Pascal Sauer
-#' @importFrom mstools toolExpectTrue
 calcNonlandInput <- function(input = "magpie") {
   if (input == "magpie") {
     woodHarvestWeight <- readSource("MagpieFulldataGdx", subtype = "woodHarvestWeight")

@@ -8,7 +8,6 @@
 #' @param input name of an input dataset, currently only "magpie"
 #' @return land input data
 #' @author Jan Philipp Dietrich, Pascal Sauer
-#' @importFrom mstools toolExpectTrue toolExpectLessDiff
 calcLandInput <- function(input = "magpie") {
   if (input == "magpie") {
     land <- readSource("MagpieFulldataGdx")

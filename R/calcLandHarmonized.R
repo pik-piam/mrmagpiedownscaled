@@ -12,7 +12,6 @@
 #' dataset is used, in between harmonize between the two datasets
 #' @param method transitioning method
 #' @author Pascal Sauer, Jan Philipp Dietrich
-#' @importFrom mstools toolExpectLessDiff toolStatusMessage toolExpectTrue
 calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
                                harmonizationPeriod = c(2015, 2050),
                                method = "extrapolateFade") {

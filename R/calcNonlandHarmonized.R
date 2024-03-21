@@ -11,7 +11,6 @@
 #' @param method harmonization method, see \code{\link{toolGetHarmonizer}} for available methods
 #' @return harmonized nonland data
 #' @author Pascal Sauer
-#' @importFrom mstools toolExpectTrue
 calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
                                   harmonizationPeriod = c(2015, 2050),
                                   method = "extrapolateFade") {
