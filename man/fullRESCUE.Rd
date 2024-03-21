@@ -9,6 +9,7 @@ fullRESCUE(
   ...,
   scenario = "",
   years = 1995:2100,
+  harmonizationPeriod = c(2015, 2050),
   compression = 2,
   interpolate = FALSE
 )
@@ -20,8 +21,12 @@ fullRESCUE(
 
 \item{scenario}{scenario name to be included in filenames}
 
-\item{years}{Only years from this vector will be included in the output files, if interpolate is TRUE,
+\item{years}{Only years from this vector will be included in the output files. If interpolate is TRUE,
 all years given here will be included}
+
+\item{harmonizationPeriod}{Two integer values, before the first given
+year the target dataset is used, after the second given year the input
+dataset is used, in between harmonize between the two datasets}
 
 \item{compression}{compression level of the resulting .nc files, possible values are integers from 1-9,
 1 = fastest, 9 = best compression}

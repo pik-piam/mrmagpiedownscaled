@@ -7,8 +7,7 @@
 calcNonlandHarmonized(
   input = "magpie",
   target = "luh2mod",
-  harmonizeYear = 2015,
-  finalYear = 2050,
+  harmonizationPeriod = c(2015, 2050),
   method = "extrapolateFade"
 )
 }
@@ -17,11 +16,9 @@ calcNonlandHarmonized(
 
 \item{target}{name of the target dataset, currently only "luh2"}
 
-\item{harmonizeYear}{start of the harmonization period, years before
-this are taken from the target dataset}
-
-\item{finalYear}{end of the harmonization period, years after this are
-taken from the input dataset}
+\item{harmonizationPeriod}{Two integer values, before the first given
+year the target dataset is used, after the second given year the input
+dataset is used, in between harmonize between the two datasets}
 
 \item{method}{harmonization method, see \code{\link{toolGetHarmonizer}} for available methods}
 }

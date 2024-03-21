@@ -7,8 +7,7 @@
 toolHarmonizeExtrapolateFade(
   input,
   target,
-  harmonizeYear,
-  finalYear,
+  harmonizationPeriod,
   constantSum,
   growthAveragePeriod = 10
 )
@@ -18,10 +17,9 @@ toolHarmonizeExtrapolateFade(
 
 \item{target}{target data}
 
-\item{harmonizeYear}{year in which the transition from target to input
-data begins}
-
-\item{finalYear}{year in which the transition shall be completed}
+\item{harmonizationPeriod}{Two integer values, before the first given
+year the target dataset is used, after the second given year the input
+dataset is used, in between harmonize between the two datasets}
 
 \item{constantSum}{boolean indicating whether the total sum over all layers
 is suppossed to stay contstant (e.g. sum over all land types) or not.}

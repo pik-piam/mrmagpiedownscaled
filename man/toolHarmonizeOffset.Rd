@@ -4,18 +4,18 @@
 \alias{toolHarmonizeOffset}
 \title{toolHarmonizeOffset}
 \usage{
-toolHarmonizeOffset(input, target, harmonizeYear, finalYear)
+toolHarmonizeOffset(input, target, harmonizationPeriod)
 }
 \arguments{
 \item{input}{magpie object to fade to, usually model projections}
 
 \item{target}{magpie object to fade from, usually historical data, this argument is called "target"
 for consistency with argument names of other functions, it is somewhat misleading here,
-because data after the finalYear will not be taken from target, but from input}
+because data after the harmonizationPeriod will not be taken from target, but from input}
 
-\item{harmonizeYear}{year to start fading, data at and before this year will be taken from target}
-
-\item{finalYear}{year to stop fading, data at and after this year will be taken from input}
+\item{harmonizationPeriod}{Two integer values, before the first given
+year the target dataset is used, after the second given year the input
+dataset is used, in between harmonize between the two datasets}
 }
 \value{
 magpie object with harmonized data

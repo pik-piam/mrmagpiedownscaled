@@ -4,10 +4,14 @@
 \alias{calcLandReport}
 \title{calcLandReport}
 \usage{
-calcLandReport(project = "RESCUE")
+calcLandReport(project = "RESCUE", harmonizationPeriod = c(2015, 2050))
 }
 \arguments{
 \item{project}{name of the project, currently only "RESCUE"}
+
+\item{harmonizationPeriod}{Two integer values, before the first given
+year the target dataset is used, after the second given year the input
+dataset is used, in between harmonize between the two datasets}
 }
 \value{
 land use data

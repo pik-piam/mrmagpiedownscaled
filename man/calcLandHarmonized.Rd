@@ -7,8 +7,7 @@
 calcLandHarmonized(
   input = "magpie",
   target = "luh2mod",
-  harmonizeYear = 2015,
-  finalYear = 2050,
+  harmonizationPeriod = c(2015, 2050),
   method = "extrapolateFade"
 )
 }
@@ -17,10 +16,9 @@ calcLandHarmonized(
 
 \item{target}{name of the land target source to be used}
 
-\item{harmonizeYear}{year in which the transition from target to input
-data begins}
-
-\item{finalYear}{year in which the transition shall be completed}
+\item{harmonizationPeriod}{Two integer values, before the first given
+year the target dataset is used, after the second given year the input
+dataset is used, in between harmonize between the two datasets}
 
 \item{method}{transitioning method}
 }

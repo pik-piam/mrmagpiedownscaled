@@ -7,6 +7,7 @@
 calcLandHighRes(
   input = "magpie",
   target = "luh2mod",
+  harmonizationPeriod = c(2015, 2050),
   downscaling = "magpieClassic"
 )
 }
@@ -14,6 +15,10 @@ calcLandHighRes(
 \item{input}{name of an input dataset, currently only "magpie"}
 
 \item{target}{name of a target dataset, currently only "luh2"}
+
+\item{harmonizationPeriod}{Two integer values, before the first given
+year the target dataset is used, after the second given year the input
+dataset is used, in between harmonize between the two datasets}
 
 \item{downscaling}{name of downscaling method, currently only "magpieClassic"}
 }

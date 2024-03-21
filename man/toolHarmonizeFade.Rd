@@ -4,18 +4,18 @@
 \alias{toolHarmonizeFade}
 \title{toolHarmonizeFade}
 \usage{
-toolHarmonizeFade(input, target, harmonizeYear, finalYear)
+toolHarmonizeFade(input, target, harmonizationPeriod)
 }
 \arguments{
 \item{input}{magpie object to fade to, usually model projections}
 
 \item{target}{magpie object to fade from, usually historical data, this argument is called "target"
 for consistency with argument names of other functions, it is somewhat misleading here,
-because data after the finalYear will not be taken from target, but from input}
+because data after the harmonizationEnd will not be taken from target, but from input}
 
-\item{harmonizeYear}{year to start fading, data at and before this year will be taken from target}
-
-\item{finalYear}{year to stop fading, data at and after this year will be taken from input}
+\item{harmonizationPeriod}{Two integer values, before the first given
+year the target dataset is used, after the second given year the input
+dataset is used, in between harmonize between the two datasets}
 }
 \value{
 magpie object with harmonized data
@@ -23,8 +23,8 @@ magpie object with harmonized data
 \description{
 Harmonize two datasets by fading from one to the other, using the following formula:
 .inputFactor(year) * input[, year, ] + (1 - .inputFactor(year)) * target[, year, ]
-where .inputFactor is (year - harmonizeYear) / (finalYear - harmonizeYear).
-Requires both datasets to have all years including and between harmonizeYear and finalYear,
+where .inputFactor is (year - harmonizationStart) / (harmonizationEnd - harmonizationStart).
+Requires both datasets to have all years including and between harmonizationStart and harmonizationEnd,
 so it is not suitable for harmonization periods in the future if historical data is used.
 }
 \author{

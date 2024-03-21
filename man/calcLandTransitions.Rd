@@ -4,10 +4,18 @@
 \alias{calcLandTransitions}
 \title{calcLandTransitions}
 \usage{
-calcLandTransitions(project = "RESCUE", gross = TRUE)
+calcLandTransitions(
+  project = "RESCUE",
+  harmonizationPeriod = c(2015, 2050),
+  gross = TRUE
+)
 }
 \arguments{
 \item{project}{name of the project, currently only "RESCUE"}
+
+\item{harmonizationPeriod}{Two integer values, before the first given
+year the target dataset is used, after the second given year the input
+dataset is used, in between harmonize between the two datasets}
 
 \item{gross}{either boolean or a magpie object containing bidirectional
 transition shares relative to the area of the involved land pools (transition
