@@ -3,6 +3,7 @@
 ## unreleased
 
 - fixed wood harvest area (unit) conversion bug
+- removed NAs
 - renamed longitude/latitude to lon/lat
 - added bounds variables for lon/lat/time
 - added more metadata, incl. harmonization period
