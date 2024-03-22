@@ -32,6 +32,8 @@ calcNonlandReport <- function(project = "RESCUE", harmonizationPeriod = c(2015, 
     woodTypeShares <- x[, , c("roundwood_harvest_weight_type", "fuelwood_harvest_weight_type")]
     total <- dimSums(woodTypeShares, 3) # 1269815 cells with total == 0
     woodTypeShares <- woodTypeShares / total # NAs introduced by cells with total == 0
+    stopifnot(sum(is.na(woodTypeShares)) == 2 * sum(total == 0))
+    woodTypeShares[is.na(woodTypeShares)] <- 0.5 # replace NAs with share 0.5, so sum is still 1
     getNames(woodTypeShares) <- c("rndwd", "fulwd")
 
     out <- mbind(fertl, harv, woodTypeShares, x[, , grep("bioh$", getNames(x))])

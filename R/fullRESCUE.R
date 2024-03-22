@@ -47,8 +47,7 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 1995:2100,
                                "crpbf_c4ann", "irrig_c4per", "crpbf_c4per", "crpbf2_c4per", "manaf")
   land <- land[, , landManagementVariables]
   nonland <- calcOutput("NonlandReport", project = "RESCUE",
-                        harmonizationPeriod = harmonizationPeriod, aggregate = FALSE,
-                        warnNA = FALSE) # rndwd & fulwd include NAs
+                        harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
   nonland <- adaptYearsRESCUE(nonland, years)
   nonlandManagementVariables <- c("fertl_c3nfx", "fertl_c3per", "fertl_c3ann", "fertl_c4ann",
                                   "fertl_c4per", "rndwd", "fulwd")
