@@ -8,5 +8,4 @@
 #SBATCH --mem-per-cpu=0
 #SBATCH --partition=priority
 
-module load nco/5.1.0
 Rscript startRun.R

@@ -1,6 +1,6 @@
 # Land Use Data for RESCUE - Changelog
 
-## unreleased
+## 2024-03-22
 
 - fixed wood harvest area (unit) conversion bug
 - removed NAs
@@ -17,7 +17,6 @@
 - all transitions are gross transitions
 - transitions in 2100 are net-zero gross transitions (to be used for extended (2100-2300) scenarios)
 - cover all LUH cells (e.g. Greenland was missing before)
-
 
 ## 2023-10-11
 
