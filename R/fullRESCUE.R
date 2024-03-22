@@ -142,8 +142,8 @@ addMetadataRESCUE <- function(ncFile, now, missingValue, resolution, compression
 
   # lat
   ncdf4::ncatt_put(nc, "lat", "realtopology", "linear")
-  ncdf4::ncatt_put(nc, "lat", "long_name", "longitude")
-  ncdf4::ncatt_put(nc, "lat", "standard_name", "longitude")
+  ncdf4::ncatt_put(nc, "lat", "long_name", "latitude")
+  ncdf4::ncatt_put(nc, "lat", "standard_name", "latitude")
   ncdf4::ncatt_put(nc, "lat", "axis", "Y")
   ncdf4::ncatt_put(nc, "lat", "bounds", "bounds_lat")
 
