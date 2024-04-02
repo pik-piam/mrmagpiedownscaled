@@ -1,6 +1,6 @@
 # Land Use Data for RESCUE - Changelog
 
-## unreleased
+## 2024-03-22
 
 - fixed wood harvest area (unit) conversion bug
 - removed NAs
