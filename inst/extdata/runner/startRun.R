@@ -3,6 +3,7 @@ library(mrdownscale) # nolint
 basePath <- "/p/projects/rescue/tier1_scenarios/v4p0/cpl/magpie/output/" # nolint
 scenarios <- c("C_SSP2EU-Base",
                "C_SSP2EU-NPi",
+               "C_SSP2EU-NDC",
 
                #  Scenarios to be used as training data for the emulator
                # "C_RESCUE-ext-v4p0-EocBudg_cp0400-OAE_off",
