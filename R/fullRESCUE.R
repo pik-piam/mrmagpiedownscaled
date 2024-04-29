@@ -17,7 +17,7 @@
 #' to include all years given in the years argument
 #'
 #' @author Pascal Sauer, Jan Philipp Dietrich
-fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 1995:2100,
+fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
                        harmonizationPeriod = c(2015, 2050),
                        compression = 2, interpolate = FALSE) {
   stopifnot(...length() == 0, isFALSE(interpolate))
