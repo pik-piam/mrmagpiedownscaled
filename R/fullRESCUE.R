@@ -124,7 +124,6 @@ addMetadataRESCUE <- function(ncFile, now, missingValue, resolution, compression
 
   # time
   ncdf4::ncatt_put(nc, "time", "axis", "T")
-  ncdf4::ncatt_put(nc, "time", "bounds", "bounds_time")
   ncdf4::ncatt_put(nc, "time", "calendar", "365_day")
   ncdf4::ncatt_put(nc, "time", "long_name", "time")
   ncdf4::ncatt_put(nc, "time", "realtopology", "linear")
@@ -175,17 +174,10 @@ addMetadataRESCUE <- function(ncFile, now, missingValue, resolution, compression
     nc <- ncdf4::ncvar_add(nc, ncdf4::ncvar_def("bounds_lat", units = "",
                                                 dim = list(boundsDim, nc$dim$lat),
                                                 prec = "double", compression = compression))
-    nc <- ncdf4::ncvar_add(nc, ncdf4::ncvar_def("bounds_time", units = "",
-                                                dim = list(boundsDim, nc$dim$time),
-                                                prec = "integer", compression = compression))
   })
 
   ncdf4::ncvar_put(nc, "bounds_lon", rbind(nc$dim$lon$vals - resolution / 2,
                                            nc$dim$lon$vals + resolution / 2))
   ncdf4::ncvar_put(nc, "bounds_lat", rbind(nc$dim$lat$vals + resolution / 2,
                                            nc$dim$lat$vals - resolution / 2))
-  # these time bounds were taken from the reference file
-  # multiple-states_input4MIPs_landState_ScenarioMIP_UofMD-IMAGE-ssp126-2-1-f_gn_2015-2100.nc
-  ncdf4::ncvar_put(nc, "bounds_time", rbind(rep(1, nc$dim$time$len),
-                                            rep(365, nc$dim$time$len)))
 }
