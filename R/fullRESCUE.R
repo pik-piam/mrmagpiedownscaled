@@ -25,11 +25,10 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
   gridDefinition <- c(-179.875, 179.875, -89.875, 89.875, 0.25)
   resolution <- gridDefinition[5]
 
-  now <- Sys.time()
-  version <- if (is.null(rev)) format(now, "%Y-%m-%d") else rev
+  revision <- if (is.null(rev)) format(Sys.time(), "%Y-%m-%d") else rev
   fileSuffix <- paste0("_input4MIPs_landState_RESCUE_PIK-MAgPIE-4-7-",
                        scenario, if (scenario == "") "" else "-",
-                       version, "_gn_", min(years), "-", max(years))
+                       revision, "_gn_", min(years), "-", max(years))
 
   land <- calcOutput("LandReport", project = "RESCUE",
                      harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
@@ -40,7 +39,7 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
                        "primf", "primn", "range", "secdf", "secdn", "urban")
   write.magpie(land[, , statesVariables], statesFile, compression = compression,
                missval = missingValue, gridDefinition = gridDefinition, progress = TRUE)
-  addMetadataRESCUE(statesFile, now, missingValue, resolution, compression, harmonizationPeriod)
+  addMetadataRESCUE(statesFile, revision, missingValue, resolution, compression, harmonizationPeriod)
 
   landManagementVariables <- c("irrig_c3ann", "crpbf_c3ann", "irrig_c3nfx", "crpbf_c3nfx",
                                "irrig_c3per", "crpbf_c3per", "crpbf2_c3per", "irrig_c4ann",
@@ -57,7 +56,7 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
   write.magpie(management, managementFile, compression = compression,
                missval = missingValue, gridDefinition = gridDefinition, progress = TRUE)
   rm(management)
-  addMetadataRESCUE(managementFile, now, missingValue, resolution, compression, harmonizationPeriod)
+  addMetadataRESCUE(managementFile, revision, missingValue, resolution, compression, harmonizationPeriod)
 
   woodSources <- c("primf", "secyf", "secmf", "primn", "secnf")
   woodHarvestVariables <- c(paste0(woodSources, "_bioh"), paste0(woodSources, "_harv"))
@@ -75,7 +74,7 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
   write.magpie(transitions, transitionsFile, compression = compression,
                missval = missingValue, gridDefinition = gridDefinition, progress = TRUE)
   rm(transitions)
-  addMetadataRESCUE(transitionsFile, now, missingValue, resolution, compression, harmonizationPeriod)
+  addMetadataRESCUE(transitionsFile, revision, missingValue, resolution, compression, harmonizationPeriod)
 }
 
 adaptYearsRESCUE <- function(x, years) {
@@ -85,7 +84,7 @@ adaptYearsRESCUE <- function(x, years) {
   return(x)
 }
 
-addMetadataRESCUE <- function(ncFile, now, missingValue, resolution, compression, harmonizationPeriod) {
+addMetadataRESCUE <- function(ncFile, revision, missingValue, resolution, compression, harmonizationPeriod) {
   variableId <- sub("^(multiple-[^_]+).+$", "\\1", basename(ncFile))
   stopifnot(variableId %in% c("multiple-states", "multiple-management", "multiple-transitions"))
   nc <- ncdf4::nc_open(ncFile, write = TRUE)
@@ -93,14 +92,13 @@ addMetadataRESCUE <- function(ncFile, now, missingValue, resolution, compression
     ncdf4::nc_close(nc)
   })
   # global
-  dateTime <- strftime(now, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
   ncdf4::ncatt_put(nc, 0, "activity_id", "RESCUE")
   ncdf4::ncatt_put(nc, 0, "contact", "pascal.sauer@pik-potsdam.de, dietrich@pik-potsdam.de")
   ncdf4::ncatt_put(nc, 0, "Conventions", "CF-1.6")
-  ncdf4::ncatt_put(nc, 0, "creation_date", dateTime)
+  ncdf4::ncatt_put(nc, 0, "creation_date", revision)
   ncdf4::ncatt_put(nc, 0, "data_structure", "grid")
   ncdf4::ncatt_put(nc, 0, "dataset_category", "landState")
-  ncdf4::ncatt_put(nc, 0, "date", dateTime)
+  ncdf4::ncatt_put(nc, 0, "date", revision)
   ncdf4::ncatt_put(nc, 0, "frequency", "yr")
   ncdf4::ncatt_put(nc, 0, "further_info_url",
                    "https://github.com/pik-piam/mrdownscale/blob/main/inst/extdata/runner/changelog-rescue.md")

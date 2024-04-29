@@ -1,5 +1,6 @@
 library(mrdownscale) # nolint
 
+revision <- "2024-04-25"
 basePath <- "/p/projects/rescue/tier1_scenarios/v4p0/cpl/magpie/output/" # nolint
 scenarios <- c("C_SSP2EU-Base",
                "C_SSP2EU-NPi",
@@ -42,8 +43,6 @@ for (scenario in scenarios) {
                                         c("fulldata.gdx", "clustermap_*.rds")))))
 }
 unlink(Sys.glob(file.path(getConfig("sourcefolder"), "MagpieFulldataGdx", "clustermap_*.rds")))
-
-now <- format(Sys.time(), "%Y-%m-%d")
 
 for (scenario in scenarios) {
   message("Copying fulldata.gdx and clustermap from ", basePath, scenario, "-mag-6/")
