@@ -1143,7 +1143,7 @@
       "RemoteUsername": "pascal-sauer",
       "RemoteRepo": "mrdownscale",
       "RemoteRef": "main",
-      "RemoteSha": "4d8a152b565c5e25aa85397fa4cbd1ca5e97a91d",
+      "RemoteSha": "453c00f9f5785d61133f885490e3130e63956819",
       "Requirements": [
         "R",
         "luscale",
@@ -1156,7 +1156,7 @@
         "terra",
         "withr"
       ],
-      "Hash": "dbaf8d61ec180cc731de0fd463490eb6"
+      "Hash": "e5d827c6b109568fd31b70cfe2659460"
     },
     "mstools": {
       "Package": "mstools",
