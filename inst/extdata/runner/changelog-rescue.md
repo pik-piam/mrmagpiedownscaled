@@ -3,6 +3,8 @@
 ## unreleased
 
 - fixed flipped latitude
+- removed bounds_time
+- report data from 2015 to 2100 (as opposed to from 1995)
 
 ## 2024-03-22
 
