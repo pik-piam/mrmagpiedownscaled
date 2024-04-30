@@ -1136,14 +1136,14 @@
     },
     "mrdownscale": {
       "Package": "mrdownscale",
-      "Version": "0.16.1",
+      "Version": "0.16.2",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteUsername": "pascal-sauer",
       "RemoteRepo": "mrdownscale",
       "RemoteRef": "main",
-      "RemoteSha": "453c00f9f5785d61133f885490e3130e63956819",
+      "RemoteSha": "5cb9e98ef63f424c52ea47b15d3db66d88b39d83",
       "Requirements": [
         "R",
         "luscale",
@@ -1156,7 +1156,7 @@
         "terra",
         "withr"
       ],
-      "Hash": "e5d827c6b109568fd31b70cfe2659460"
+      "Hash": "a9bc93627a2d1c33090f746a23fdf898"
     },
     "mstools": {
       "Package": "mstools",
