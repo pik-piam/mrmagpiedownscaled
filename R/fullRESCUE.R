@@ -19,7 +19,7 @@
 #' @param progress boolean defining whether progress should be printed
 #'
 #' @author Pascal Sauer, Jan Philipp Dietrich
-fullRESCUE <- function(rev = NULL, ..., scenario = NULL, years = 2015:2100,
+fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
                        harmonizationPeriod = c(2015, 2050),
                        compression = 2, interpolate = FALSE, progress = TRUE) {
   stopifnot(...length() == 0, isFALSE(interpolate))
@@ -29,7 +29,7 @@ fullRESCUE <- function(rev = NULL, ..., scenario = NULL, years = 2015:2100,
 
   revision <- if (is.null(rev)) format(Sys.time(), "%Y-%m-%d") else rev
   fileSuffix <- paste0("_input4MIPs_landState_RESCUE_PIK-MAgPIE-4-7-",
-                       scenario, if (!is.null(scenario)) "-",
+                       scenario, if (scenario != "") "-",
                        revision, "_gn_", min(years), "-", max(years))
 
   land <- calcOutput("LandReport", project = "RESCUE",
@@ -94,13 +94,14 @@ addMetadataRESCUE <- function(ncFile, revision, missingValue, resolution, compre
     ncdf4::nc_close(nc)
   })
   # global
+  dateTime <- strftime(Sys.time(), format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
   ncdf4::ncatt_put(nc, 0, "activity_id", "RESCUE")
   ncdf4::ncatt_put(nc, 0, "contact", "pascal.sauer@pik-potsdam.de, dietrich@pik-potsdam.de")
   ncdf4::ncatt_put(nc, 0, "Conventions", "CF-1.6")
-  ncdf4::ncatt_put(nc, 0, "creation_date", as.character(revision))
+  ncdf4::ncatt_put(nc, 0, "creation_date", dateTime)
   ncdf4::ncatt_put(nc, 0, "data_structure", "grid")
   ncdf4::ncatt_put(nc, 0, "dataset_category", "landState")
-  ncdf4::ncatt_put(nc, 0, "date", as.character(revision))
+  ncdf4::ncatt_put(nc, 0, "date", dateTime)
   ncdf4::ncatt_put(nc, 0, "frequency", "yr")
   ncdf4::ncatt_put(nc, 0, "further_info_url",
                    "https://github.com/pik-piam/mrdownscale/blob/main/inst/extdata/runner/changelog-rescue.md")
@@ -121,6 +122,7 @@ addMetadataRESCUE <- function(ncFile, revision, missingValue, resolution, compre
   ncdf4::ncatt_put(nc, 0, "harmonization_period", paste(harmonizationPeriod, collapse = "-"))
   ncdf4::ncatt_put(nc, 0, "reference_dataset", "LUH2 v2h Release (10/14/16) from https://luh.umd.edu/data.shtml")
   ncdf4::ncatt_put(nc, 0, "harmonization_downscaling_tool", "https://github.com/pik-piam/mrdownscale")
+  ncdf4::ncatt_put(nc, 0, "dataset_version", as.character(revision))
 
   # time
   ncdf4::ncatt_put(nc, "time", "axis", "T")
