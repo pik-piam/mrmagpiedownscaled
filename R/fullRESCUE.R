@@ -101,28 +101,33 @@ addMetadataRESCUE <- function(ncFile, revision, missingValue, resolution, compre
   ncdf4::ncatt_put(nc, 0, "creation_date", dateTime)
   ncdf4::ncatt_put(nc, 0, "data_structure", "grid")
   ncdf4::ncatt_put(nc, 0, "dataset_category", "landState")
+  ncdf4::ncatt_put(nc, 0, "dataset_version_number", as.character(revision))
   ncdf4::ncatt_put(nc, 0, "date", dateTime)
   ncdf4::ncatt_put(nc, 0, "frequency", "yr")
   ncdf4::ncatt_put(nc, 0, "further_info_url",
                    "https://github.com/pik-piam/mrdownscale/blob/main/inst/extdata/runner/changelog-rescue.md")
   ncdf4::ncatt_put(nc, 0, "grid_label", "gn")
+  ncdf4::ncatt_put(nc, 0, "host", "Potsdam Institute for Climate Impact Research")
   ncdf4::ncatt_put(nc, 0, "institution_id", "PIK")
   ncdf4::ncatt_put(nc, 0, "institution", "Potsdam Institute for Climate Impact Research")
   ncdf4::ncatt_put(nc, 0, "license", "CC BY 4.0")
   ncdf4::ncatt_put(nc, 0, "nominal_resolution", "50 km")
   ncdf4::ncatt_put(nc, 0, "realm", "land")
+  ncdf4::ncatt_put(nc, 0, "references",
+                   "See: https://github.com/pik-piam/mrdownscale and https://rescue-climate.eu/ for references")
   ncdf4::ncatt_put(nc, 0, "source_id", sub(paste0("^", variableId, "_"), "",
                                            sub("\\.nc$", "",
                                                basename(ncFile))))
-  ncdf4::ncatt_put(nc, 0, "target_mip", "input4MIPs")
+  ncdf4::ncatt_put(nc, 0, "target_mip", "RESCUE")
   ncdf4::ncatt_put(nc, 0, "title", "MAgPIE Land-Use Data Harmonized and Downscaled using LUH2 v2h as reference")
   ncdf4::ncatt_put(nc, 0, "variable_id", variableId)
 
   # added by us
   ncdf4::ncatt_put(nc, 0, "harmonization_period", paste(harmonizationPeriod, collapse = "-"))
-  ncdf4::ncatt_put(nc, 0, "reference_dataset", "LUH2 v2h Release (10/14/16) from https://luh.umd.edu/data.shtml")
   ncdf4::ncatt_put(nc, 0, "harmonization_downscaling_tool", "https://github.com/pik-piam/mrdownscale")
-  ncdf4::ncatt_put(nc, 0, "dataset_version", as.character(revision))
+  ncdf4::ncatt_put(nc, 0, "reference_dataset", "LUH2 v2h Release (10/14/16) from https://luh.umd.edu/data.shtml")
+  ncdf4::ncatt_put(nc, 0, "source", "Scenarios generated as part of the RESCUE project, see https://rescue-climate.eu/")
+  ncdf4::ncatt_put(nc, 0, "source_version", as.character(revision))
 
   # time
   ncdf4::ncatt_put(nc, "time", "axis", "T")
