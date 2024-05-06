@@ -1,5 +1,6 @@
 library(mrdownscale) # nolint
 
+revision <- "2024-04-25"
 basePath <- "/p/projects/rescue/tier1_scenarios/v4p0/cpl/magpie/output/" # nolint
 scenarios <- c("C_SSP2EU-Base",
                "C_SSP2EU-NPi",
@@ -38,19 +39,18 @@ scenarios <- c("C_SSP2EU-Base",
                "C_RESCUE-dir-v4p0-EocBudg1150-OAE_on")
 
 for (scenario in scenarios) {
-  stopifnot(file.exists(paste0(basePath, scenario, "-mag-6/",
-                               c("fulldata.gdx", "clustermap_rev4.99_c200_67420_h12.rds"))))
+  stopifnot(file.exists(Sys.glob(paste0(basePath, scenario, "-mag-6/",
+                                        c("fulldata.gdx", "clustermap_*.rds")))))
 }
-
-now <- format(Sys.time(), "%Y-%m-%d")
+unlink(Sys.glob(file.path(getConfig("sourcefolder"), "MagpieFulldataGdx", "clustermap_*.rds")))
 
 for (scenario in scenarios) {
   message("Copying fulldata.gdx and clustermap from ", basePath, scenario, "-mag-6/")
-  file.copy(paste0(basePath, scenario, "-mag-6/",
-                   c("fulldata.gdx", "clustermap_rev4.99_c200_67420_h12.rds")),
+  file.copy(Sys.glob(paste0(basePath, scenario, "-mag-6/",
+                            c("fulldata.gdx", "clustermap_*.rds"))),
             file.path(getConfig("sourcefolder"), "MagpieFulldataGdx"),
             overwrite = TRUE)
   message("md5 of copied fulldata.gdx: ",
           tools::md5sum(file.path(getConfig("sourcefolder"), "MagpieFulldataGdx", "fulldata.gdx")))
-  try(retrieveData("RESCUE", rev = now, scenario = gsub("_", "-", scenario)))
+  try(retrieveData("RESCUE", rev = revision, scenario = gsub("_", "-", scenario), progress = FALSE))
 }

@@ -7,15 +7,17 @@
 fullRESCUE(
   rev = NULL,
   ...,
-  scenario = "",
-  years = 1995:2100,
+  scenario = NULL,
+  years = 2015:2100,
   harmonizationPeriod = c(2015, 2050),
   compression = 2,
-  interpolate = FALSE
+  interpolate = FALSE,
+  progress = TRUE
 )
 }
 \arguments{
-\item{rev}{revision number of the data. If not provided the current date will be used instead}
+\item{rev}{revision number of the data. If not provided the current date will be used instead.
+When called via madrat::retrieveData rev will be converted to numeric_version.}
 
 \item{...}{reserved for future use}
 
@@ -33,6 +35,8 @@ dataset is used, in between harmonize between the two datasets}
 
 \item{interpolate}{boolean defining whether the data should be interpolated
 to include all years given in the years argument}
+
+\item{progress}{boolean defining whether progress should be printed}
 }
 \description{
 Run the pipeline to generate harmonized and downscaled data to report for the RESCUE project.

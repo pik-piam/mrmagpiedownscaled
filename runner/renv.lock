@@ -3,12 +3,12 @@
     "Version": "4.1.2",
     "Repositories": [
       {
-        "Name": "CRAN",
-        "URL": "https://packagemanager.posit.co/cran/latest"
-      },
-      {
         "Name": "pik",
         "URL": "https://rse.pik-potsdam.de/r/packages"
+      },
+      {
+        "Name": "CRAN",
+        "URL": "https://cran.rstudio.com"
       }
     ]
   },
@@ -538,14 +538,14 @@
     },
     "fs": {
       "Package": "fs",
-      "Version": "1.6.3",
+      "Version": "1.6.4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "methods"
       ],
-      "Hash": "47b5f30c720c23999b913a1a635cf0bb"
+      "Hash": "15aeb8c27f5ea5161f9f6a641fafd93a"
     },
     "gdx": {
       "Package": "gdx",
@@ -944,20 +944,18 @@
     },
     "luscale": {
       "Package": "luscale",
-      "Version": "2.27.12",
+      "Version": "3.0.0",
       "Source": "Repository",
       "Repository": "https://rse.pik-potsdam.de/r/packages",
       "Requirements": [
         "R",
-        "lpSolve",
         "madrat",
         "magclass",
         "methods",
         "spam",
-        "stats",
         "utils"
       ],
-      "Hash": "d66bd3927ef37f6e940d2ba90cfd1783"
+      "Hash": "ff4ea572bd69443ca9159a0b9a7b4f39"
     },
     "lusweave": {
       "Package": "lusweave",
@@ -997,9 +995,14 @@
     },
     "magclass": {
       "Package": "magclass",
-      "Version": "6.15.0",
-      "Source": "Repository",
-      "Repository": "https://rse.pik-potsdam.de/r/packages",
+      "Version": "6.15.1",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "pascal-sauer",
+      "RemoteRepo": "magclass",
+      "RemoteRef": "master",
+      "RemoteSha": "c73b2d6b8f11dd92f14ae137aab1c9a8b3ee4065",
       "Requirements": [
         "R",
         "abind",
@@ -1007,7 +1010,7 @@
         "methods",
         "stats"
       ],
-      "Hash": "806fad415bea96fb72cd45b41b49a08b"
+      "Hash": "6ebec408de8598bd5b65a3a98c1339d3"
     },
     "magic": {
       "Package": "magic",
@@ -1022,9 +1025,9 @@
     },
     "magpie4": {
       "Package": "magpie4",
-      "Version": "1.207.0",
+      "Version": "2.0.3",
       "Source": "Repository",
-      "Repository": "https://rse.pik-potsdam.de/r/packages",
+      "Repository": "pik",
       "Requirements": [
         "R",
         "dplyr",
@@ -1041,12 +1044,11 @@
         "nonparaeff",
         "reshape2",
         "rlang",
-        "spam",
         "stats",
         "stringr",
         "utils"
       ],
-      "Hash": "dcff424c8934682026e84c493723d9fa"
+      "Hash": "2c04849475fb699e98b7e9f0d600ca4f"
     },
     "magpiesets": {
       "Package": "magpiesets",
@@ -1134,9 +1136,14 @@
     },
     "mrdownscale": {
       "Package": "mrdownscale",
-      "Version": "0.16.0",
-      "Source": "Repository",
-      "Repository": "https://rse.pik-potsdam.de/r/packages",
+      "Version": "0.16.2",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "pascal-sauer",
+      "RemoteRepo": "mrdownscale",
+      "RemoteRef": "main",
+      "RemoteSha": "5cb9e98ef63f424c52ea47b15d3db66d88b39d83",
       "Requirements": [
         "R",
         "luscale",
@@ -1149,7 +1156,7 @@
         "terra",
         "withr"
       ],
-      "Hash": "4a13c07bb33d945322fb52f738551c06"
+      "Hash": "a9bc93627a2d1c33090f746a23fdf898"
     },
     "mstools": {
       "Package": "mstools",
@@ -1430,7 +1437,7 @@
     },
     "quitte": {
       "Package": "quitte",
-      "Version": "0.3130.0",
+      "Version": "0.3131.0",
       "Source": "Repository",
       "Repository": "https://rse.pik-potsdam.de/r/packages",
       "Requirements": [
@@ -1461,7 +1468,7 @@
         "writexl",
         "zoo"
       ],
-      "Hash": "5f25d5d22f2c71718ee7922ce09be67f"
+      "Hash": "960be1b6bfe789524866318128b4d495"
     },
     "rappdirs": {
       "Package": "rappdirs",

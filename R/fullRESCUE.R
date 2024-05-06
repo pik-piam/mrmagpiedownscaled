@@ -3,7 +3,8 @@
 #' Run the pipeline to generate harmonized and downscaled data to report for the RESCUE project.
 #' Write .nc files, print full report on consistency checks and write it to report.log.
 #'
-#' @param rev revision number of the data. If not provided the current date will be used instead
+#' @param rev revision number of the data. If not provided the current date will be used instead.
+#' When called via madrat::retrieveData rev will be converted to numeric_version.
 #' @param ... reserved for future use
 #' @param scenario scenario name to be included in filenames
 #' @param years Only years from this vector will be included in the output files. If interpolate is TRUE,
@@ -15,21 +16,21 @@
 #' 1 = fastest, 9 = best compression
 #' @param interpolate boolean defining whether the data should be interpolated
 #' to include all years given in the years argument
+#' @param progress boolean defining whether progress should be printed
 #'
 #' @author Pascal Sauer, Jan Philipp Dietrich
-fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 1995:2100,
+fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
                        harmonizationPeriod = c(2015, 2050),
-                       compression = 2, interpolate = FALSE) {
+                       compression = 2, interpolate = FALSE, progress = TRUE) {
   stopifnot(...length() == 0, isFALSE(interpolate))
   missingValue <- 1e20
   gridDefinition <- c(-179.875, 179.875, -89.875, 89.875, 0.25)
   resolution <- gridDefinition[5]
 
-  now <- Sys.time()
-  version <- if (is.null(rev)) format(now, "%Y-%m-%d") else rev
+  revision <- if (is.null(rev)) format(Sys.time(), "%Y-%m-%d") else rev
   fileSuffix <- paste0("_input4MIPs_landState_RESCUE_PIK-MAgPIE-4-7-",
-                       scenario, if (scenario == "") "" else "-",
-                       version, "_gn_", min(years), "-", max(years))
+                       scenario, if (scenario != "") "-",
+                       revision, "_gn_", min(years), "-", max(years))
 
   land <- calcOutput("LandReport", project = "RESCUE",
                      harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
@@ -39,8 +40,8 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 1995:2100,
   statesVariables <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per", "pastr",
                        "primf", "primn", "range", "secdf", "secdn", "urban")
   write.magpie(land[, , statesVariables], statesFile, compression = compression,
-               missval = missingValue, gridDefinition = gridDefinition, progress = TRUE)
-  addMetadataRESCUE(statesFile, now, missingValue, resolution, compression, harmonizationPeriod)
+               missval = missingValue, gridDefinition = gridDefinition, progress = progress)
+  addMetadataRESCUE(statesFile, revision, missingValue, resolution, compression, harmonizationPeriod)
 
   landManagementVariables <- c("irrig_c3ann", "crpbf_c3ann", "irrig_c3nfx", "crpbf_c3nfx",
                                "irrig_c3per", "crpbf_c3per", "crpbf2_c3per", "irrig_c4ann",
@@ -55,9 +56,9 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 1995:2100,
   rm(land)
   managementFile <- paste0("multiple-management", fileSuffix, ".nc")
   write.magpie(management, managementFile, compression = compression,
-               missval = missingValue, gridDefinition = gridDefinition, progress = TRUE)
+               missval = missingValue, gridDefinition = gridDefinition, progress = progress)
   rm(management)
-  addMetadataRESCUE(managementFile, now, missingValue, resolution, compression, harmonizationPeriod)
+  addMetadataRESCUE(managementFile, revision, missingValue, resolution, compression, harmonizationPeriod)
 
   woodSources <- c("primf", "secyf", "secmf", "primn", "secnf")
   woodHarvestVariables <- c(paste0(woodSources, "_bioh"), paste0(woodSources, "_harv"))
@@ -73,9 +74,9 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 1995:2100,
   rm(nonland)
   transitionsFile <- paste0("multiple-transitions", fileSuffix, ".nc")
   write.magpie(transitions, transitionsFile, compression = compression,
-               missval = missingValue, gridDefinition = gridDefinition, progress = TRUE)
+               missval = missingValue, gridDefinition = gridDefinition, progress = progress)
   rm(transitions)
-  addMetadataRESCUE(transitionsFile, now, missingValue, resolution, compression, harmonizationPeriod)
+  addMetadataRESCUE(transitionsFile, revision, missingValue, resolution, compression, harmonizationPeriod)
 }
 
 adaptYearsRESCUE <- function(x, years) {
@@ -85,7 +86,7 @@ adaptYearsRESCUE <- function(x, years) {
   return(x)
 }
 
-addMetadataRESCUE <- function(ncFile, now, missingValue, resolution, compression, harmonizationPeriod) {
+addMetadataRESCUE <- function(ncFile, revision, missingValue, resolution, compression, harmonizationPeriod) {
   variableId <- sub("^(multiple-[^_]+).+$", "\\1", basename(ncFile))
   stopifnot(variableId %in% c("multiple-states", "multiple-management", "multiple-transitions"))
   nc <- ncdf4::nc_open(ncFile, write = TRUE)
@@ -93,38 +94,43 @@ addMetadataRESCUE <- function(ncFile, now, missingValue, resolution, compression
     ncdf4::nc_close(nc)
   })
   # global
-  dateTime <- strftime(now, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+  dateTime <- strftime(Sys.time(), format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
   ncdf4::ncatt_put(nc, 0, "activity_id", "RESCUE")
   ncdf4::ncatt_put(nc, 0, "contact", "pascal.sauer@pik-potsdam.de, dietrich@pik-potsdam.de")
   ncdf4::ncatt_put(nc, 0, "Conventions", "CF-1.6")
   ncdf4::ncatt_put(nc, 0, "creation_date", dateTime)
   ncdf4::ncatt_put(nc, 0, "data_structure", "grid")
   ncdf4::ncatt_put(nc, 0, "dataset_category", "landState")
+  ncdf4::ncatt_put(nc, 0, "dataset_version_number", as.character(revision))
   ncdf4::ncatt_put(nc, 0, "date", dateTime)
   ncdf4::ncatt_put(nc, 0, "frequency", "yr")
   ncdf4::ncatt_put(nc, 0, "further_info_url",
                    "https://github.com/pik-piam/mrdownscale/blob/main/inst/extdata/runner/changelog-rescue.md")
   ncdf4::ncatt_put(nc, 0, "grid_label", "gn")
+  ncdf4::ncatt_put(nc, 0, "host", "Potsdam Institute for Climate Impact Research")
   ncdf4::ncatt_put(nc, 0, "institution_id", "PIK")
   ncdf4::ncatt_put(nc, 0, "institution", "Potsdam Institute for Climate Impact Research")
   ncdf4::ncatt_put(nc, 0, "license", "CC BY 4.0")
   ncdf4::ncatt_put(nc, 0, "nominal_resolution", "50 km")
   ncdf4::ncatt_put(nc, 0, "realm", "land")
+  ncdf4::ncatt_put(nc, 0, "references",
+                   "See: https://github.com/pik-piam/mrdownscale and https://rescue-climate.eu/ for references")
   ncdf4::ncatt_put(nc, 0, "source_id", sub(paste0("^", variableId, "_"), "",
                                            sub("\\.nc$", "",
                                                basename(ncFile))))
-  ncdf4::ncatt_put(nc, 0, "target_mip", "input4MIPs")
+  ncdf4::ncatt_put(nc, 0, "target_mip", "RESCUE")
   ncdf4::ncatt_put(nc, 0, "title", "MAgPIE Land-Use Data Harmonized and Downscaled using LUH2 v2h as reference")
   ncdf4::ncatt_put(nc, 0, "variable_id", variableId)
 
   # added by us
   ncdf4::ncatt_put(nc, 0, "harmonization_period", paste(harmonizationPeriod, collapse = "-"))
-  ncdf4::ncatt_put(nc, 0, "reference_dataset", "LUH2 v2h Release (10/14/16) from https://luh.umd.edu/data.shtml")
   ncdf4::ncatt_put(nc, 0, "harmonization_downscaling_tool", "https://github.com/pik-piam/mrdownscale")
+  ncdf4::ncatt_put(nc, 0, "reference_dataset", "LUH2 v2h Release (10/14/16) from https://luh.umd.edu/data.shtml")
+  ncdf4::ncatt_put(nc, 0, "source", "Scenarios generated as part of the RESCUE project, see https://rescue-climate.eu/")
+  ncdf4::ncatt_put(nc, 0, "source_version", as.character(revision))
 
   # time
   ncdf4::ncatt_put(nc, "time", "axis", "T")
-  ncdf4::ncatt_put(nc, "time", "bounds", "bounds_time")
   ncdf4::ncatt_put(nc, "time", "calendar", "365_day")
   ncdf4::ncatt_put(nc, "time", "long_name", "time")
   ncdf4::ncatt_put(nc, "time", "realtopology", "linear")
@@ -175,17 +181,10 @@ addMetadataRESCUE <- function(ncFile, now, missingValue, resolution, compression
     nc <- ncdf4::ncvar_add(nc, ncdf4::ncvar_def("bounds_lat", units = "",
                                                 dim = list(boundsDim, nc$dim$lat),
                                                 prec = "double", compression = compression))
-    nc <- ncdf4::ncvar_add(nc, ncdf4::ncvar_def("bounds_time", units = "",
-                                                dim = list(boundsDim, nc$dim$time),
-                                                prec = "integer", compression = compression))
   })
 
   ncdf4::ncvar_put(nc, "bounds_lon", rbind(nc$dim$lon$vals - resolution / 2,
                                            nc$dim$lon$vals + resolution / 2))
   ncdf4::ncvar_put(nc, "bounds_lat", rbind(nc$dim$lat$vals + resolution / 2,
                                            nc$dim$lat$vals - resolution / 2))
-  # these time bounds were taken from the reference file
-  # multiple-states_input4MIPs_landState_ScenarioMIP_UofMD-IMAGE-ssp126-2-1-f_gn_2015-2100.nc
-  ncdf4::ncvar_put(nc, "bounds_time", rbind(rep(1, nc$dim$time$len),
-                                            rep(365, nc$dim$time$len)))
 }
