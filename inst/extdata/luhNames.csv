@@ -1,159 +1,159 @@
-name,long_name,standard_name,standard_name_description,long_name_description
-primf,forested primary land,area_fraction,,primary vegetation on LUH2 potential forest land
-primn,non-forested primary land,area_fraction,,primary vegetation on LUH2 potential non-forest land
-secdf,potentially forested secondary land,area_fraction,,secondary vegetation on LUH2 potential forest land
-manaf,managed forest fraction of potentially forested secondary land,area_fraction,,
-secdn,potentially non-forested secondary land,area_fraction,,secondary vegetation on LUH2 potential non-forest land
-urban,urban land,area_fraction,,
-c3ann,C3 annual crops,area_fraction,,
-c4ann,C4 annual crops,area_fraction,,
-c3per,C3 perennial crops,area_fraction,,
-c4per,C4 perennial crops,area_fraction,,
-c3nfx,C3 nitrogen-fixing crops,area_fraction,,
-pastr,managed pasture,area_fraction,,
-range,rangeland,area_fraction,,
-secmb,secondary mean biomass carbon density,vegetation_carbon_content,,
-secma,secondary mean age,,,
-fertl_c3ann,fertilization rate for C3 annual crops,,,
-irrig_c3ann,irrigated fraction of C3 annual crops,,,
-crpbf_c3ann,C3 annual crops fraction of crop type area grown as biofuels,area_fraction,,
-fertl_c4ann,fertilization rate for C4 annual crops,,,
-irrig_c4ann,irrigated fraction of C4 annual crops,,,
-crpbf_c4ann,C4 annual crops fraction of crop type area grown as biofuels,area_fraction,,
-fertl_c3per,fertilization rate for C3 perennial crops,,,
-irrig_c3per,irrigated fraction of C3 perennial crops,,,
-crpbf_c3per,C3 perennial crops fraction of crop type area grown as biofuels,area_fraction,,
-crpbf2_c3per,C3 perennial crops fraction of crop type area grown as 2nd generation biofuels,area_fraction,,
-fertl_c4per,fertilization rate for C4 perennial crops,,,
-irrig_c4per,irrigated fraction of C4 perennial crops,,,
-crpbf_c4per,C4 perennial crops fraction of crop type area grown as biofuels,area_fraction,,
-crpbf2_c4per,C4 perennial crops fraction of crop type area grown as 2nd generation biofuels,area_fraction,,
-fertl_c3nfx,fertilization rate for C3 nitrogen-fixing crops,,,
-irrig_c3nfx,irrigated fraction of C3 nitrogen-fixing crops,,,
-crpbf_c3nfx,C3 nitrogen-fixing crops fraction of crop type area grown as biofuels,area_fraction,,
-fharv_c3per,fraction of C3 perennial crops biomass carbon harvested annually,vegetation_carbon_content,,
-fharv_c4per,fraction of C4 perennial crops biomass carbon harvested annually,vegetation_carbon_content,,
-flood,flooded fraction of C3 annual crop area (e.g. for paddy rice,area_fraction,,
-rndwd,industrial roundwood fraction of wood harvest biomass carbon,vegetation_carbon_content,,
-fulwd,fuelwood fraction of wood harvest biomass carbon,vegetation_carbon_content,,
-combf,commercial biofuels fraction of wood harvest biomass carbon,vegetation_carbon_content,,
-primf_to_secdn,area_fraction,transition from forested primary land to potentially non-forested secondary land,,
-primf_to_urban,area_fraction,transition from forested primary land to urban land,,
-primf_to_c3ann,area_fraction,transition from forested primary land to C3 annual crops,,
-primf_to_c4ann,area_fraction,transition from forested primary land to C4 annual crops,,
-primf_to_c3per,area_fraction,transition from forested primary land to C3 perennial crops,,
-primf_to_c4per,area_fraction,transition from forested primary land to C4 perennial crops,,
-primf_to_c3nfx,area_fraction,transition from forested primary land to C3 nitrogen-fixing crops,,
-primf_to_pastr,area_fraction,transition from forested primary land to managed pasture,,
-primf_to_range,area_fraction,transition from forested primary land to rangeland,,
-primf_to_secdf,area_fraction,transition from forested primary land to potentially forested secondary land,,
-primn_to_secdf,area_fraction,transition from non-forested primary land to potentially forested secondary land,,
-primn_to_secdn,area_fraction,transition from non-forested primary land to potentially non-forested secondary land,,
-primn_to_urban,area_fraction,transition from non-forested primary land to urban land,,
-primn_to_c3ann,area_fraction,transition from non-forested primary land to C3 annual crops,,
-primn_to_c4ann,area_fraction,transition from non-forested primary land to C4 annual crops,,
-primn_to_c3per,area_fraction,transition from non-forested primary land to C3 perennial crops,,
-primn_to_c4per,area_fraction,transition from non-forested primary land to C4 perennial crops,,
-primn_to_c3nfx,area_fraction,transition from non-forested primary land to C3 nitrogen-fixing crops,,
-primn_to_pastr,area_fraction,transition from non-forested primary land to managed pasture,,
-primn_to_range,area_fraction,transition from non-forested primary land to rangeland,,
-secdf_to_secdn,area_fraction,transition from potentially forested secondary land to potentially non-forested secondary land,,
-secdf_to_urban,area_fraction,transition from potentially forested secondary land to urban land,,
-secdf_to_c3ann,area_fraction,transition from potentially forested secondary land to C3 annual crops,,
-secdf_to_c4ann,area_fraction,transition from potentially forested secondary land to C4 annual crops,,
-secdf_to_c3per,area_fraction,transition from potentially forested secondary land to C3 perennial crops,,
-secdf_to_c4per,area_fraction,transition from potentially forested secondary land to C4 perennial crops,,
-secdf_to_c3nfx,area_fraction,transition from potentially forested secondary land to C3 nitrogen-fixing crops,,
-secdf_to_pastr,area_fraction,transition from potentially forested secondary land to managed pasture,,
-secdf_to_range,area_fraction,transition from potentially forested secondary land to rangeland,,
-secdn_to_secdf,area_fraction,transition from potentially non-forested secondary land to potentially forested secondary land,,
-secdn_to_urban,area_fraction,transition from potentially non-forested secondary land to urban land,,
-secdn_to_c3ann,area_fraction,transition from potentially non-forested secondary land to C3 annual crops,,
-secdn_to_c4ann,area_fraction,transition from potentially non-forested secondary land to C4 annual crops,,
-secdn_to_c3per,area_fraction,transition from potentially non-forested secondary land to C3 perennial crops,,
-secdn_to_c4per,area_fraction,transition from potentially non-forested secondary land to C4 perennial crops,,
-secdn_to_c3nfx,area_fraction,transition from potentially non-forested secondary land to C3 nitrogen-fixing crops,,
-secdn_to_pastr,area_fraction,transition from potentially non-forested secondary land to managed pasture,,
-secdn_to_range,area_fraction,transition from potentially non-forested secondary land to rangeland,,
-urban_to_secdf,area_fraction,transition from urban land to potentially forested secondary land,,
-urban_to_secdn,area_fraction,transition from urban land to potentially non-forested secondary land,,
-urban_to_c3ann,area_fraction,transition from urban land to C3 annual crops,,
-urban_to_c4ann,area_fraction,transition from urban land to C4 annual crops,,
-urban_to_c3per,area_fraction,transition from urban land to C3 perennial crops,,
-urban_to_c4per,area_fraction,transition from urban land to C4 perennial crops,,
-urban_to_c3nfx,area_fraction,transition from urban land to C3 nitrogen-fixing crops,,
-urban_to_pastr,area_fraction,transition from urban land to managed pasture,,
-urban_to_range,area_fraction,transition from urban land to rangeland,,
-c3ann_to_secdf,area_fraction,transition from C3 annual crops to potentially forested secondary land,,
-c3ann_to_secdn,area_fraction,transition from C3 annual crops to potentially non-forested secondary land,,
-c3ann_to_urban,area_fraction,transition from C3 annual crops to urban land,,
-c3ann_to_c4ann,area_fraction,transition from C3 annual crops to C4 annual crops,,
-c3ann_to_c3per,area_fraction,transition from C3 annual crops to C3 perennial crops,,
-c3ann_to_c4per,area_fraction,transition from C3 annual crops to C4 perennial crops,,
-c3ann_to_c3nfx,area_fraction,transition from C3 annual crops to C3 nitrogen-fixing crops,,
-c3ann_to_pastr,area_fraction,transition from C3 annual crops to managed pasture,,
-c3ann_to_range,area_fraction,transition from C3 annual crops to rangeland,,
-c4ann_to_secdf,area_fraction,transition from C4 annual crops to potentially forested secondary land,,
-c4ann_to_secdn,area_fraction,transition from C4 annual crops to potentially non-forested secondary land,,
-c4ann_to_urban,area_fraction,transition from C4 annual crops to urban land,,
-c4ann_to_c3ann,area_fraction,transition from C4 annual crops to C3 annual crops,,
-c4ann_to_c3per,area_fraction,transition from C4 annual crops to C3 perennial crops,,
-c4ann_to_c4per,area_fraction,transition from C4 annual crops to C4 perennial crops,,
-c4ann_to_c3nfx,area_fraction,transition from C4 annual crops to C3 nitrogen-fixing crops,,
-c4ann_to_pastr,area_fraction,transition from C4 annual crops to managed pasture,,
-c4ann_to_range,area_fraction,transition from C4 annual crops to rangeland,,
-c3per_to_secdf,area_fraction,transition from C3 perennial crops to potentially forested secondary land,,
-c3per_to_secdn,area_fraction,transition from C3 perennial crops to potentially non-forested secondary land,,
-c3per_to_urban,area_fraction,transition from C3 perennial crops to urban land,,
-c3per_to_c3ann,area_fraction,transition from C3 perennial crops to C3 annual crops,,
-c3per_to_c4ann,area_fraction,transition from C3 perennial crops to C4 annual crops,,
-c3per_to_c4per,area_fraction,transition from C3 perennial crops to C4 perennial crops,,
-c3per_to_c3nfx,area_fraction,transition from C3 perennial crops to C3 nitrogen-fixing crops,,
-c3per_to_pastr,area_fraction,transition from C3 perennial crops to managed pasture,,
-c3per_to_range,area_fraction,transition from C3 perennial crops to rangeland,,
-c4per_to_secdf,area_fraction,transition from C4 perennial crops to potentially forested secondary land,,
-c4per_to_secdn,area_fraction,transition from C4 perennial crops to potentially non-forested secondary land,,
-c4per_to_urban,area_fraction,transition from C4 perennial crops to urban land,,
-c4per_to_c3ann,area_fraction,transition from C4 perennial crops to C3 annual crops,,
-c4per_to_c4ann,area_fraction,transition from C4 perennial crops to C4 annual crops,,
-c4per_to_c3per,area_fraction,transition from C4 perennial crops to C3 perennial crops,,
-c4per_to_c3nfx,area_fraction,transition from C4 perennial crops to C3 nitrogen-fixing crops,,
-c4per_to_pastr,area_fraction,transition from C4 perennial crops to managed pasture,,
-c4per_to_range,area_fraction,transition from C4 perennial crops to rangeland,,
-c3nfx_to_secdf,area_fraction,transition from C3 nitrogen-fixing crops to potentially forested secondary land,,
-c3nfx_to_secdn,area_fraction,transition from C3 nitrogen-fixing crops to potentially non-forested secondary land,,
-c3nfx_to_urban,area_fraction,transition from C3 nitrogen-fixing crops to urban land,,
-c3nfx_to_c3ann,area_fraction,transition from C3 nitrogen-fixing crops to C3 annual crops,,
-c3nfx_to_c4ann,area_fraction,transition from C3 nitrogen-fixing crops to C4 annual crops,,
-c3nfx_to_c3per,area_fraction,transition from C3 nitrogen-fixing crops to C3 perennial crops,,
-c3nfx_to_c4per,area_fraction,transition from C3 nitrogen-fixing crops to C4 perennial crops,,
-c3nfx_to_pastr,area_fraction,transition from C3 nitrogen-fixing crops to managed pasture,,
-c3nfx_to_range,area_fraction,transition from C3 nitrogen-fixing crops to rangeland,,
-pastr_to_secdf,area_fraction,transition from managed pasture to potentially forested secondary land,,
-pastr_to_secdn,area_fraction,transition from managed pasture to potentially non-forested secondary land,,
-pastr_to_urban,area_fraction,transition from managed pasture to urban land,,
-pastr_to_c3ann,area_fraction,transition from managed pasture to C3 annual crops,,
-pastr_to_c4ann,area_fraction,transition from managed pasture to C4 annual crops,,
-pastr_to_c3per,area_fraction,transition from managed pasture to C3 perennial crops,,
-pastr_to_c4per,area_fraction,transition from managed pasture to C4 perennial crops,,
-pastr_to_c3nfx,area_fraction,transition from managed pasture to C3 nitrogen-fixing crops,,
-pastr_to_range,area_fraction,transition from managed pasture to rangeland,,
-range_to_secdf,area_fraction,transition from rangeland to potentially forested secondary land,,
-range_to_secdn,area_fraction,transition from rangeland to potentially non-forested secondary land,,
-range_to_urban,area_fraction,transition from rangeland to urban land,,
-range_to_c3ann,area_fraction,transition from rangeland to C3 annual crops,,
-range_to_c4ann,area_fraction,transition from rangeland to C4 annual crops,,
-range_to_c3per,area_fraction,transition from rangeland to C3 perennial crops,,
-range_to_c4per,area_fraction,transition from rangeland to C4 perennial crops,,
-range_to_c3nfx,area_fraction,transition from rangeland to C3 nitrogen-fixing crops,,
-range_to_pastr,area_fraction,transition from rangeland to managed pasture,,
-primf_harv,wood harvest area from primary vegetation on LUH2 potential forest land,wood harvest area from primary forest land,area_fraction,
-primn_harv,wood harvest area from primary vegetation on LUH2 potential non-forest land,wood harvest area from primary non forest land,area_fraction,
-secmf_harv,wood harvest area from secondary mature vegetation on LUH2 potential forest land,wood harvest area from secondary mature forest land,area_fraction,
-secyf_harv,wood harvest area from secondary young vegetation on LUH2 potential forest land,wood harvest area from secondary young forest land,area_fraction,
-secnf_harv,wood harvest area from secondary vegetation on LUH2 potential non-forest land,wood harvest area from secondary non forest land,area_fraction,
-primf_bioh,wood harvest biomass carbon from primary vegetation on LUH2 potential forest land,wood harvest biomass carbon from primary forest land,vegetation_carbon_content,
-primn_bioh,wood harvest biomass carbon from primary vegetation on LUH2 potential non-forest land,wood harvest biomass carbon from primary non forest land,vegetation_carbon_content,
-secmf_bioh,wood harvest biomass carbon from secondary mature vegetation on LUH2 potential forest land,wood harvest biomass carbon from secondary mature forest land,vegetation_carbon_content,
-secyf_bioh,wood harvest biomass carbon from secondary young vegetation on LUH2 potential forest land,wood harvest biomass carbon from secondary young forest land,vegetation_carbon_content,
-secnf_bioh,wood harvest biomass carbon from secondary vegetation on LUH2 potential non-forest land,wood harvest biomass carbon from secondary non forest land,vegetation_carbon_content
+name,long_name,standard_name,standard_name_description,long_name_description,unit
+primf,forested primary land,area_fraction,,primary vegetation on LUH2 potential forest land,share of carea
+primn,non-forested primary land,area_fraction,,primary vegetation on LUH2 potential non-forest land,share of carea
+secdf,potentially forested secondary land,area_fraction,,secondary vegetation on LUH2 potential forest land,share of carea
+manaf,managed forest fraction of potentially forested secondary land,area_fraction,,,share of secdf
+secdn,potentially non-forested secondary land,area_fraction,,secondary vegetation on LUH2 potential non-forest land,share of carea
+urban,urban land,area_fraction,,,share of carea
+c3ann,C3 annual crops,area_fraction,,,share of carea
+c4ann,C4 annual crops,area_fraction,,,share of carea
+c3per,C3 perennial crops,area_fraction,,,share of carea
+c4per,C4 perennial crops,area_fraction,,,share of carea
+c3nfx,C3 nitrogen-fixing crops,area_fraction,,,share of carea
+pastr,managed pasture,area_fraction,,,share of carea
+range,rangeland,area_fraction,,,share of carea
+secmb,secondary mean biomass carbon density,vegetation_carbon_content,,,kg m-2
+secma,secondary mean age,,,,yr
+fertl_c3ann,fertilization rate for C3 annual crops,,,,kg ha-1 yr-1
+irrig_c3ann,irrigated fraction of C3 annual crops,,,,share of c3ann
+crpbf_c3ann,C3 annual crops fraction of crop type area grown as biofuels,area_fraction,,,share of c3ann
+fertl_c4ann,fertilization rate for C4 annual crops,,,,kg ha-1 yr-1
+irrig_c4ann,irrigated fraction of C4 annual crops,,,,share of c4ann
+crpbf_c4ann,C4 annual crops fraction of crop type area grown as biofuels,area_fraction,,,share of c4ann
+fertl_c3per,fertilization rate for C3 perennial crops,,,,kg ha-1 yr-1
+irrig_c3per,irrigated fraction of C3 perennial crops,,,,share of c3per
+crpbf_c3per,C3 perennial crops fraction of crop type area grown as biofuels,area_fraction,,,share of c3per
+crpbf2_c3per,C3 perennial crops fraction of crop type area grown as 2nd generation biofuels,area_fraction,,,share of c3per
+fertl_c4per,fertilization rate for C4 perennial crops,,,,kg ha-1 yr-1
+irrig_c4per,irrigated fraction of C4 perennial crops,,,,share of c4per
+crpbf_c4per,C4 perennial crops fraction of crop type area grown as biofuels,area_fraction,,,share of c4per
+crpbf2_c4per,C4 perennial crops fraction of crop type area grown as 2nd generation biofuels,area_fraction,,,share of c4per
+fertl_c3nfx,fertilization rate for C3 nitrogen-fixing crops,,,,kg ha-1 yr-1
+irrig_c3nfx,irrigated fraction of C3 nitrogen-fixing crops,,,,share of c3nfx
+crpbf_c3nfx,C3 nitrogen-fixing crops fraction of crop type area grown as biofuels,area_fraction,,,share of c3nfx
+fharv_c3per,fraction of C3 perennial crops biomass carbon harvested annually,vegetation_carbon_content,,,share of c3per
+fharv_c4per,fraction of C4 perennial crops biomass carbon harvested annually,vegetation_carbon_content,,,share of c4per
+flood,flooded fraction of C3 annual crop area (e.g. for paddy rice,area_fraction,,,share of c3ann
+rndwd,industrial roundwood fraction of wood harvest biomass carbon,vegetation_carbon_content,,,share of bioh
+fulwd,fuelwood fraction of wood harvest biomass carbon,vegetation_carbon_content,,,share of bioh
+combf,commercial biofuels fraction of wood harvest biomass carbon,vegetation_carbon_content,,,share of bioh
+primf_to_secdn,area_fraction,transition from forested primary land to potentially non-forested secondary land,,,share of carea
+primf_to_urban,area_fraction,transition from forested primary land to urban land,,,share of carea
+primf_to_c3ann,area_fraction,transition from forested primary land to C3 annual crops,,,share of carea
+primf_to_c4ann,area_fraction,transition from forested primary land to C4 annual crops,,,share of carea
+primf_to_c3per,area_fraction,transition from forested primary land to C3 perennial crops,,,share of carea
+primf_to_c4per,area_fraction,transition from forested primary land to C4 perennial crops,,,share of carea
+primf_to_c3nfx,area_fraction,transition from forested primary land to C3 nitrogen-fixing crops,,,share of carea
+primf_to_pastr,area_fraction,transition from forested primary land to managed pasture,,,share of carea
+primf_to_range,area_fraction,transition from forested primary land to rangeland,,,share of carea
+primf_to_secdf,area_fraction,transition from forested primary land to potentially forested secondary land,,,share of carea
+primn_to_secdf,area_fraction,transition from non-forested primary land to potentially forested secondary land,,,share of carea
+primn_to_secdn,area_fraction,transition from non-forested primary land to potentially non-forested secondary land,,,share of carea
+primn_to_urban,area_fraction,transition from non-forested primary land to urban land,,,share of carea
+primn_to_c3ann,area_fraction,transition from non-forested primary land to C3 annual crops,,,share of carea
+primn_to_c4ann,area_fraction,transition from non-forested primary land to C4 annual crops,,,share of carea
+primn_to_c3per,area_fraction,transition from non-forested primary land to C3 perennial crops,,,share of carea
+primn_to_c4per,area_fraction,transition from non-forested primary land to C4 perennial crops,,,share of carea
+primn_to_c3nfx,area_fraction,transition from non-forested primary land to C3 nitrogen-fixing crops,,,share of carea
+primn_to_pastr,area_fraction,transition from non-forested primary land to managed pasture,,,share of carea
+primn_to_range,area_fraction,transition from non-forested primary land to rangeland,,,share of carea
+secdf_to_secdn,area_fraction,transition from potentially forested secondary land to potentially non-forested secondary land,,,share of carea
+secdf_to_urban,area_fraction,transition from potentially forested secondary land to urban land,,,share of carea
+secdf_to_c3ann,area_fraction,transition from potentially forested secondary land to C3 annual crops,,,share of carea
+secdf_to_c4ann,area_fraction,transition from potentially forested secondary land to C4 annual crops,,,share of carea
+secdf_to_c3per,area_fraction,transition from potentially forested secondary land to C3 perennial crops,,,share of carea
+secdf_to_c4per,area_fraction,transition from potentially forested secondary land to C4 perennial crops,,,share of carea
+secdf_to_c3nfx,area_fraction,transition from potentially forested secondary land to C3 nitrogen-fixing crops,,,share of carea
+secdf_to_pastr,area_fraction,transition from potentially forested secondary land to managed pasture,,,share of carea
+secdf_to_range,area_fraction,transition from potentially forested secondary land to rangeland,,,share of carea
+secdn_to_secdf,area_fraction,transition from potentially non-forested secondary land to potentially forested secondary land,,,share of carea
+secdn_to_urban,area_fraction,transition from potentially non-forested secondary land to urban land,,,share of carea
+secdn_to_c3ann,area_fraction,transition from potentially non-forested secondary land to C3 annual crops,,,share of carea
+secdn_to_c4ann,area_fraction,transition from potentially non-forested secondary land to C4 annual crops,,,share of carea
+secdn_to_c3per,area_fraction,transition from potentially non-forested secondary land to C3 perennial crops,,,share of carea
+secdn_to_c4per,area_fraction,transition from potentially non-forested secondary land to C4 perennial crops,,,share of carea
+secdn_to_c3nfx,area_fraction,transition from potentially non-forested secondary land to C3 nitrogen-fixing crops,,,share of carea
+secdn_to_pastr,area_fraction,transition from potentially non-forested secondary land to managed pasture,,,share of carea
+secdn_to_range,area_fraction,transition from potentially non-forested secondary land to rangeland,,,share of carea
+urban_to_secdf,area_fraction,transition from urban land to potentially forested secondary land,,,share of carea
+urban_to_secdn,area_fraction,transition from urban land to potentially non-forested secondary land,,,share of carea
+urban_to_c3ann,area_fraction,transition from urban land to C3 annual crops,,,share of carea
+urban_to_c4ann,area_fraction,transition from urban land to C4 annual crops,,,share of carea
+urban_to_c3per,area_fraction,transition from urban land to C3 perennial crops,,,share of carea
+urban_to_c4per,area_fraction,transition from urban land to C4 perennial crops,,,share of carea
+urban_to_c3nfx,area_fraction,transition from urban land to C3 nitrogen-fixing crops,,,share of carea
+urban_to_pastr,area_fraction,transition from urban land to managed pasture,,,share of carea
+urban_to_range,area_fraction,transition from urban land to rangeland,,,share of carea
+c3ann_to_secdf,area_fraction,transition from C3 annual crops to potentially forested secondary land,,,share of carea
+c3ann_to_secdn,area_fraction,transition from C3 annual crops to potentially non-forested secondary land,,,share of carea
+c3ann_to_urban,area_fraction,transition from C3 annual crops to urban land,,,share of carea
+c3ann_to_c4ann,area_fraction,transition from C3 annual crops to C4 annual crops,,,share of carea
+c3ann_to_c3per,area_fraction,transition from C3 annual crops to C3 perennial crops,,,share of carea
+c3ann_to_c4per,area_fraction,transition from C3 annual crops to C4 perennial crops,,,share of carea
+c3ann_to_c3nfx,area_fraction,transition from C3 annual crops to C3 nitrogen-fixing crops,,,share of carea
+c3ann_to_pastr,area_fraction,transition from C3 annual crops to managed pasture,,,share of carea
+c3ann_to_range,area_fraction,transition from C3 annual crops to rangeland,,,share of carea
+c4ann_to_secdf,area_fraction,transition from C4 annual crops to potentially forested secondary land,,,share of carea
+c4ann_to_secdn,area_fraction,transition from C4 annual crops to potentially non-forested secondary land,,,share of carea
+c4ann_to_urban,area_fraction,transition from C4 annual crops to urban land,,,share of carea
+c4ann_to_c3ann,area_fraction,transition from C4 annual crops to C3 annual crops,,,share of carea
+c4ann_to_c3per,area_fraction,transition from C4 annual crops to C3 perennial crops,,,share of carea
+c4ann_to_c4per,area_fraction,transition from C4 annual crops to C4 perennial crops,,,share of carea
+c4ann_to_c3nfx,area_fraction,transition from C4 annual crops to C3 nitrogen-fixing crops,,,share of carea
+c4ann_to_pastr,area_fraction,transition from C4 annual crops to managed pasture,,,share of carea
+c4ann_to_range,area_fraction,transition from C4 annual crops to rangeland,,,share of carea
+c3per_to_secdf,area_fraction,transition from C3 perennial crops to potentially forested secondary land,,,share of carea
+c3per_to_secdn,area_fraction,transition from C3 perennial crops to potentially non-forested secondary land,,,share of carea
+c3per_to_urban,area_fraction,transition from C3 perennial crops to urban land,,,share of carea
+c3per_to_c3ann,area_fraction,transition from C3 perennial crops to C3 annual crops,,,share of carea
+c3per_to_c4ann,area_fraction,transition from C3 perennial crops to C4 annual crops,,,share of carea
+c3per_to_c4per,area_fraction,transition from C3 perennial crops to C4 perennial crops,,,share of carea
+c3per_to_c3nfx,area_fraction,transition from C3 perennial crops to C3 nitrogen-fixing crops,,,share of carea
+c3per_to_pastr,area_fraction,transition from C3 perennial crops to managed pasture,,,share of carea
+c3per_to_range,area_fraction,transition from C3 perennial crops to rangeland,,,share of carea
+c4per_to_secdf,area_fraction,transition from C4 perennial crops to potentially forested secondary land,,,share of carea
+c4per_to_secdn,area_fraction,transition from C4 perennial crops to potentially non-forested secondary land,,,share of carea
+c4per_to_urban,area_fraction,transition from C4 perennial crops to urban land,,,share of carea
+c4per_to_c3ann,area_fraction,transition from C4 perennial crops to C3 annual crops,,,share of carea
+c4per_to_c4ann,area_fraction,transition from C4 perennial crops to C4 annual crops,,,share of carea
+c4per_to_c3per,area_fraction,transition from C4 perennial crops to C3 perennial crops,,,share of carea
+c4per_to_c3nfx,area_fraction,transition from C4 perennial crops to C3 nitrogen-fixing crops,,,share of carea
+c4per_to_pastr,area_fraction,transition from C4 perennial crops to managed pasture,,,share of carea
+c4per_to_range,area_fraction,transition from C4 perennial crops to rangeland,,,share of carea
+c3nfx_to_secdf,area_fraction,transition from C3 nitrogen-fixing crops to potentially forested secondary land,,,share of carea
+c3nfx_to_secdn,area_fraction,transition from C3 nitrogen-fixing crops to potentially non-forested secondary land,,,share of carea
+c3nfx_to_urban,area_fraction,transition from C3 nitrogen-fixing crops to urban land,,,share of carea
+c3nfx_to_c3ann,area_fraction,transition from C3 nitrogen-fixing crops to C3 annual crops,,,share of carea
+c3nfx_to_c4ann,area_fraction,transition from C3 nitrogen-fixing crops to C4 annual crops,,,share of carea
+c3nfx_to_c3per,area_fraction,transition from C3 nitrogen-fixing crops to C3 perennial crops,,,share of carea
+c3nfx_to_c4per,area_fraction,transition from C3 nitrogen-fixing crops to C4 perennial crops,,,share of carea
+c3nfx_to_pastr,area_fraction,transition from C3 nitrogen-fixing crops to managed pasture,,,share of carea
+c3nfx_to_range,area_fraction,transition from C3 nitrogen-fixing crops to rangeland,,,share of carea
+pastr_to_secdf,area_fraction,transition from managed pasture to potentially forested secondary land,,,share of carea
+pastr_to_secdn,area_fraction,transition from managed pasture to potentially non-forested secondary land,,,share of carea
+pastr_to_urban,area_fraction,transition from managed pasture to urban land,,,share of carea
+pastr_to_c3ann,area_fraction,transition from managed pasture to C3 annual crops,,,share of carea
+pastr_to_c4ann,area_fraction,transition from managed pasture to C4 annual crops,,,share of carea
+pastr_to_c3per,area_fraction,transition from managed pasture to C3 perennial crops,,,share of carea
+pastr_to_c4per,area_fraction,transition from managed pasture to C4 perennial crops,,,share of carea
+pastr_to_c3nfx,area_fraction,transition from managed pasture to C3 nitrogen-fixing crops,,,share of carea
+pastr_to_range,area_fraction,transition from managed pasture to rangeland,,,share of carea
+range_to_secdf,area_fraction,transition from rangeland to potentially forested secondary land,,,share of carea
+range_to_secdn,area_fraction,transition from rangeland to potentially non-forested secondary land,,,share of carea
+range_to_urban,area_fraction,transition from rangeland to urban land,,,share of carea
+range_to_c3ann,area_fraction,transition from rangeland to C3 annual crops,,,share of carea
+range_to_c4ann,area_fraction,transition from rangeland to C4 annual crops,,,share of carea
+range_to_c3per,area_fraction,transition from rangeland to C3 perennial crops,,,share of carea
+range_to_c4per,area_fraction,transition from rangeland to C4 perennial crops,,,share of carea
+range_to_c3nfx,area_fraction,transition from rangeland to C3 nitrogen-fixing crops,,,share of carea
+range_to_pastr,area_fraction,transition from rangeland to managed pasture,,,share of carea
+primf_harv,wood harvest area from primary vegetation on LUH2 potential forest land,wood harvest area from primary forest land,area_fraction,,share of primf
+primn_harv,wood harvest area from primary vegetation on LUH2 potential non-forest land,wood harvest area from primary non forest land,area_fraction,,share of primn
+secmf_harv,wood harvest area from secondary mature vegetation on LUH2 potential forest land,wood harvest area from secondary mature forest land,area_fraction,,share of secdf
+secyf_harv,wood harvest area from secondary young vegetation on LUH2 potential forest land,wood harvest area from secondary young forest land,area_fraction,,share of secdf
+secnf_harv,wood harvest area from secondary vegetation on LUH2 potential non-forest land,wood harvest area from secondary non forest land,area_fraction,,share of secdn
+primf_bioh,wood harvest biomass carbon from primary vegetation on LUH2 potential forest land,wood harvest biomass carbon from primary forest land,vegetation_carbon_content,,kg C yr-1
+primn_bioh,wood harvest biomass carbon from primary vegetation on LUH2 potential non-forest land,wood harvest biomass carbon from primary non forest land,vegetation_carbon_content,,kg C yr-1
+secmf_bioh,wood harvest biomass carbon from secondary mature vegetation on LUH2 potential forest land,wood harvest biomass carbon from secondary mature forest land,vegetation_carbon_content,,kg C yr-1
+secyf_bioh,wood harvest biomass carbon from secondary young vegetation on LUH2 potential forest land,wood harvest biomass carbon from secondary young forest land,vegetation_carbon_content,,kg C yr-1
+secnf_bioh,wood harvest biomass carbon from secondary vegetation on LUH2 potential non-forest land,wood harvest biomass carbon from secondary non forest land,vegetation_carbon_content,kg C yr-1
