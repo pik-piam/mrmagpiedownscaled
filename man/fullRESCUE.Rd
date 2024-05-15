@@ -7,7 +7,7 @@
 fullRESCUE(
   rev = NULL,
   ...,
-  scenario = NULL,
+  scenario = "",
   years = 2015:2100,
   harmonizationPeriod = c(2015, 2050),
   compression = 2,
