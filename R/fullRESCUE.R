@@ -161,6 +161,7 @@ addMetadataRESCUE <- function(ncFile, revision, missingValue, resolution, compre
     ncdf4::ncatt_put(nc, varname, "cell_methods", "time:mean")
 
     varnameLuhNames <- as.vector(luhNames[luhNames$name == varname, ])
+    ncdf4::ncatt_put(nc, varname, "units", varnameLuhNames$unit)
     ncdf4::ncatt_put(nc, varname, "long_name", varnameLuhNames$long_name)
     ncdf4::ncatt_put(nc, varname, "standard_name", varnameLuhNames$standard_name)
     if (varnameLuhNames$standard_name_description != "") {
