@@ -2,11 +2,16 @@
 
 The same REMIND-MAgPIE runs are used for the downscaled land use dataset described here and for the corresponding downscaled emissions dataset. Find the changelog for the general setup including model versions and settings, as well as for the emissions dataset at https://github.com/IAMconsortium/concordia/blob/main/CHANGELOG.md.
 
+## unreleased
+
+- changed harmonization interpolation function, mostly reduces difference at end of harmonization
+
 ## 2024-04-25
 
 - fixed flipped latitude
 - removed bounds_time
 - report data from 2015 to 2100 (as opposed to from 1995)
+- added units to management and transitions nc files
 
 ## 2024-03-22
 
