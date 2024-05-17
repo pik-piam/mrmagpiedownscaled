@@ -2,8 +2,8 @@
 #'
 #' Read function for data coming from the MAgPIE model.
 #'
-#' @param subtype type of data to be read in. Available options are land,
-#' crop, woodHarvestWeight, woodHarvestArea and fertilizer
+#' @param subtype type of data to be read in. Available options are
+#' land, crop, woodHarvestWeight, woodHarvestArea, fertilizer, countrymapping
 #' @param subset Available years (usually timestep is 5+ years) are only returned if they are in subset.
 #' @author Pascal Sauer, Jan Philipp Dietrich
 readMagpieFulldataGdx <- function(subtype = "land", subset = 1995:2100) {
@@ -57,6 +57,38 @@ readMagpieFulldataGdx <- function(subtype = "land", subset = 1995:2100) {
     getSets(x) <- c("region", "id", "year", "cropType")
     unit <- "Tg yr-1"
     description <- "fertilization rate per croptype"
+  } else if (subtype == "countrymapping") {
+    clustermap <- new.magpie(clustermap$cell, sets = c("x", "y", "country", "year", "data"))
+    map <- getCoords(clustermap)
+    map$x0p5 <- map$x
+    map$y0p5 <- map$y
+    map$country <- getItems(clustermap, "country", full = TRUE)
+
+    map1 <- map
+    map1$x <- map1$x - 0.125
+    map1$y <- map1$y - 0.125
+
+    map2 <- map
+    map2$x <- map2$x + 0.125
+    map2$y <- map2$y - 0.125
+
+    map3 <- map
+    map3$x <- map3$x - 0.125
+    map3$y <- map3$y + 0.125
+
+    map4 <- map
+    map4$x <- map4$x + 0.125
+    map4$y <- map4$y + 0.125
+
+    mapping <- rbind(map1, map2, map3, map4)
+    x <- new.magpie(paste(sub("\\.", "p", mapping$x),
+                          sub("\\.", "p", mapping$y),
+                          mapping$country,
+                          sep = "."),
+                    "y2000", "dummy",
+                    sets = c("x", "y", "country", "year", "data"))
+    unit <- ""
+    description <- "mapping of 0.25 degree cells to countrycode"
   } else {
     stop("Unknown subtype '", subtype, "' in readMagpieFulldataGdx")
   }

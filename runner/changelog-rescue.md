@@ -5,6 +5,7 @@ The same REMIND-MAgPIE runs are used for the downscaled land use dataset describ
 ## unreleased
 
 - changed harmonization interpolation function, mostly reduces difference at end of harmonization
+- replace fulwd/rndwd NAs with country shares instead of 0.5
 
 ## 2024-04-25
 
