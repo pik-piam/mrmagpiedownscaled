@@ -39,16 +39,17 @@ calcNonlandReport <- function(project = "RESCUE", harmonizationPeriod = c(2015, 
     stopifnot(identical(merged[, c("x", "y")], coords))
     getItems(woodTypeShares, 1, raw = TRUE) <- paste0(getItems(woodTypeShares, 1), ".", merged$country)
     names(dimnames(woodTypeShares))[1] <- "x.y.country"
-    countryWoodTypeShares <- toolAggregate(woodTypeShares, to = "country")
-    countryWoodTypeShares <- countryWoodTypeShares / dimSums(countryWoodTypeShares, 3)
+    countryTotals <- toolAggregate(woodTypeShares, to = "country")
+    countryWoodTypeShares <- countryTotals / dimSums(countryTotals, 3)
     countryWoodTypeShares[is.na(countryWoodTypeShares)] <- 0.5 # replace NAs with share 0.5, so sum is still 1
 
     total <- dimSums(woodTypeShares, 3) # 1269815 cells with total == 0
     woodTypeShares <- woodTypeShares / total # NAs introduced by cells with total == 0
     stopifnot(sum(is.na(woodTypeShares)) == 2 * sum(total == 0))
     fillValuesCountry <- countryWoodTypeShares[getItems(woodTypeShares, "country", full = TRUE), , ]
-    stopifnot(identical(dim(fillValuesCountry), dim(woodTypeShares)))
-    woodTypeShares[is.na(woodTypeShares)] <- fillValuesCountry[as.logical(is.na(woodTypeShares))]
+    getItems(fillValuesCountry, 1, raw = TRUE) <- getItems(woodTypeShares, 1)
+    names(dimnames(fillValuesCountry))[[1]] <- "x.y.country"
+    woodTypeShares[is.na(woodTypeShares)] <- fillValuesCountry[is.na(woodTypeShares)]
     getNames(woodTypeShares) <- c("rndwd", "fulwd")
     stopifnot(abs(dimSums(woodTypeShares, 3) - 1) < 1e-10,
               !is.na(woodTypeShares))
