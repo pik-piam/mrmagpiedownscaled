@@ -7,8 +7,8 @@
 readMagpieFulldataGdx(subtype = "land", subset = 1995:2100)
 }
 \arguments{
-\item{subtype}{type of data to be read in. Available options are land,
-crop, woodHarvestWeight, woodHarvestArea and fertilizer}
+\item{subtype}{type of data to be read in. Available options are
+land, crop, woodHarvestWeight, woodHarvestArea, fertilizer, countrymapping}
 
 \item{subset}{Available years (usually timestep is 5+ years) are only returned if they are in subset.}
 }
