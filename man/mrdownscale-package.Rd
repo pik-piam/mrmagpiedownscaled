@@ -12,16 +12,17 @@ Downscale and harmonize MAgPIE output using LUH2 as reference data.
 Useful links:
 \itemize{
   \item \url{https://github.com/pik-piam/mrdownscale}
+  \item \doi{10.5281/zenodo.11244475}
   \item Report bugs at \url{https://github.com/pik-piam/mrdownscale/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Pascal Sauer \email{pascal.sauer@pik-potsdam.de}
+\strong{Maintainer}: Pascal Sauer \email{pascal.sauer@pik-potsdam.de} (\href{https://orcid.org/0000-0002-6856-8239}{ORCID}) (Potsdam Institute for Climate Impact Research)
 
 Authors:
 \itemize{
-  \item Jan Philipp Dietrich \email{dietrich@pik-potsdam.de}
+  \item Jan Philipp Dietrich \email{dietrich@pik-potsdam.de} (\href{https://orcid.org/0000-0002-4309-6431}{ORCID}) (Potsdam Institute for Climate Impact Research)
 }
 
 }
