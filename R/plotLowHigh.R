@@ -1,3 +1,16 @@
+#' plotLowHigh
+#'
+#' Plot a land variable in low (after harmonization) and high resolution (after
+#' downscaling) for a given year, unit is area share.
+#'
+#' @param variable character, a regex that should match at least one variable
+#' name in LandHighRes and LandHarmonized, if multiple are matched they are
+#' summed up
+#' @param year integer, year to plot
+#' @param range range for plotting
+#'
+#' @author Pascal Sauer
+#' @export
 plotLowHigh <- function(variable = "c3ann", year = 2040, range = c(0, 1)) {
   cellArea <- readSource("LUH2v2h", "cellArea", convert = FALSE)
 
