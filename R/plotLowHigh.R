@@ -7,15 +7,26 @@
 #' name in LandHighRes and LandHarmonized, if multiple are matched they are
 #' summed up
 #' @param year integer, year to plot
-#' @param range range for plotting
+#' @param range range for plot legend
+#' @param xlim min and max x coordinate to plot
+#' @param ylim min and max y coordinate to plot
+#' @examples
+#' \dontrun{
+#' plotLowHigh("c3ann", 2040, range = c(0, 0.9),
+#'             ylim = c(60, 30), xlim = c(-10, 60))
+#' }
 #'
 #' @author Pascal Sauer
 #' @export
-plotLowHigh <- function(variable = "c3ann", year = 2040, range = c(0, 1)) {
+plotLowHigh <- function(variable, year, range = c(0, 1), xlim = c(-180, 180), ylim = c(-90, 90)) {
   cellArea <- readSource("LUH2v2h", "cellArea", convert = FALSE)
 
   landHighRes <- calcOutput("LandHighRes", aggregate = FALSE)
   variables <- grep(variable, getItems(landHighRes, 3), value = TRUE)
+  if (length(variables) == 0) {
+    stop("No variable matched ", variable, " in LandHighRes. Options are: ",
+         paste(getItems(landHighRes, 3), collapse = ", "))
+  }
   message("plotting ", paste(variables, collapse = ", "))
   high <- landHighRes[, year, variables]
   high <- dimSums(high, 3)
@@ -43,8 +54,8 @@ plotLowHigh <- function(variable = "c3ann", year = 2040, range = c(0, 1)) {
 
   grDevices::dev.new(width = 12, height = 9, noRStudioGD = TRUE)
   withr::with_par(list(mfrow = c(2, 1)), {
-    terra::plot(lowRaster, range = range, mar = c(1, 1, 3, 0))
+    terra::plot(lowRaster, range = range, mar = c(1, 1, 3, 0), xlim = xlim, ylim = ylim)
     graphics::title(paste0(variable, " in ", year, " (area share)"))
-    terra::plot(highRaster, range = range, mar = c(3, 1, 1, 0))
+    terra::plot(highRaster, range = range, mar = c(3, 1, 1, 0), xlim = xlim, ylim = ylim)
   })
 }
