@@ -77,6 +77,17 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
                missval = missingValue, gridDefinition = gridDefinition, progress = progress)
   rm(transitions)
   addMetadataRESCUE(transitionsFile, revision, missingValue, resolution, compression, harmonizationPeriod)
+
+  checkResults <- getMadratMessage("status")
+  consistencyCheckLog <- NULL
+  for (i in seq_along(checkResults)) {
+    consistencyCheckLog <- paste(c(consistencyCheckLog,
+                                   names(checkResults)[[i]],
+                                   checkResults[[i]],
+                                   ""),
+                                 collapse = "\n")
+  }
+  writeLines(consistencyCheckLog, "consistencyCheck.log")
 }
 
 adaptYearsRESCUE <- function(x, years) {
