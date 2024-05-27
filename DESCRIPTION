@@ -18,7 +18,7 @@ BugReports: https://github.com/pik-piam/mrdownscale/issues
 Depends:
     madrat (>= 3.6.0),
     magclass (>= 6.15.1),
-    mstools (>= 0.4.0),
+    mstools (>= 0.7.0),
     R (>= 4.0.0)
 Imports:
     luscale,
