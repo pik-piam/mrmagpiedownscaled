@@ -3,7 +3,7 @@
 #' Read function for data coming from the MAgPIE model.
 #'
 #' @param subtype type of data to be read in. Available options are
-#' land, crop, woodHarvestWeight, woodHarvestArea, fertilizer, countrymapping
+#' land, crop, woodHarvestWeight, woodHarvestArea, fertilizer, countrymapping, clustermap
 #' @param subset Available years (usually timestep is 5+ years) are only returned if they are in subset.
 #' @author Pascal Sauer, Jan Philipp Dietrich
 readMagpieFulldataGdx <- function(subtype = "land", subset = 1995:2100) {
@@ -89,6 +89,8 @@ readMagpieFulldataGdx <- function(subtype = "land", subset = 1995:2100) {
                     sets = c("x", "y", "country", "year", "data"))
     unit <- ""
     description <- "mapping of 0.25 degree cells to countrycode"
+  } else if (subtype == "clustermap") {
+    return(list(x = clustermap, class = "data.frame"))
   } else {
     stop("Unknown subtype '", subtype, "' in readMagpieFulldataGdx")
   }
