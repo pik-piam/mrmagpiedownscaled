@@ -19,8 +19,8 @@ calcResolutionMapping <- function(input = "magpie", target = "luh2mod") {
 
 # assuming target resolution is finer than what mapping already provides
 # mapping must include columns x, y, lowRes
-# TODO is lowRes still required?
 toolResolutionMapping <- function(mapping, xTarget) {
+  stopifnot(c("x", "y", "lowRes") %in% colnames(mapping))
   mapping$cellId <- seq_len(nrow(mapping))
   pointsMapping <- terra::vect(mapping, geom = c("x", "y"), crs = terra::crs(xTarget))
   mappingRes <- guessResolution(mapping[, c("x", "y")])
@@ -39,32 +39,41 @@ toolResolutionMapping <- function(mapping, xTarget) {
   xyTarget <- terra::crds(xTarget, df = TRUE, na.all = TRUE)
 
   # TODO rename terrible variable names
-  a <- merge(xyMapping, xyTarget, by = c("x", "y"), all.y = TRUE)
+  mapAllTarget <- merge(xyMapping, xyTarget, by = c("x", "y"), all.y = TRUE)
 
-  missingInMapping <- a[is.na(a$cellId), c("x", "y")]
-  nMissing <- nrow(missingInMapping)
-  # TODO report nMissing
+  missingInMapping <- mapAllTarget[is.na(mapAllTarget$cellId), c("x", "y")]
+  # TODO report % input cells missing in target which are discarded
+  if (nrow(missingInMapping) > 0) {
+    toolStatusMessage("warn", paste0(round(nrow(missingInMapping) / nrow(xyTarget) * 100, 2),
+                                     "% of target cells missing in input/mapping, ",
+                                     "add those to mapping (nearest neighbor)"))
 
-  b <- terra::vect(missingInMapping, geom = c("x", "y"), crs = terra::crs(xTarget))
+    near <- terra::nearest(terra::vect(missingInMapping, geom = c("x", "y"), crs = terra::crs(xTarget)),
+                           pointsMapping)
+    toolStatusMessage("warn", paste0("nearest neighbor distances: ",
+                                     "max = ", round(max(near$distance) / 1000, 1), "km",
+                                     ", 90% quantile = ", round(quantile(near$distance, probs = 0.90) / 1000, 1), "km",
+                                     ", mean = ", round(mean(near$distance) / 1000, 1), "km"))
 
-  near <- terra::nearest(b, pointsMapping)
-  # TODO report max(near$distance)
+    near <- as.data.frame(near)
+    colnames(near)[colnames(near) == "to_id"] <- "cellId"
+    nn <- merge(near, mapping)
+    nn$x <- nn$from_x
+    nn$y <- nn$from_y
+    nn <- nn[, colnames(mapping)]
+    stopifnot(nrow(nn) == nrow(missingInMapping))
 
-  n <- as.data.frame(near)
-  colnames(n)[colnames(n) == "to_id"] <- "cellId"
-  nn <- merge(n, mapping)
-  nn$x <- nn$from_x
-  nn$y <- nn$from_y
-  nn <- nn[, colnames(mapping)]
-  stopifnot(nrow(nn) == nMissing)
+    ma <- mapping
+    colnames(ma) <- sub("^x$", "x0p5", colnames(ma))
+    colnames(ma) <- sub("^y$", "y0p5", colnames(ma))
 
-  ma <- mapping
-  colnames(ma) <- sub("^x$", "x0p5", colnames(ma))
-  colnames(ma) <- sub("^y$", "y0p5", colnames(ma))
-
-  aa <- merge(a[!is.na(a$cellId), ], ma)
-  aa <- aa[, colnames(mapping)]
-  result <- rbind(aa, nn)
+    aa <- merge(mapAllTarget[!is.na(mapAllTarget$cellId), ], ma)
+    aa <- aa[, colnames(mapping)]
+    result <- rbind(aa, nn)
+  } else {
+    toolStatusMessage("ok", "input includes all target cells")
+    result <- mapAllTarget
+  }
 
   stopifnot(setequal(paste(result$x, result$y), paste(xyTarget$x, xyTarget$y)))
   return(result)
