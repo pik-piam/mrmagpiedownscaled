@@ -36,20 +36,54 @@ toolDownscaleMagpieClassic <- function(x, xTarget) {
   if (missingInTarget > 0) {
     map <- map[map$cell %in% intersect, ]
     message <- paste0(round(missingInTarget * 100, 2),
-                      "% of cells from downscale mapping do not exist in target data and thus will be ignored!")
+                      "% of input cells are missing in target data and thus will be ignored!")
     toolStatusMessage("warn", message)
   }  else {
-    toolStatusMessage("ok", "input data area is fully covered by target data")
+    toolStatusMessage("ok", "all input cells exist in target data")
   }
 
-  missingInX <- (dim(mTarget)[1] - length(intersect)) / dim(mTarget)[1]
-  if (missingInX > 0) {
-    mTarget <- mTarget[intersect, , ]
-    message <- paste0(round(missingInX * 100, 2),
-                      "% of cells missing in input data and thus removed from target data!")
+  missingInX <- setdiff(getItems(mTarget, dim = 1), map$cell)
+  if (length(missingInX) > 0) {
+    message <- paste0(round(length(missingInX) / length(map$cell) * 100, 2),
+                      "% of target cells missing in input data. Those are matched to the nearest input cell.")
     toolStatusMessage("warn", message)
+
+    resolution <- guessResolution(mTarget)
+    stopifnot(!("NOTFOUND" %in% map$cluster))
+    missingMapped <- vapply(missingInX, function(cell) {
+      # search for the nearest cell in the clustermap in a spiral pattern
+      # this is a crude, inefficient approach, may need to be optimized in the future
+      xy <- strsplit(cell, ".", fixed = TRUE)[[1]]
+      xy <- as.numeric(sub("p", ".", xy))
+      maxDistance <- 10
+      for (i in seq_len(maxDistance)) {
+        xCoords <- seq(xy[1] - i * resolution, xy[1] + i * resolution, resolution)
+        yCoords <- seq(xy[2] - i * resolution, xy[2] + i * resolution, resolution)
+        coords <- c(paste(xCoords[-1], yCoords[1], sep = ":"),
+                    paste(xCoords[length(xCoords)], yCoords[-1], sep = ":"),
+                    paste(rev(xCoords[-length(xCoords)]), yCoords[length(yCoords)], sep = ":"),
+                    paste(xCoords[1], rev(yCoords[-length(yCoords)]), sep = ":"))
+        coords <- gsub("\\.", "p", coords)
+        coords <- sub(":", ".", coords)
+
+        # which cluster is most frequent in coords
+        count <- table(map[map$cell %in% coords, ]$cluster)
+        if (length(count) > 0) {
+          return(paste0(names(which.max(count))))
+        }
+      }
+      warning(cell, " is more than ", maxDistance,
+              " cells away from cells in downscale map. It will be ignored.")
+      return("NOTFOUND")
+    }, character(1))
+    mapExtension <- data.frame(cell = names(missingMapped), cluster = missingMapped)
+    mapExtension <- mapExtension[mapExtension$cluster != "NOTFOUND", ]
+    map <- rbind(map, mapExtension)
+    intersect <- intersect(getItems(mTarget, dim = 1), map$cell)
+    mTarget <- mTarget[intersect, , ]
+    # TODO test
   } else {
-    toolStatusMessage("ok", "target data area is fully covered by input data")
+    toolStatusMessage("ok", "all target cells exist in input data")
   }
 
   "!# @monitor luscale::interpolate2"
