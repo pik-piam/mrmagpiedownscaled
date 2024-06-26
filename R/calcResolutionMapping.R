@@ -19,11 +19,17 @@ calcResolutionMapping <- function(input = "magpie", target = "luh2mod") {
 
 # assuming target resolution is finer than what mapping already provides
 # mapping must include columns x, y, lowRes
+# TODO is lowRes still required?
 toolResolutionMapping <- function(mapping, xTarget) {
   mapping$cellId <- seq_len(nrow(mapping))
   pointsMapping <- terra::vect(mapping, geom = c("x", "y"), crs = terra::crs(xTarget))
-  res0p5 <- terra::aggregate(xTarget) # TODO mapping is not always half resolution of xTarget
-  rasterMapping <- terra::rasterize(pointsMapping, res0p5, field = "cellId")
+  mappingRes <- guessResolution(mapping[, c("x", "y")])
+  xTargetRes <- terra::res(xTarget)
+  stopifnot(xTargetRes[1] == xTargetRes[2],
+            xTargetRes[1] < mappingRes,
+            mappingRes %% xTargetRes[1] == 0)
+  xTargetAggregated <- terra::aggregate(xTarget, fact = mappingRes / xTargetRes)
+  rasterMapping <- terra::rasterize(pointsMapping, xTargetAggregated, field = "cellId")
   names(rasterMapping) <- "cellId"
   polygonsMapping <- terra::as.polygons(rasterMapping)
   rasterMapping <- terra::rasterize(polygonsMapping, xTarget, field = "cellId")
