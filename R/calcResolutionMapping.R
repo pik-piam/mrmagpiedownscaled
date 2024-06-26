@@ -38,7 +38,6 @@ toolResolutionMapping <- function(mapping, xTarget) {
 
   xyTarget <- terra::crds(xTarget, df = TRUE, na.all = TRUE)
 
-  # TODO rename terrible variable names
   mapAllTarget <- merge(xyMapping, xyTarget, by = c("x", "y"), all.y = TRUE)
 
   missingInMapping <- mapAllTarget[is.na(mapAllTarget$cellId), c("x", "y")]
@@ -46,7 +45,7 @@ toolResolutionMapping <- function(mapping, xTarget) {
   if (nrow(missingInMapping) > 0) {
     toolStatusMessage("warn", paste0(round(nrow(missingInMapping) / nrow(xyTarget) * 100, 2),
                                      "% of target cells missing in input/mapping, ",
-                                     "add those to mapping (nearest neighbor)"))
+                                     "adding those to mapping (nearest neighbor)"))
 
     near <- terra::nearest(terra::vect(missingInMapping, geom = c("x", "y"), crs = terra::crs(xTarget)),
                            pointsMapping)
@@ -57,22 +56,27 @@ toolResolutionMapping <- function(mapping, xTarget) {
 
     near <- as.data.frame(near)
     colnames(near)[colnames(near) == "to_id"] <- "cellId"
-    nn <- merge(near, mapping)
-    nn$x <- nn$from_x
-    nn$y <- nn$from_y
-    nn <- nn[, colnames(mapping)]
-    stopifnot(nrow(nn) == nrow(missingInMapping))
 
-    ma <- mapping
-    colnames(ma) <- sub("^x$", "x0p5", colnames(ma))
-    colnames(ma) <- sub("^y$", "y0p5", colnames(ma))
+    mappingAddition <- merge(near, mapping)
+    mappingAddition$x <- mappingAddition$from_x
+    mappingAddition$y <- mappingAddition$from_y
+    mappingColumns <- colnames(mapping)
+    mappingAddition <- mappingAddition[, mappingColumns]
+    stopifnot(nrow(mappingAddition) == nrow(missingInMapping))
 
-    aa <- merge(mapAllTarget[!is.na(mapAllTarget$cellId), ], ma)
-    aa <- aa[, colnames(mapping)]
-    result <- rbind(aa, nn)
+    colnames(mapping) <- sub("^x$", "xOriginal", colnames(mapping))
+    colnames(mapping) <- sub("^y$", "yOriginal", colnames(mapping))
+
+    mappingBase <- merge(mapAllTarget[!is.na(mapAllTarget$cellId), ], mapping)
+    mappingBase <- mappingBase[, mappingColumns]
+    result <- rbind(mappingBase, mappingAddition)
   } else {
     toolStatusMessage("ok", "input includes all target cells")
-    result <- mapAllTarget
+
+    # TODO check this
+
+    mappingBase <- merge(mapAllTarget[!is.na(mapAllTarget$cellId), ], mapping)
+    result <- mappingBase[, mappingColumns]
   }
 
   stopifnot(setequal(paste(result$x, result$y), paste(xyTarget$x, xyTarget$y)))
