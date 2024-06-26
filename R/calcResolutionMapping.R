@@ -14,6 +14,7 @@ calcResolutionMapping <- function(input = "magpie", target = "luh2mod") {
   mapping <- toolResolutionMapping(mapping, xTarget)
   return(list(x = mapping,
               class = "data.frame",
+              unit = NA,
               description = "mapping of high to low resolution and countrycode"))
 }
 
@@ -37,21 +38,30 @@ toolResolutionMapping <- function(mapping, xTarget) {
   xyMapping <- terra::as.data.frame(rasterMapping, xy = TRUE)
 
   xyTarget <- terra::crds(xTarget, df = TRUE, na.all = TRUE)
+  xyTarget$source <- "target"
+
+  mapAllInput <- merge(xyMapping, xyTarget, by = c("x", "y"), all.x = TRUE)
+  missingInTarget <- mapAllInput[is.na(mapAllInput$source), ]
+  if (nrow(missingInTarget) > 0) {
+    toolStatusMessage("warn", paste0(round(nrow(missingInTarget) / nrow(xyMapping) * 100, 2),
+                                     "% of input cells missing in target, these are discarded"))
+  } else {
+    toolStatusMessage("ok", "target includes all input cells")
+  }
 
   mapAllTarget <- merge(xyMapping, xyTarget, by = c("x", "y"), all.y = TRUE)
-
   missingInMapping <- mapAllTarget[is.na(mapAllTarget$cellId), c("x", "y")]
-  # TODO report % input cells missing in target which are discarded
   if (nrow(missingInMapping) > 0) {
     toolStatusMessage("warn", paste0(round(nrow(missingInMapping) / nrow(xyTarget) * 100, 2),
-                                     "% of target cells missing in input/mapping, ",
+                                     "% of target cells missing in mapping, ",
                                      "adding those to mapping (nearest neighbor)"))
 
     near <- terra::nearest(terra::vect(missingInMapping, geom = c("x", "y"), crs = terra::crs(xTarget)),
                            pointsMapping)
     toolStatusMessage("warn", paste0("nearest neighbor distances: ",
                                      "max = ", round(max(near$distance) / 1000, 1), "km",
-                                     ", 90% quantile = ", round(quantile(near$distance, probs = 0.90) / 1000, 1), "km",
+                                     ", 90% quantile = ",
+                                     round(quantile(near$distance, probs = 0.90) / 1000, 1), "km",
                                      ", mean = ", round(mean(near$distance) / 1000, 1), "km"))
 
     near <- as.data.frame(near)
