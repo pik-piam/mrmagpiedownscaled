@@ -7,3 +7,4 @@ withr::with_package("mrcommons", {
   x[forestrySecdforest == 0] <- 0 # replace expected NAs with 0
   write.magpie(x, "inst/extdata/forestryShare.mz")
 })
+# TODO need this data for each LUH 0.25 deg cell, not on magpie 0.5 deg cells

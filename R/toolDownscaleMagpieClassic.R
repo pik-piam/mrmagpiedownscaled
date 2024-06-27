@@ -24,39 +24,22 @@ toolDownscaleMagpieClassic <- function(x, xTarget) {
     return(map)
   }
 
-  map <- .getDownscaleMap(x, xTarget)
+  mapping_old <- .getDownscaleMap(x, xTarget) # TODO remove old mapping and .getDownscaleMap
+  mapping <- calcOutput("ResolutionMapping", aggregate = FALSE)
+  mapping$cell <- paste0(sub("\\.", "p", mapping$x), ".", sub("\\.", "p", mapping$y))
+  mapping$cluster <- mapping$lowRes
+  mapping <- mapping[, c("cell", "cluster")]
 
   mTarget <- as.magpie(xTarget)
 
   rm(xTarget)
   gc()
 
-  intersect <- intersect(getItems(mTarget, dim = 1), map$cell)
-  missingInTarget <- (length(map$cell) - length(intersect)) / length(map$cell)
-  if (missingInTarget > 0) {
-    map <- map[map$cell %in% intersect, ]
-    message <- paste0(round(missingInTarget * 100, 2),
-                      "% of cells from downscale mapping do not exist in target data and thus will be ignored!")
-    toolStatusMessage("warn", message)
-  }  else {
-    toolStatusMessage("ok", "input data area is fully covered by target data")
-  }
-
-  missingInX <- (dim(mTarget)[1] - length(intersect)) / dim(mTarget)[1]
-  if (missingInX > 0) {
-    mTarget <- mTarget[intersect, , ]
-    message <- paste0(round(missingInX * 100, 2),
-                      "% of cells missing in input data and thus removed from target data!")
-    toolStatusMessage("warn", message)
-  } else {
-    toolStatusMessage("ok", "target data area is fully covered by input data")
-  }
-
   "!# @monitor luscale::interpolate2"
 
   # interpolate2 assumes constant total over time, but only warns if unfulfilled, convert that to error
   withr::with_options(c(warn = 2), {
-    out <- luscale::interpolate2(x[, -1, ], mTarget[, 1, ], map)
+    out <- luscale::interpolate2(x[, -1, ], mTarget[, 1, ], mapping)
   })
   getSets(out)[1:2] <- c("x", "y")
 
