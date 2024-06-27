@@ -23,11 +23,11 @@ crpbf_c4ann,C4 annual crops fraction of crop type area grown as biofuels,area_fr
 fertl_c3per,fertilization rate for C3 perennial crops,,,,kg ha-1 yr-1
 irrig_c3per,irrigated fraction of C3 perennial crops,,,,share of c3per
 crpbf_c3per,C3 perennial crops fraction of crop type area grown as biofuels,area_fraction,,,share of c3per
-crpbf2_c3per,C3 perennial crops fraction of crop type area grown as 2nd generation biofuels,area_fraction,,,share of c3per
+crpbf2_c3per,short rotation trees fraction of C3 perennial area grown as 2nd generation biofuels,area_fraction,,,share of c3per
 fertl_c4per,fertilization rate for C4 perennial crops,,,,kg ha-1 yr-1
 irrig_c4per,irrigated fraction of C4 perennial crops,,,,share of c4per
 crpbf_c4per,C4 perennial crops fraction of crop type area grown as biofuels,area_fraction,,,share of c4per
-crpbf2_c4per,C4 perennial crops fraction of crop type area grown as 2nd generation biofuels,area_fraction,,,share of c4per
+crpbf2_c4per,short rotation grasses fraction of C4 perennial area grown as 2nd generation biofuels,area_fraction,,,share of c4per
 fertl_c3nfx,fertilization rate for C3 nitrogen-fixing crops,,,,kg ha-1 yr-1
 irrig_c3nfx,irrigated fraction of C3 nitrogen-fixing crops,,,,share of c3nfx
 crpbf_c3nfx,C3 nitrogen-fixing crops fraction of crop type area grown as biofuels,area_fraction,,,share of c3nfx
