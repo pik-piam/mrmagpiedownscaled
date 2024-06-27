@@ -4,7 +4,13 @@
 \alias{plotLowHigh}
 \title{plotLowHigh}
 \usage{
-plotLowHigh(variable = "c3ann", year = 2040, range = c(0, 1))
+plotLowHigh(
+  variable,
+  year,
+  range = c(0, 1),
+  xlim = c(-180, 180),
+  ylim = c(-90, 90)
+)
 }
 \arguments{
 \item{variable}{character, a regex that should match at least one variable
@@ -13,11 +19,22 @@ summed up}
 
 \item{year}{integer, year to plot}
 
-\item{range}{range for plotting}
+\item{range}{range for plot legend}
+
+\item{xlim}{min and max x coordinate to plot}
+
+\item{ylim}{min and max y coordinate to plot}
 }
 \description{
 Plot a land variable in low (after harmonization) and high resolution (after
 downscaling) for a given year, unit is area share.
+}
+\examples{
+\dontrun{
+plotLowHigh("c3ann", 2040, range = c(0, 0.9),
+            ylim = c(60, 30), xlim = c(-10, 60))
+}
+
 }
 \author{
 Pascal Sauer
