@@ -34,6 +34,7 @@ toolResolutionMapping <- function(mapping, xTarget) {
   names(rasterMapping) <- "cellId"
   polygonsMapping <- terra::as.polygons(rasterMapping)
   rasterMapping <- terra::rasterize(polygonsMapping, xTarget, field = "cellId")
+  mappingColumns <- colnames(mapping)
 
   xyMapping <- terra::as.data.frame(rasterMapping, xy = TRUE)
 
@@ -70,24 +71,19 @@ toolResolutionMapping <- function(mapping, xTarget) {
     mappingAddition <- merge(near, mapping)
     mappingAddition$x <- mappingAddition$from_x
     mappingAddition$y <- mappingAddition$from_y
-    mappingColumns <- colnames(mapping)
     mappingAddition <- mappingAddition[, mappingColumns]
     stopifnot(nrow(mappingAddition) == nrow(missingInMapping))
-
-    colnames(mapping) <- sub("^x$", "xOriginal", colnames(mapping))
-    colnames(mapping) <- sub("^y$", "yOriginal", colnames(mapping))
-
-    mappingBase <- merge(mapAllTarget[!is.na(mapAllTarget$cellId), ], mapping)
-    mappingBase <- mappingBase[, mappingColumns]
-    result <- rbind(mappingBase, mappingAddition)
   } else {
     toolStatusMessage("ok", "input includes all target cells")
-
-    # TODO check this
-
-    mappingBase <- merge(mapAllTarget[!is.na(mapAllTarget$cellId), ], mapping)
-    result <- mappingBase[, mappingColumns]
+    mappingAddition <- mapping[integer(0), ]
   }
+
+  colnames(mapping) <- sub("^x$", "xOriginal", colnames(mapping))
+  colnames(mapping) <- sub("^y$", "yOriginal", colnames(mapping))
+
+  mappingBase <- merge(mapAllTarget[!is.na(mapAllTarget$cellId), ], mapping, by = "cellId")
+  mappingColumns <- setdiff(mappingColumns, "cellId")
+  result <- rbind(mappingBase[, mappingColumns], mappingAddition[, mappingColumns])
 
   stopifnot(setequal(paste(result$x, result$y), paste(xyTarget$x, xyTarget$y)))
   return(result)
