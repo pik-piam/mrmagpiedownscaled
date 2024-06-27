@@ -2,6 +2,7 @@
 
 export(plotLowHigh)
 export(toolGetSmallerArea)
+export(toolResolutionMapping)
 export(toolSpatRasterToDataset)
 export(toolTransitionsBasic)
 import(madrat)

@@ -1,3 +1,18 @@
+#' calcResolutionMapping
+#'
+#' Calculate a complete mapping from low (input dataset, clusters/countries/regions)
+#' to high resolution (target dataset, grid). As a basis the mapping from the low
+#' resolution clusters/countries/regions to grid cells is used.
+#' Cells which are present in that mapping, but not in the target
+#' dataset are discarded. Cells which are present in the target dataset, but not in the mapping are
+#' added using a nearest-neighbor approach: These cells are mapped to the same low resolution
+#' cluster/country/region as the closest cell which is already present in the mapping.
+#'
+#' @param input character, the input dataset, currently only "magpie" is supported
+#' @param target character, the target dataset, currently only "luh2mod" is supported
+#' @return a list including a data.frame with columns x, y, lowRes, countrycode
+#'
+#' @author Pascal Sauer
 calcResolutionMapping <- function(input = "magpie", target = "luh2mod") {
   if (input == "magpie") {
     mapping <- readSource("MagpieFulldataGdx", subtype = "clustermap")
@@ -18,8 +33,18 @@ calcResolutionMapping <- function(input = "magpie", target = "luh2mod") {
               description = "mapping of high to low resolution and countrycode"))
 }
 
-# assuming target resolution is finer than what mapping already provides
-# mapping must include columns x, y, lowRes
+
+#' toolResolutionMapping
+#'
+#' See description of \code{\link{calcResolutionMapping}}. Here we are
+#' assuming target resolution is finer than what mapping already provides.
+#'
+#' @param mapping a data.frame with columns x, y, lowRes
+#' @param xTarget a terra SpatRaster with the target resolution
+#' @return a data.frame with columns x, y, lowRes, countrycode
+#'
+#' @author Pascal Sauer
+#' @export
 toolResolutionMapping <- function(mapping, xTarget) {
   stopifnot(c("x", "y", "lowRes") %in% colnames(mapping))
   mapping$cellId <- seq_len(nrow(mapping))
