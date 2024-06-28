@@ -20,13 +20,15 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   geometry <- attr(input, "geometry")
   crs      <- attr(input, "crs")
 
+  # upscale/aggregate target data to input resolution
   target <- calcOutput("LandTarget", target = target, aggregate = FALSE)
-  # bring target data to spatial resolution of input data
-  ref    <- as.SpatVector(input[, 1, 1])[, c(".region", ".id")]
-  # TODO use extended cell to cluster mapping
-  target <- terra::extract(target, ref, sum, na.rm = TRUE, bind = TRUE)
   target <- as.magpie(target)
-  stopifnot(setequal(getItems(input, 3), getItems(target, 3)))
+  resolutionMapping <- calcOutput("ResolutionMapping", aggregate = FALSE)
+  target <- toolAggregate(target, resolutionMapping, from = "cell", to = "lowRes")
+  names(dimnames(target))[1] <- "region.id"
+  stopifnot(setequal(getItems(input, 1), getItems(target, 1)),
+            setequal(getItems(input, 3), getItems(target, 3)))
+  target <- target[getItems(input, 1), , ] # harmonize order of dim 1
   target <- target[, , getItems(input, 3)] # harmonize order of dim 3
 
   # checks and corrections
