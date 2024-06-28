@@ -69,7 +69,6 @@ calcLandTarget <- function(target = "luh2mod") {
       # split secdf into forestry and secdf
       forestryShare <- read.magpie(system.file("extdata/forestryShare.mz", package = "mrdownscale"))
       forestryShare <- as.SpatRaster(forestryShare)
-      forestryShare <- terra::disagg(forestryShare, 2) # convert from 0.5x0.5 to 0.25x0.25 degree cells
       forestryShare <- terra::extend(forestryShare, out)
       forestry <- out["secdf"] * forestryShare
       names(forestry) <- sub("secdf", "forestry", names(forestry))

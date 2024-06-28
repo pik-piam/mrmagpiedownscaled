@@ -5,6 +5,12 @@ withr::with_package("mrcommons", {
   forestrySecdforest <- dimSums(x)
   x <- x[, , "forestry"] / forestrySecdforest # calc the share forestry / (forestry + secdforest)
   x[forestrySecdforest == 0] <- 0 # replace expected NAs with 0
+
+  forestryShare <- collapseDim(forestryShare, "iso")
+  resolutionMapping <- calcOutput("ResolutionMapping", aggregate = FALSE)
+  browser()
+  forestryShare <- toolAggregate(forestryShare, resolutionMapping, from = "cellOriginal", to = "cell")
+
   write.magpie(x, "inst/extdata/forestryShare.mz")
 })
 # TODO need this data for each LUH 0.25 deg cell, not on magpie 0.5 deg cells
