@@ -5,12 +5,16 @@ withr::with_package("mrcommons", {
   forestrySecdforest <- dimSums(x)
   x <- x[, , "forestry"] / forestrySecdforest # calc the share forestry / (forestry + secdforest)
   x[forestrySecdforest == 0] <- 0 # replace expected NAs with 0
+  x <- collapseDim(x, "iso")
 
-  forestryShare <- collapseDim(forestryShare, "iso")
-  resolutionMapping <- calcOutput("ResolutionMapping", aggregate = FALSE)
-  browser()
-  forestryShare <- toolAggregate(forestryShare, resolutionMapping, from = "cellOriginal", to = "cell")
+  # map from 67k magpie/lpjml cells to LUH 0.25deg cells
+  withr::with_package("mrdownscale", {
+    resolutionMapping <- calcOutput("ResolutionMapping", aggregate = FALSE)
+  })
 
+  x <- x[getItems(x, 1) %in% resolutionMapping$cellOriginal, , ]
+  x <- toolAggregate(x, resolutionMapping, from = "cellOriginal", to = "cell")
+
+  stopifnot(!is.na(x))
   write.magpie(x, "inst/extdata/forestryShare.mz")
 })
-# TODO need this data for each LUH 0.25 deg cell, not on magpie 0.5 deg cells
