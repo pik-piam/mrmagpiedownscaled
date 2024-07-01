@@ -32,8 +32,6 @@ calcNonlandInput <- function(input = "magpie") {
     getSets(woodHarvestArea)[["d3.2"]] <- "data"
 
     fertilizer <- readSource("MagpieFulldataGdx", subtype = "fertilizer")
-    geometry <- attr(fertilizer, "geometry")
-    crs <- attr(fertilizer, "crs")
     fertilizer <- add_dimension(fertilizer, dim = 3.1,
                                 add = "category", "fertilizer")
     getSets(fertilizer)[["d3.2"]] <- "data"
@@ -46,8 +44,11 @@ calcNonlandInput <- function(input = "magpie") {
     fertilizer <- fertilizer * 10^9
 
     out <- mbind(woodHarvestWeightSource, woodHarvestWeightType, woodHarvestArea, fertilizer)
-    attr(out, "geometry") <- geometry
-    attr(out, "crs") <- crs
+
+    resolutionMapping <- calcOutput("ResolutionMapping", aggregate = FALSE)
+    resolutionMapping$cluster <- resolutionMapping$lowRes
+    "!# @monitor magpie4:::addGeometry"
+    out <- magpie4::addGeometry(out, resolutionMapping)
   } else {
     stop("Unsupported input dataset \"", input, "\"")
   }
