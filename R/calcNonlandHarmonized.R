@@ -20,13 +20,11 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
 
   # get target data in spatial resolution of input data
   xTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
+  ref <- as.SpatVector(xInput[, 1, 1])[, c(".region", ".id")]
+  xTarget <- terra::extract(xTarget, ref, sum, na.rm = TRUE, bind = TRUE)
   xTarget <- as.magpie(xTarget)
-  resolutionMapping <- calcOutput("ResolutionMapping", aggregate = FALSE)
-  xTarget <- toolAggregate(xTarget, resolutionMapping, from = "cell", to = "lowRes")
-  names(dimnames(xTarget))[1] <- "region.id"
-  stopifnot(setequal(getItems(xInput, 1), getItems(xTarget, 1)),
-            setequal(getItems(xInput, 3), getItems(xTarget, 3)))
-  xTarget <- xTarget[getItems(xInput, 1), , ] # harmonize order of dim 1
+
+  stopifnot(setequal(getItems(xInput, 3), getItems(xTarget, 3)))
   xTarget <- xTarget[, , getItems(xInput, 3)] # harmonize order of dim 3
 
   if (method == "extrapolateFade") {
