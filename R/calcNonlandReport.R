@@ -33,8 +33,8 @@ calcNonlandReport <- function(project = "RESCUE", harmonizationPeriod = c(2015, 
 
     # get rndwd/fulwd shares per country to replace NAs
     coords <- getCoords(woodTypeShares)
-    mapping <- readSource("MagpieFulldataGdx", subtype = "countrymapping") # TODO use resmap instead
-    mapping <- as.data.frame(mapping, rev = 3)[, c("x", "y", "country")]
+    mapping <- calcOutput("ResolutionMapping", aggregate = FALSE)
+    mapping <- mapping[, c("x", "y", "country")]
     merged <- merge(coords, mapping, sort = FALSE)
     stopifnot(identical(merged[, c("x", "y")], coords))
     getItems(woodTypeShares, 1, raw = TRUE) <- paste0(getItems(woodTypeShares, 1), ".", merged$country)

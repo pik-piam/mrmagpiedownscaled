@@ -15,9 +15,6 @@ calcLandInput <- function(input = "magpie") {
     getItems(crop, dim = 3.1, full = TRUE) <- sub("\\.", "_", getItems(crop, dim = 3, full = TRUE))
     getItems(crop, dim = 3.2) <- NULL
 
-    geometry <- attr(land, "geometry")
-    crs <- attr(land, "crs")
-
     out <- mbind(land[, , "crop", invert = TRUE], crop)
 
     # 1st gen biofuel is only modeled implicitly in magpie via demand, and
@@ -27,8 +24,10 @@ calcLandInput <- function(input = "magpie") {
     # a plausible 1st gen biofuel time series
     out <- add_columns(out, "biofuel_1st_gen", fill = 0)
 
-    attr(out, "geometry") <- geometry
-    attr(out, "crs") <- crs
+    resolutionMapping <- calcOutput("ResolutionMapping", aggregate = FALSE)
+    resolutionMapping$cluster <- resolutionMapping$lowRes
+    "!# @monitor magpie4:::addGeometry"
+    out <- magpie4::addGeometry(out, resolutionMapping)
   } else {
     stop("Unsupported input type \"", input, "\"")
   }
