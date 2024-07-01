@@ -73,7 +73,7 @@ calcLandTarget <- function(target = "luh2mod") {
       forestry <- out["secdf"] * forestryShare
       names(forestry) <- sub("secdf", "forestry", names(forestry))
       secdf <- out["secdf"] - forestry
-      out <- c(out[[grep("secdf", names(out), invert = TRUE)]], forestry, secdf)
+      out <- c(out[[!grepl("secdf", names(out))]], forestry, secdf)
 
       # cannot cache SpatRaster with both in-memory and on-disk/file sources,
       # so write `out` to a tif file to get SpatRaster with a single source (the tif file)
