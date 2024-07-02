@@ -7,6 +7,8 @@ The same REMIND-MAgPIE runs are used for the downscaled land use dataset describ
 - changed harmonization interpolation function, mostly reduces difference at end of harmonization
 - replace fulwd/rndwd NAs with country shares instead of 0.5
 - all consistency check results are now written to a logfile
+- calculate low to high resolution mapping (fill missing with nearest neighbor)
+- data now matches land/sea mask of LUH2v2h/CMIP6
 
 ## 2024-04-25
 
