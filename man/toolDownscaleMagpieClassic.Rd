@@ -19,5 +19,5 @@ classic MAgPIE downscaling method using \code{luscale::interpolate2} as
 downscaling function.
 }
 \author{
-Jan Philipp Dietrich
+Jan Philipp Dietrich, Pascal Sauer
 }

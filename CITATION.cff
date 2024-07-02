@@ -3,19 +3,19 @@ message: If you use this software, please cite it using the metadata from this f
 type: software
 title: 'mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference
   data'
-version: 0.18.1
-date-released: '2024-05-23'
+version: 0.19.0
+date-released: '2024-07-02'
 abstract: Downscale and harmonize MAgPIE output using LUH2 as reference data.
 authors:
 - family-names: Sauer
   given-names: Pascal
   email: pascal.sauer@pik-potsdam.de
-  orcid: 0000-0002-6856-8239
+  orcid: https://orcid.org/0000-0002-6856-8239
   affiliation: Potsdam Institute for Climate Impact Research
 - family-names: Dietrich
   given-names: Jan Philipp
   email: dietrich@pik-potsdam.de
-  orcid: 0000-0002-4309-6431
+  orcid: https://orcid.org/0000-0002-4309-6431
   affiliation: Potsdam Institute for Climate Impact Research
 license: LGPL-3.0
 repository-code: https://github.com/pik-piam/mrdownscale

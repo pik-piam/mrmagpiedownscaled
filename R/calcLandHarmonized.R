@@ -23,7 +23,6 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   target <- calcOutput("LandTarget", target = target, aggregate = FALSE)
   # bring target data to spatial resolution of input data
   ref    <- as.SpatVector(input[, 1, 1])[, c(".region", ".id")]
-  # TODO use extended cell to cluster mapping
   target <- terra::extract(target, ref, sum, na.rm = TRUE, bind = TRUE)
   target <- as.magpie(target)
   stopifnot(setequal(getItems(input, 3), getItems(target, 3)))

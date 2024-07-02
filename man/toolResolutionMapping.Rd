@@ -4,12 +4,12 @@
 \alias{toolResolutionMapping}
 \title{toolResolutionMapping}
 \usage{
-toolResolutionMapping(mapping, xTarget)
+toolResolutionMapping(mapping, targetGrid)
 }
 \arguments{
 \item{mapping}{a data.frame with columns x, y, lowRes}
 
-\item{xTarget}{a terra SpatRaster with the target resolution}
+\item{targetGrid}{a terra SpatRaster with the target resolution}
 }
 \value{
 a data.frame with columns x, y, lowRes, countrycode

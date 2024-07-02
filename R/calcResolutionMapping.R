@@ -92,7 +92,7 @@ toolResolutionMapping <- function(mapping, targetGrid) {
     toolStatusMessage("warn", paste0("nearest neighbor distances: ",
                                      "max = ", round(max(near$distance) / 1000, 1), "km",
                                      ", 90% quantile = ",
-                                     round(quantile(near$distance, probs = 0.90) / 1000, 1), "km",
+                                     round(stats::quantile(near$distance, probs = 0.90) / 1000, 1), "km",
                                      ", mean = ", round(mean(near$distance) / 1000, 1), "km"))
 
     near <- as.data.frame(near)
