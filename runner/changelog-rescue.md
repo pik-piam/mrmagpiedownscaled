@@ -9,6 +9,7 @@ The same REMIND-MAgPIE runs are used for the downscaled land use dataset describ
 - all consistency check results are now written to a logfile
 - calculate low to high resolution mapping (fill missing with nearest neighbor)
 - data now matches land/sea mask of LUH2v2h/CMIP6
+- fixed wood harvest is share of cell area
 
 ## 2024-04-25
 
