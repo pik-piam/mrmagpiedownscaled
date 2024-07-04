@@ -10,24 +10,25 @@ calcNonlandTarget <- function(target = "luh2mod") {
   if (target %in% c("luh2", "luh2mod")) {
     management <- readSource("LUH2v2h", subtype = "management", convert = FALSE)
 
-    # need absolute values for downscaling, fertl_* is in kg ha-1 yr-1, convert to kg yr-1
-    cellArea <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
+    cellAreaKm2 <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
     # convert from km2 to ha
-    cellAreaHa <- cellArea * 100
+    cellAreaHa <- cellAreaKm2 * 100
+    # convert from km2 to Mha
+    cellAreaMha <- cellAreaKm2 / 10000
+
+    # need absolute values for downscaling, fertl_* is in kg ha-1 yr-1, convert to kg yr-1
     fertilizer <- management["fertl"] * cellAreaHa
     terra::units(fertilizer) <- "kg yr-1"
     names(fertilizer) <- paste0(sub("fertl_", "", names(fertilizer)), "_fertilizer")
 
     transitions <- readSource("LUH2v2h", subtype = "transitions", convert = FALSE)
-    states <- readSource("LUH2v2h", subtype = "states")
 
     # convert from shares to Mha yr-1
-    # assuming secmf and secyf are both given relative to total secdf area
-    woodHarvestArea <- c(transitions["primf_harv"] * states["primf"],
-                         transitions["primn_harv"] * states["primn"],
-                         transitions["secmf_harv"] * states["secdf"],
-                         transitions["secyf_harv"] * states["secdf"],
-                         transitions["secnf_harv"] * states["secdn"])
+    woodHarvestArea <- c(transitions["primf_harv"] * cellAreaMha,
+                         transitions["primn_harv"] * cellAreaMha,
+                         transitions["secmf_harv"] * cellAreaMha,
+                         transitions["secyf_harv"] * cellAreaMha,
+                         transitions["secnf_harv"] * cellAreaMha)
     names(woodHarvestArea) <- paste0(sub("_harv", "", names(woodHarvestArea)), "_wood_harvest_area")
     terra::units(woodHarvestArea) <- "Mha yr-1"
 

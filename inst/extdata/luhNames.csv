@@ -147,11 +147,11 @@ range_to_c3per,area_fraction,transition from rangeland to C3 perennial crops,,,s
 range_to_c4per,area_fraction,transition from rangeland to C4 perennial crops,,,share of carea
 range_to_c3nfx,area_fraction,transition from rangeland to C3 nitrogen-fixing crops,,,share of carea
 range_to_pastr,area_fraction,transition from rangeland to managed pasture,,,share of carea
-primf_harv,wood harvest area from primary vegetation on LUH2 potential forest land,wood harvest area from primary forest land,area_fraction,,share of primf
-primn_harv,wood harvest area from primary vegetation on LUH2 potential non-forest land,wood harvest area from primary non forest land,area_fraction,,share of primn
-secmf_harv,wood harvest area from secondary mature vegetation on LUH2 potential forest land,wood harvest area from secondary mature forest land,area_fraction,,share of secdf
-secyf_harv,wood harvest area from secondary young vegetation on LUH2 potential forest land,wood harvest area from secondary young forest land,area_fraction,,share of secdf
-secnf_harv,wood harvest area from secondary vegetation on LUH2 potential non-forest land,wood harvest area from secondary non forest land,area_fraction,,share of secdn
+primf_harv,wood harvest area from primary vegetation on LUH2 potential forest land,wood harvest area from primary forest land,area_fraction,,share of carea
+primn_harv,wood harvest area from primary vegetation on LUH2 potential non-forest land,wood harvest area from primary non forest land,area_fraction,,share of carea
+secmf_harv,wood harvest area from secondary mature vegetation on LUH2 potential forest land,wood harvest area from secondary mature forest land,area_fraction,,share of carea
+secyf_harv,wood harvest area from secondary young vegetation on LUH2 potential forest land,wood harvest area from secondary young forest land,area_fraction,,share of carea
+secnf_harv,wood harvest area from secondary vegetation on LUH2 potential non-forest land,wood harvest area from secondary non forest land,area_fraction,,share of carea
 primf_bioh,wood harvest biomass carbon from primary vegetation on LUH2 potential forest land,wood harvest biomass carbon from primary forest land,vegetation_carbon_content,,kg C yr-1
 primn_bioh,wood harvest biomass carbon from primary vegetation on LUH2 potential non-forest land,wood harvest biomass carbon from primary non forest land,vegetation_carbon_content,,kg C yr-1
 secmf_bioh,wood harvest biomass carbon from secondary mature vegetation on LUH2 potential forest land,wood harvest biomass carbon from secondary mature forest land,vegetation_carbon_content,,kg C yr-1

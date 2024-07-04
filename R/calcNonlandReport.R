@@ -13,13 +13,14 @@ calcNonlandReport <- function(project = "RESCUE", harmonizationPeriod = c(2015, 
     x <- calcOutput("NonlandHighRes", input = "magpie", target = "luh2mod",
                     harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
 
-    cellArea <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
-    cellArea <- as.magpie(cellArea)
-    stopifnot(getItems(x, 1) %in% getItems(cellArea, 1))
-    cellArea <- collapseDim(cellArea[getItems(x, 1), , ], 3)
+    cellAreaKm2 <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
+    cellAreaKm2 <- as.magpie(cellAreaKm2)
+    stopifnot(getItems(x, 1) %in% getItems(cellAreaKm2, 1))
+    cellAreaKm2 <- collapseDim(cellAreaKm2[getItems(x, 1), , ], 3)
     # convert from km2 to ha
-    cellAreaHa <- cellArea * 100
-    cellAreaMha <- cellArea / 10000
+    cellAreaHa <- cellAreaKm2 * 100
+    # convert from km2 to Mha
+    cellAreaMha <- cellAreaKm2 / 10000
 
     # convert from kg yr-1 to kg ha-1 yr-1
     fertl <- x[, , grep("fertilizer$", getNames(x))] / cellAreaHa

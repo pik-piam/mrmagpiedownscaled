@@ -5,10 +5,10 @@
 #' @param x SpatRaster with LUH2 cell area shares
 #' @param subtype Only "states" is converted
 convertLUH2v2h <- function(x, subtype = "states") {
-  cellArea <- terra::rast("staticData_quarterdeg.nc", "carea")
-  stopifnot(terra::units(cellArea) == "km2")
+  cellAreaKm2 <- terra::rast("staticData_quarterdeg.nc", "carea")
+  stopifnot(terra::units(cellAreaKm2) == "km2")
   # convert from km2 to Mha
-  cellAreaMha <- cellArea / 10000
+  cellAreaMha <- cellAreaKm2 / 10000
 
   if (subtype == "states") {
     stopifnot(max(terra::values(x), na.rm = TRUE) <= 1.0001,
