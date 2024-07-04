@@ -15,6 +15,10 @@ calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2mod"
                                             youngShareWoodHarvestArea = 0.95,
                                             youngShareWoodHarvestWeight = 0.5) {
   x <- calcOutput("NonlandInput", input = input, aggregate = FALSE)
+  resolutionMapping <- calcOutput("ResolutionMapping", input = input, target = target, aggregate = FALSE)
+  resolutionMapping$cluster <- resolutionMapping$lowRes
+  "!# @monitor magpie4:::addGeometry"
+  x <- magpie4::addGeometry(x, resolutionMapping)
   crs <- attr(x, "crs")
   geometry <- attr(x, "geometry")
 

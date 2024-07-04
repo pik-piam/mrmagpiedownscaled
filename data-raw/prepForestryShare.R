@@ -6,7 +6,7 @@ withr::with_package("mrcommons", {
 
   # map from 67k magpie/lpjml cells to LUH 0.25deg cells
   withr::with_package("mrdownscale", {
-    resolutionMapping <- calcOutput("ResolutionMapping", aggregate = FALSE)
+    resolutionMapping <- calcOutput("ResolutionMapping", input = "magpie", target = "luh2mod", aggregate = FALSE)
   })
   x <- x[getItems(x, 1) %in% resolutionMapping$cellOriginal, , ]
   x <- toolAggregate(x, resolutionMapping, from = "cellOriginal", to = "cell")

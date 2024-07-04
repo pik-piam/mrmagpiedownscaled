@@ -23,18 +23,11 @@ calcLandInput <- function(input = "magpie") {
     # biofuel_1st_gen with zeros and rely on the harmonization to produce
     # a plausible 1st gen biofuel time series
     out <- add_columns(out, "biofuel_1st_gen", fill = 0)
-
-    resolutionMapping <- calcOutput("ResolutionMapping", aggregate = FALSE)
-    resolutionMapping$cluster <- resolutionMapping$lowRes
-    "!# @monitor magpie4:::addGeometry"
-    out <- magpie4::addGeometry(out, resolutionMapping)
   } else {
     stop("Unsupported input type \"", input, "\"")
   }
 
   # check data for consistency
-  toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
-  toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
   toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")),
                  "Dimensions are named correctly")
   map <- toolLandCategoriesMapping(input = input, target = "luh2mod")

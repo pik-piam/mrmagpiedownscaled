@@ -8,7 +8,7 @@
 #' @return downscaled land use dataset
 #' @author Jan Philipp Dietrich, Pascal Sauer
 toolDownscaleMagpieClassic <- function(x, xTarget) {
-  mapping <- calcOutput("ResolutionMapping", aggregate = FALSE)
+  mapping <- calcOutput("ResolutionMapping", input = "magpie", target = "luh2mod", aggregate = FALSE)
   mapping$cluster <- mapping$lowRes
   mapping <- mapping[, c("cell", "cluster")]
 

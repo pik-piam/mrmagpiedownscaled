@@ -34,7 +34,7 @@ calcNonlandReport <- function(project = "RESCUE", harmonizationPeriod = c(2015, 
 
     # get rndwd/fulwd shares per country to replace NAs
     coords <- getCoords(woodTypeShares)
-    mapping <- calcOutput("ResolutionMapping", aggregate = FALSE)
+    mapping <- calcOutput("ResolutionMapping", input = "magpie", target = "luh2mod", aggregate = FALSE)
     mapping <- mapping[, c("x", "y", "country")]
     merged <- merge(coords, mapping, sort = FALSE)
     stopifnot(identical(merged[, c("x", "y")], coords))

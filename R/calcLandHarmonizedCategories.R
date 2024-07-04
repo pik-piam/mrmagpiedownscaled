@@ -13,8 +13,13 @@
 #' @param target name of the land target source to be used
 #' @author Jan Philipp Dietrich
 calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2mod") {
-  x   <- calcOutput("LandInput", input = input, aggregate = FALSE)
   map <- toolLandCategoriesMapping(input, target)
+  x   <- calcOutput("LandInput", input = input, aggregate = FALSE)
+
+  resolutionMapping <- calcOutput("ResolutionMapping", input = input, target = target, aggregate = FALSE)
+  resolutionMapping$cluster <- resolutionMapping$lowRes
+  "!# @monitor magpie4:::addGeometry"
+  x <- magpie4::addGeometry(x, resolutionMapping)
 
   # get weights for disaggregation to reference categories
   ref <- calcOutput("LandCategorizationWeight", map = map, geometry = attr(x, "geometry"),

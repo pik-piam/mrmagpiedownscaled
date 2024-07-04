@@ -44,18 +44,11 @@ calcNonlandInput <- function(input = "magpie") {
     fertilizer <- fertilizer * 10^9
 
     out <- mbind(woodHarvestWeightSource, woodHarvestWeightType, woodHarvestArea, fertilizer)
-
-    resolutionMapping <- calcOutput("ResolutionMapping", aggregate = FALSE)
-    resolutionMapping$cluster <- resolutionMapping$lowRes
-    "!# @monitor magpie4:::addGeometry"
-    out <- magpie4::addGeometry(out, resolutionMapping)
   } else {
     stop("Unsupported input dataset \"", input, "\"")
   }
 
   # check data for consistency
-  toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
-  toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
   toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "category", "data")),
                  "Dimensions are named correctly")
   toolExpectTrue(all(out >= 0), "All values are >= 0")
