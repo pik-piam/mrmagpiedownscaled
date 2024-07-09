@@ -25,6 +25,7 @@ calcLandTransitions <- function(project = "RESCUE", harmonizationPeriod = c(2015
   # add extra year as copy of last year to get gross transitions (net zero) for 2100 and after
   lastYear <- max(getYears(land, as.integer = TRUE))
   land <- mbind(land, setYears(land[, lastYear, ], lastYear + 1))
+  yearsLand <- getYears(land, as.integer = TRUE)
 
   l <- 2
   sequence <- seq(1, nyears(land) - 1, l)
@@ -32,18 +33,22 @@ calcLandTransitions <- function(project = "RESCUE", harmonizationPeriod = c(2015
   for (i in sequence) {
     message("Compute ", getYears(land)[i], " to ", getYears(land)[min(nyears(land), i + l)])
     transition <- toolTransitionsBasic(land[, i:min(nyears(land), i + l), ], gross = gross)
+
     for (year in getYears(transition, as.integer = TRUE)) {
+      yearA <- year - 1
+      yearB <- yearsLand[yearsLand > yearA][1]
       for (category in getItems(land, 3)) {
-        dif <- land[, year + 4, "c3ann"] - land[, year - 1, "c3ann"]
+        dif <- land[, yearB, "c3ann"] - land[, yearA, "c3ann"]
         totalAdd <- dimSums(transition[, year, grep("c3ann$", getItems(t, 3))], 3)
         totalSubt <- dimSums(transition[, year, grep("^c3ann", getItems(t, 3))], 3)
 
-        deviation <- abs(5 * (totalAdd - totalSubt) - dif[, , "c3ann"])
-        if (any(deviation > 1e-6)) {
+        deviation <- (yearB - yearA) * (totalAdd - totalSubt) - dif[, , "c3ann"]
+        if (any(abs(deviation) > 1e-6)) {
           warning(year, category)
         }
       }
     }
+
     write.magpie(transition, paste0(tempfolder, "/", i, ".mz"))
   }
 
