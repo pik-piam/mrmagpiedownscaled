@@ -31,8 +31,20 @@ calcLandTransitions <- function(project = "RESCUE", harmonizationPeriod = c(2015
   tempfolder <- withr::local_tempdir()
   for (i in sequence) {
     message("Compute ", getYears(land)[i], " to ", getYears(land)[min(nyears(land), i + l)])
-    write.magpie(toolTransitionsBasic(land[, i:min(nyears(land), i + l), ], gross = gross),
-                 paste0(tempfolder, "/", i, ".mz"))
+    transition <- toolTransitionsBasic(land[, i:min(nyears(land), i + l), ], gross = gross)
+    for (year in getYears(transition, as.integer = TRUE)) {
+      for (category in getItems(land, 3)) {
+        dif <- land[, year + 4, "c3ann"] - land[, year - 1, "c3ann"]
+        totalAdd <- dimSums(transition[, year, grep("c3ann$", getItems(t, 3))], 3)
+        totalSubt <- dimSums(transition[, year, grep("^c3ann", getItems(t, 3))], 3)
+
+        deviation <- abs(5 * (totalAdd - totalSubt) - dif[, , "c3ann"])
+        if (any(deviation > 1e-6)) {
+          warning(year, category)
+        }
+      }
+    }
+    write.magpie(transition, paste0(tempfolder, "/", i, ".mz"))
   }
 
   # allocate enough memory for everything instead of mbinding to reduce memory requirement

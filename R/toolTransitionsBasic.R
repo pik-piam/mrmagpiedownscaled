@@ -63,7 +63,7 @@ toolTransitionsBasic <- function(x, gross = FALSE) {
   tLengths[, , ] <- diff(getYears(x, as.integer = TRUE))
   if (any(tLengths != 1)) out <- out / tLengths
 
-  if (!is.null(gross)) {
+  if (!isFALSE(gross)) {
     if (isTRUE(gross)) {
       gross <- read.magpie(system.file("extdata/meanBidirectionalTransitionsShares1995to2015.mz",
                                        package = "mrdownscale"))
