@@ -34,17 +34,19 @@ calcLandTransitions <- function(project = "RESCUE", harmonizationPeriod = c(2015
     message("Compute ", getYears(land)[i], " to ", getYears(land)[min(nyears(land), i + l)])
     transition <- toolTransitionsBasic(land[, i:min(nyears(land), i + l), ], gross = gross)
 
+    # check if the calculated transition is consistent with the states (land)
     for (year in getYears(transition, as.integer = TRUE)) {
       yearA <- year - 1
       yearB <- yearsLand[yearsLand > yearA][1]
       for (category in getItems(land, 3)) {
-        dif <- land[, yearB, "c3ann"] - land[, yearA, "c3ann"]
-        totalAdd <- dimSums(transition[, year, grep("c3ann$", getItems(t, 3))], 3)
-        totalSubt <- dimSums(transition[, year, grep("^c3ann", getItems(t, 3))], 3)
+        dif <- land[, yearB, category] - land[, yearA, category]
+        totalAdd <- dimSums(transition[, year, endsWith(getItems(transition, 3), category)], 3)
+        totalSubt <- dimSums(transition[, year, startsWith(getItems(transition, 3), category)], 3)
 
-        deviation <- (yearB - yearA) * (totalAdd - totalSubt) - dif[, , "c3ann"]
+        deviation <- (yearB - yearA) * (totalAdd - totalSubt) - dif[, , category]
         if (any(abs(deviation) > 1e-6)) {
           warning(year, category)
+          print(summary(deviation))
         }
       }
     }
