@@ -45,7 +45,7 @@ calcLandTransitions <- function(project = "RESCUE", harmonizationPeriod = c(2015
 
         deviation <- (yearB - yearA) * (totalAdd - totalSubt) - dif[, , category]
         if (any(abs(deviation) > 1e-6)) {
-          warning(year, category)
+          warning(yearA, "-", yearB, " ", category)
           print(summary(deviation))
         }
       }
