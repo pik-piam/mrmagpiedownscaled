@@ -43,7 +43,7 @@ calcLandTransitions <- function(project = "RESCUE", harmonizationPeriod = c(2015
     to <- getItems(transition, "to")
     netChangeTrans[,,to] <- netChangeTrans[,,to] + dimSums(transition, "from")
     getYears(netChangeTrans) <- getYears(netChangeLand)
-    toolExpectLessDiff(netChangeTrans, netChangeLand[,,getItems(netChangeTrans,3), 10^-6, "Transitions are consistent to state levels")
+    toolExpectLessDiff(netChangeTrans, netChangeLand[,,getItems(netChangeTrans,3)], 10^-6, "Transitions are consistent to state levels")
 
     write.magpie(transition, paste0(tempfolder, "/", i, ".mz"))
   }
