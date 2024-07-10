@@ -32,24 +32,18 @@ calcLandTransitions <- function(project = "RESCUE", harmonizationPeriod = c(2015
   tempfolder <- withr::local_tempdir()
   for (i in sequence) {
     message("Compute ", getYears(land)[i], " to ", getYears(land)[min(nyears(land), i + l)])
-    transition <- toolTransitionsBasic(land[, i:min(nyears(land), i + l), ], gross = gross)
+    i2 <- min(nyears(land), i + l)
+    transition <- toolTransitionsBasic(land[, i:i2, ], gross = gross)
 
     # check if the calculated transition is consistent with the states (land)
-    for (year in getYears(transition, as.integer = TRUE)) {
-      yearA <- year - 1
-      yearB <- yearsLand[yearsLand > yearA][1]
-      for (category in getItems(land, 3)) {
-        dif <- land[, yearB, category] - land[, yearA, category]
-        totalAdd <- dimSums(transition[, year, endsWith(getItems(transition, 3), category)], 3)
-        totalSubt <- dimSums(transition[, year, startsWith(getItems(transition, 3), category)], 3)
-
-        deviation <- (yearB - yearA) * (totalAdd - totalSubt) - dif[, , category]
-        if (any(abs(deviation) > 1e-6)) {
-          warning(yearA, "-", yearB, " ", category)
-          print(summary(deviation))
-        }
-      }
-    }
+    netChangeLand <- setYears(land[, (i+1):i2, ], getYears(land)[i:(i2-1)]) - land[, i:(i2-1), ]
+    yearLengths <- yearsLand[(i+1):i2]-yearsLand[i:(i2-1)]
+    names(yearLengths) <- getYears(netChangeLand)
+    netChangeTrans <- -dimSums(transition, dim = "to")
+    to <- getItems(transition, "to")
+    netChangeTrans[,,to] <- netChangeTrans[,,to] + dimSums(transition, "from")
+    getYears(netChangeTrans) <- getYears(netChangeLand)
+    toolExpectLessDiff(netChangeTrans, netChangeLand[,,getItems(netChangeTrans,3), 10^-6, "Transitions are consistent to state levels")
 
     write.magpie(transition, paste0(tempfolder, "/", i, ".mz"))
   }
