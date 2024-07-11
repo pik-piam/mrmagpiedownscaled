@@ -28,20 +28,22 @@
 #' @export
 
 toolTransitionsBasic <- function(x, gross = FALSE) {
-
-  x <- x[, , grep("(_|manaf)", getItems(x, dim = 3), invert = TRUE, value = TRUE)]
+  stopifnot(nyears(x) >= 2)
   # assign transitions of a period to the first year in this transition period
-  years <- paste0("y", getYears(x, as.integer = TRUE)[1:(dim(x)[2] - 1)] + 1)
-  diff <- setItems(x[, 2:dim(x)[2], ], years, dim = 2) - setItems(x[, 1:(dim(x)[2] - 1), ], years, dim = 2)
-  reduce <- expand <- diff
-  reduce[reduce > 0] <- 0
-  reduce <- -reduce
+  years <- paste0("y", getYears(x, as.integer = TRUE)[1:(nyears(x) - 1)] + 1)
+  diff <- setItems(x[, 2:nyears(x), ], years, dim = 2) - setItems(x[, 1:(nyears(x) - 1), ], years, dim = 2)
+  reduce <- -diff
+  reduce[reduce < 0] <- 0 # reduce is all positive values, so needs to be subtracted, not added
+  expand <- diff
   expand[expand < 0] <- 0
+  stopifnot(identical(diff, expand - reduce))
 
-  split <- expand / dimSums(expand, dim = 3)
+  split <- expand / dimSums(expand, dim = 3) # share of total expansion per landtype
+  split[is.na(split)] <- 0
+  stopifnot(all.equal(diff, split * dimSums(expand, dim = 3) - reduce, check.attributes = FALSE))
+
   rm(expand, diff)
   gc()
-  split[is.na(split)] <- 0
 
   getSets(reduce, fulldim = FALSE)[3] <- "from"
   getSets(split, fulldim = FALSE)[3] <- "to"
