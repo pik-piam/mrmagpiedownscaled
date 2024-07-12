@@ -37,12 +37,12 @@ calcLandTransitions <- function(project = "RESCUE", harmonizationPeriod = c(2015
 
     # check if the calculated transition is consistent with the states (land)
     netChangeLand <- setYears(land[, (i + 1):i2, ], getYears(land)[i:(i2 - 1)]) - land[, i:(i2 - 1), ]
-    yearLengths <- yearsLand[(i + 1):i2] - yearsLand[i:(i2 - 1)]
-    names(yearLengths) <- getYears(netChangeLand)
+
     netChangeTrans <- -dimSums(transition, dim = "to")
     to <- getItems(transition, "to")
     netChangeTrans[, , to] <- netChangeTrans[, , to] + dimSums(transition, "from")
     getYears(netChangeTrans) <- getYears(netChangeLand)
+
     toolExpectLessDiff(netChangeTrans, netChangeLand[, , getItems(netChangeTrans, 3)],
                        10^-6, "Transitions are consistent to state levels")
 
