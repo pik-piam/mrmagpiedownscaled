@@ -23,6 +23,22 @@ calcLandHighRes <- function(input = "magpie", target = "luh2mod",
   } else {
     stop("Unsupported downscaling method \"", downscaling, "\"")
   }
+
+  toolExpectTrue(identical(unname(getSets(out)), c("x", "y", "year", "data")),
+                 "Dimensions are named correctly")
+  toolExpectTrue(setequal(getItems(out, dim = 3), getItems(x, dim = 3)),
+                 "Land categories remain unchanged")
+  toolExpectTrue(all(out >= 0), "All values are >= 0")
+
+  outSum <- dimSums(out, dim = 3)
+  toolExpectLessDiff(outSum, outSum[, 1, ], 10^-5, "Total areas in output stay constant over time")
+
+  globalSumIn <- dimSums(x, dim = 1)
+  globalSumOut <- dimSums(out, dim = 1)
+  toolExpectLessDiff(dimSums(globalSumIn, 3), dimSums(globalSumOut, 3), 0.001,
+                     "Global land area remains unchanged")
+  toolExpectLessDiff(globalSumIn, globalSumOut, 10^-5, "Global area of each land type remains unchanged")
+
   return(list(x = out,
               class = "magpie",
               isocountries = FALSE,
