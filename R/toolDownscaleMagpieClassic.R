@@ -14,6 +14,11 @@ toolDownscaleMagpieClassic <- function(x, xTarget) {
 
   mTarget <- as.magpie(xTarget[[terra::time(xTarget) == terra::time(xTarget)[1]]])
 
+  # reorder mapping to match target to circumvent bug in luscale::interpolate2
+  stopifnot(setequal(getItems(mTarget, 1), mapping$cell))
+  mapping <- mapping[match(getItems(mTarget, 1), mapping$cell), ]
+  stopifnot(all.equal(getItems(mTarget, 1), mapping$cell))
+
   "!# @monitor luscale::interpolate2"
 
   # interpolate2 assumes constant total over time, but only warns if unfulfilled, convert that to error

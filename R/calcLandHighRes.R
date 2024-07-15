@@ -31,13 +31,15 @@ calcLandHighRes <- function(input = "magpie", target = "luh2mod",
   toolExpectTrue(all(out >= 0), "All values are >= 0")
 
   outSum <- dimSums(out, dim = 3)
-  toolExpectLessDiff(outSum, outSum[, 1, ], 10^-5, "Total land area per cell in output stays constant over time")
+  toolExpectLessDiff(outSum, outSum[, 1, ], 10^-5,
+                     "Total land area per cell in output stays constant over time")
 
   globalSumIn <- dimSums(x, dim = 1)
   globalSumOut <- dimSums(out, dim = 1)
-  toolExpectLessDiff(dimSums(globalSumIn, 3), dimSums(globalSumOut, 3), 0.001,
+  toolExpectLessDiff(dimSums(globalSumIn, 3), dimSums(globalSumOut, 3), 10^-5,
                      "Total global land area remains unchanged")
-  toolExpectLessDiff(globalSumIn, globalSumOut, 10^-5, "Global area of each land type remains unchanged")
+  toolExpectLessDiff(globalSumIn, globalSumOut, 10^-5,
+                     "Global area of each land type remains unchanged")
 
   return(list(x = out,
               class = "magpie",
