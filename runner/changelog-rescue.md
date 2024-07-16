@@ -10,6 +10,7 @@ The same REMIND-MAgPIE runs are used for the downscaled land use dataset describ
 - calculate low to high resolution mapping (fill missing with nearest neighbor)
 - data now matches land/sea mask of LUH2v2h/CMIP6
 - fixed wood harvest is share of cell area
+- fixed bug where total areas of a land type would not match before and after downscaling
 
 ## 2024-04-25
 
