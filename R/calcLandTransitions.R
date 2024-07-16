@@ -25,7 +25,9 @@ calcLandTransitions <- function(project = "RESCUE", harmonizationPeriod = c(2015
   # add extra year as copy of last year to get gross transitions (net zero) for 2100 and after
   lastYear <- max(getYears(land, as.integer = TRUE))
   land <- mbind(land, setYears(land[, lastYear, ], lastYear + 1))
-  yearsLand <- getYears(land, as.integer = TRUE)
+
+  timestepLengths <- new.magpie(years = getYears(land)[-nyears(land)])
+  timestepLengths[, , ] <- diff(getYears(land, as.integer = TRUE))
 
   l <- 2
   sequence <- seq(1, nyears(land) - 1, l)
@@ -42,6 +44,7 @@ calcLandTransitions <- function(project = "RESCUE", harmonizationPeriod = c(2015
     to <- getItems(transition, "to")
     netChangeTrans[, , to] <- netChangeTrans[, , to] + dimSums(transition, "from")
     getYears(netChangeTrans) <- getYears(netChangeLand)
+    netChangeTrans <- netChangeTrans * timestepLengths[, getYears(netChangeTrans), ]
 
     toolExpectLessDiff(netChangeTrans, netChangeLand[, , getItems(netChangeTrans, 3)],
                        10^-6, "Transitions are consistent to state levels")
