@@ -33,7 +33,6 @@ calcLandTransitions <- function(project = "RESCUE", harmonizationPeriod = c(2015
   sequence <- seq(1, nyears(land) - 1, l)
   tempfolder <- withr::local_tempdir()
   for (i in sequence) {
-    message("Compute ", getYears(land)[i], " to ", getYears(land)[min(nyears(land), i + l)])
     i2 <- min(nyears(land), i + l)
     transition <- toolTransitionsBasic(land[, i:i2, ], gross = gross)
 
@@ -47,7 +46,8 @@ calcLandTransitions <- function(project = "RESCUE", harmonizationPeriod = c(2015
     netChangeTrans <- netChangeTrans * timestepLengths[, getYears(netChangeTrans), ]
 
     toolExpectLessDiff(netChangeTrans, netChangeLand[, , getItems(netChangeTrans, 3)],
-                       10^-6, "Transitions are consistent to state levels")
+                       10^-6, paste0("Transitions are consistent to states from ",
+                                     getYears(land)[i], " to ", getYears(land)[i2]))
 
     write.magpie(transition, paste0(tempfolder, "/", i, ".mz"))
   }
