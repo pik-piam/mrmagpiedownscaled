@@ -62,6 +62,9 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   outSum <- dimSums(out, dim = 3)
   toolExpectLessDiff(outSum, outSum[, 1, ], 10^-5, "Total areas in output stay constant over time")
   toolExpectLessDiff(outSum, dimSums(input, dim = 3), 10^-5, "Total areas remain unchanged")
+  toolExpectLessDiff(out[, -1, c("primn", "primf")],
+                     setYears(out[, -nyears(out), c("primn", "primf")], getYears(out[, -1, ])),
+                     0, maxdiff2 = 0, "primn and primf are never increasing after harmonization")
 
   return(list(x = out,
               class = "magpie",

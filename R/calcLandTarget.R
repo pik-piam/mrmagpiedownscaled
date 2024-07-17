@@ -100,3 +100,4 @@ calcLandTarget <- function(target = "luh2mod") {
               unit = "Mha",
               description = "Land target data for data harmonization"))
 }
+# TODO check primf and primn are never increasing
