@@ -11,7 +11,7 @@ convertLUH2v2h <- function(x, subtype = "states") {
   cellAreaMha <- cellAreaKm2 / 10000
 
   if (subtype == "states") {
-    stopifnot(max(terra::values(x), na.rm = TRUE) <= 1.0001,
+    stopifnot(max(terra::minmax(x, compute = TRUE)) <= 1.0001,
               all(terra::units(x) == "1"))
     x <- x * cellAreaMha
     unit <- "Mha"
