@@ -40,6 +40,9 @@ calcLandHighRes <- function(input = "magpie", target = "luh2mod",
                      "Total global land area remains unchanged")
   toolExpectLessDiff(globalSumIn, globalSumOut, 10^-5,
                      "Global area of each land type remains unchanged")
+  toolExpectTrue(all(out[, -1, c("primf", "primn")] <= setYears(out[, -nyears(out), c("primf", "primn")],
+                                                                getYears(out[, -1, ]))),
+                 "primf and primn are never expanding", falseStatus = "warn")
 
   return(list(x = out,
               class = "magpie",

@@ -55,6 +55,10 @@ calcLandReport <- function(project = "RESCUE", harmonizationPeriod = c(2015, 205
 
     out <- mbind(cropData, nonCropData, manaf)
 
+    toolExpectTrue(all(out[, -1, c("primf", "primn")] <= setYears(out[, -nyears(out), c("primf", "primn")],
+                                                                  getYears(out[, -1, ]))),
+                   "primf and primn are never expanding", falseStatus = "warn")
+
     return(list(x = out,
                 isocountries = FALSE,
                 unit = "1",
