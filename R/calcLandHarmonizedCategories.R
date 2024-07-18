@@ -38,6 +38,9 @@ calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2mod") {
   toolExpectLessDiff(outSum, outSum[, 1, ], 10^-6, "Total areas stay constant over time")
   toolExpectLessDiff(outSum, dimSums(x, dim = 3), 10^-6,
                      "Total areas are not affected by recategorization")
+  toolExpectTrue(all(out[, -1, c("primn", "primf")] <= setYears(out[, -nyears(out), c("primn", "primf")],
+                                                                getYears(out[, -1, ]))),
+                 "primf and primn are never increasing", falseStatus = "warn")
 
   return(list(x = out,
               isocountries = FALSE,
