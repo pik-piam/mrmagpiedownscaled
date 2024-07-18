@@ -54,10 +54,13 @@ toolTransitionsBasic <- function(x, gross = FALSE) {
 
   # remove entries for transitions to itself (1) as well as transitions to primn
   # or primf (2) as they are not allowed and should not happen
-  remove <- union(paste0(getItems(reduce, dim = 3), ".", getItems(reduce, dim = 3)),
-                  grep("\\.(primn|primf)$", getItems(out, dim = 3), value = TRUE))
-  stopifnot(out[, , remove] == 0)
-  out <- out[, , remove, invert = TRUE]
+  primfn <- grep("\\.(primn|primf)$", getItems(out, dim = 3), value = TRUE)
+  if (any(out[, , primfn] != 0)) {
+    toolStatusMessage("warn", paste("removing non-zero transitions to primf/primn,",
+                                    "transitions are likely inconsistent to states"))
+  }
+  transitionsToRemove <- union(paste0(getItems(reduce, dim = 3), ".", getItems(reduce, dim = 3)), primfn)
+  out <- out[, , transitionsToRemove, invert = TRUE]
 
   # correct for timestep length (transitions should reflect a single representative
   # year, not the full transition.)
