@@ -100,7 +100,7 @@ calcLandTarget <- function(target = "luh2mod") {
   primfnTime <- terra::time(primfn)
   primfnDiff <- primfn[[primfnTime %in% years[-1]]] - primfn[[primfnTime %in% years[-length(years)]]]
   toolExpectTrue(max(terra::minmax(primfnDiff)) <= 0,
-                 "primf and primn are never increasing", falseStatus = "warn")
+                 "primf and primn are never expanding", falseStatus = "warn")
 
   return(list(x = out,
               class = "SpatRaster",

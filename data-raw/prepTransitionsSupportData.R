@@ -13,7 +13,7 @@ extractTransitions <- function(file = "transitions.nc", years = 2014:2015, filte
 
   if (filterPrimary) {
     # remove primf and primn from the selection as they do not have
-    # any bidirectional transitions (primary types cannot grow)
+    # any bidirectional transitions (primary types cannot expand)
     filter2 <- grep("^(primf|primn)", names(a), invert = TRUE)
     filter <- intersect(filter, filter2)
   }
@@ -38,7 +38,7 @@ extractStatesMean <- function(file = "states.nc", years = 1995:2016, filterPrima
 
   if (filterPrimary) {
     # remove primf and primn from the selection as they do not have
-    # any bidirectional transitions (primary types cannot grow)
+    # any bidirectional transitions (primary types cannot expand)
     filter2 <- grep("^(primf|primn)", names(a), invert = TRUE)
     filter <- intersect(filter, filter2)
   }

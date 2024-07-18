@@ -26,6 +26,37 @@ calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2mod") {
                     crs = attr(x, "crs"), aggregate = FALSE)
   y   <- toolAggregate(x, map, dim = 3, from = "dataInput", to = "merge", weight = ref)
   out <- toolAggregate(y, map, dim = 3, from = "merge",     to = "dataOutput")
+
+  # category remapping does not take into account that primn cannot expand, so redistribute:
+  # if totaln shrinks, shrink primn and secdn according to their proportions in the previous timestep
+  # if totaln expands, expand only secdn, primn stays constant
+  totaln <- dimSums(out[, , c("primn", "secdn")], 3)
+  for (i in seq_len(nyears(totaln) - 1)) {
+    dif <- totaln[, i + 1, ] - totaln[, i, ]
+    change <- out[, i, c("primn", "secdn")] / totaln[, i, ] * collapseDim(dif)
+
+    # handle totaln[ , i, ] == 0
+    changeOnlySecdn <- change
+    changeOnlySecdn[, , "primn"] <- 0
+    changeOnlySecdn[, , "secdn"] <- dif
+    change[is.na(change)] <- changeOnlySecdn[is.na(change)]
+    stopifnot(!is.na(change))
+
+    primnChange <- change[, , "primn"]
+    secdnChange <- change[, , "secdn"]
+    secdnChange[primnChange > 0] <- secdnChange[primnChange > 0] + primnChange[primnChange > 0]
+    primnChange[primnChange > 0] <- 0
+    newValues <- out[, i, c("primn", "secdn")] + mbind(primnChange, secdnChange)
+
+    if (min(newValues) < -10^-10) {
+      toolStatusMessage("warn", paste("Numerical problems in calcLandHarmonizedCategories,",
+                                      "values should be >= 0, but found", min(newValues)))
+    }
+    newValues[newValues < 0] <- 0
+    out[, i + 1, c("primn", "secdn")] <- newValues
+  }
+  stopifnot(all.equal(dimSums(out[, , c("primn", "secdn")], 3), totaln))
+
   attr(out, "crs") <- attr(x, "crs")
   attr(out, "geometry") <- attr(x, "geometry")
 
@@ -38,9 +69,9 @@ calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2mod") {
   toolExpectLessDiff(outSum, outSum[, 1, ], 10^-6, "Total areas stay constant over time")
   toolExpectLessDiff(outSum, dimSums(x, dim = 3), 10^-6,
                      "Total areas are not affected by recategorization")
-  toolExpectTrue(all(out[, -1, c("primn", "primf")] <= setYears(out[, -nyears(out), c("primn", "primf")],
+  toolExpectTrue(all(out[, -1, c("primf", "primn")] <= setYears(out[, -nyears(out), c("primf", "primn")],
                                                                 getYears(out[, -1, ]))),
-                 "primf and primn are never increasing", falseStatus = "warn")
+                 "primf and primn are never expanding", falseStatus = "warn")
 
   return(list(x = out,
               isocountries = FALSE,

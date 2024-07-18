@@ -37,7 +37,7 @@ calcLandInput <- function(input = "magpie") {
   outSum <- dimSums(out, dim = 3)
   toolExpectLessDiff(outSum, outSum[, 1, ], 10^-4, "Total area is constant over time")
   toolExpectTrue(all(out[, -1, "primforest"] <= setYears(out[, -nyears(out), "primforest"], getYears(out[, -1, ]))),
-                 "primforest is never increasing", falseStatus = "warn")
+                 "primforest is never expanding", falseStatus = "warn")
 
   return(list(x = out,
               isocountries = FALSE,
