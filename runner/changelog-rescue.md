@@ -11,7 +11,7 @@ The same REMIND-MAgPIE runs are used for the downscaled land use dataset describ
 - data now matches land/sea mask of LUH2v2h/CMIP6
 - fixed wood harvest is share of cell area
 - fixed bug where total areas of a land type would not match before and after downscaling
-- primf/primn expansion is no longer happening (it was previously after category remapping/harmonization)
+- fixed: primf/primn expansion is no longer happening
 
 ## 2024-04-25
 
