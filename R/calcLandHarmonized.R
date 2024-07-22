@@ -48,6 +48,25 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   out <- harmonizer(input, target, harmonizationPeriod = harmonizationPeriod)
   out[is.na(out)] <- 0 # why are NAs introduced here? input and target have no NAs
 
+  # during harmonization primf and primn expansion might be introduced due to
+  # primf or primn differences between input and target dataset
+  # here we replace primf and primn expansion with secdf and secdn
+  primDiffs <- NULL
+  stopifnot(nyears(out) >= 2)
+  for (i in 2:nyears(out)) {
+    primDiff <- out[, i, c("primf", "primn")] - setYears(out[, i - 1, c("primf", "primn")], getYears(out)[i])
+    primDiff[primDiff < 0] <- 0
+    primDiffs <- mbind(primDiffs, primDiff)
+    # use pmin instead of subtracting to avoid tiny expansions due to numerical precision
+    out[, i, c("primf", "primn")] <- pmin(out[, i, c("primf", "primn")], out[, i - 1, c("primf", "primn")])
+    out[, i, c("secdf", "secdn")] <- out[, i, c("secdf", "secdn")] + setNames(primDiff, c("secdf", "secdn"))
+  }
+
+  toolExpectTrue(max(primDiffs) <= 0, "harmonization does not introduce primf or primn expansion")
+  if (max(primDiffs) > 0) {
+    toolStatusMessage("note", "replaced primf/primn expansion with secdf/secdn expansion")
+  }
+
   attr(out, "geometry") <- geometry
   attr(out, "crs")      <- crs
 
