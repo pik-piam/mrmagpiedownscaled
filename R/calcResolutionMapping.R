@@ -74,8 +74,10 @@ toolResolutionMapping <- function(mapping, targetGrid) {
   mapAllInput <- merge(xyMapping, xyTarget, by = c("x", "y"), all.x = TRUE)
   missingInTarget <- mapAllInput[is.na(mapAllInput$source), ]
   if (nrow(missingInTarget) > 0) {
-    toolStatusMessage("warn", paste0(round(nrow(missingInTarget) / nrow(xyMapping) * 100, 2),
-                                     "% of input cells missing in target, these are discarded"))
+    missingShare <- nrow(missingInTarget) / nrow(xyMapping)
+    toolStatusMessage(if (missingShare < 0.05) "note" else "warn",
+                      paste0(round(missingShare * 100, 2),
+                             "% of input cells missing in target, these are discarded"))
   } else {
     toolStatusMessage("ok", "target includes all input cells")
   }
@@ -83,13 +85,15 @@ toolResolutionMapping <- function(mapping, targetGrid) {
   mapAllTarget <- merge(xyMapping, xyTarget, by = c("x", "y"), all.y = TRUE)
   missingInMapping <- mapAllTarget[is.na(mapAllTarget$cellId), c("x", "y")]
   if (nrow(missingInMapping) > 0) {
-    toolStatusMessage("warn", paste0(round(nrow(missingInMapping) / nrow(xyTarget) * 100, 2),
-                                     "% of target cells missing in mapping, ",
-                                     "adding those to mapping (nearest neighbor)"))
+    missingShare <- nrow(missingInMapping) / nrow(xyTarget)
+    toolStatusMessage(if (missingShare < 0.01) "note" else "warn",
+                      paste0(round(missingShare * 100, 2),
+                             "% of target cells missing in mapping, ",
+                             "adding those to mapping (nearest neighbor)"))
 
     near <- terra::nearest(terra::vect(missingInMapping, geom = c("x", "y"), crs = terra::crs(targetGrid)),
                            pointsMapping)
-    toolStatusMessage("warn", paste0("nearest neighbor distances: ",
+    toolStatusMessage("note", paste0("nearest neighbor distances: ",
                                      "max = ", round(max(near$distance) / 1000, 1), "km",
                                      ", 90% quantile = ",
                                      round(stats::quantile(near$distance, probs = 0.90) / 1000, 1), "km",
