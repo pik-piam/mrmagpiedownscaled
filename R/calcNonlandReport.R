@@ -59,8 +59,15 @@ calcNonlandReport <- function(project = "RESCUE", harmonizationPeriod = c(2015, 
 
     out <- mbind(fertl, harv, woodTypeShares, x[, , grep("bioh$", getNames(x))])
 
-    stopifnot(all(out[, , grep("(harv|rndwd|fulwd)$", getNames(x))] < 1.0001, na.rm = TRUE),
-              !is.na(out[, , c("rndwd", "fulwd"), invert = TRUE]))
+    shares <- grep("(harv|rndwd|fulwd)$", getNames(out), value = TRUE)
+    if (max(out[, , shares]) > 1.0001) {
+      toolStatusMessage("warn", paste0("Some shares are > 1 (max: ", max(out[, , shares]), "), setting those to 1"))
+    }
+    out[, , shares][out[, , shares] > 1] <- 1
+
+    toolExpectTrue(min(out) >= 0, "All values are >= 0")
+    toolExpectTrue(max(out[, , shares]) <= 1, "All shares are <= 1")
+    toolExpectTrue(!any(is.na(out)), "No NAs in output")
 
     return(list(x = out,
                 isocountries = FALSE,

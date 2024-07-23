@@ -47,6 +47,14 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
     return(result)
   }))
 
+  inSum <- dimSums(xInput, dim = 1)
+  outSum <- dimSums(out, dim = 1)
+  toolExpectTrue(max(abs(inSum - outSum) / inSum) < 10^-5,
+                 "Relative global sum difference per category before and after downscaling < 0.001%")
+  toolExpectTrue(setequal(getItems(out, dim = 3), getItems(xInput, dim = 3)),
+                 "Nonland categories remain unchanged")
+  toolExpectTrue(min(out) >= 0, "All values are >= 0")
+
   return(list(x = out,
               min = 0,
               isocountries = FALSE,
