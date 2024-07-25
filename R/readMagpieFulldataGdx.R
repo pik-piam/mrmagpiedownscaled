@@ -45,7 +45,9 @@ readMagpieFulldataGdx <- function(subtype = "land", subset = 1995:2100) {
     # suppressing the warning:
     # due to non-iteration of fertilizer distribution, residual fertilizer deficit is moved to balanceflow.
     suppressWarnings({
-      x <- magpie4::NitrogenBudget(gdx, level = "cell", cropTypes = TRUE)
+      suppressMessages({
+        x <- magpie4::NitrogenBudget(gdx, level = "cell", cropTypes = TRUE)
+      })
     })
     x <- collapseDim(x[, , "fertilizer"])
     getSets(x) <- c("region", "id", "year", "cropType")
