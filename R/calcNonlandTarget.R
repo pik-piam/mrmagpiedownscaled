@@ -32,9 +32,36 @@ calcNonlandTarget <- function(target = "luh2mod") {
     names(woodHarvestArea) <- paste0(sub("_harv", "", names(woodHarvestArea)), "_wood_harvest_area")
     terra::units(woodHarvestArea) <- "Mha yr-1"
 
+    # TODO revisit this check when LUH transitions are averaged over 5 years
+    land <- calcOutput("LandTarget", target = target, aggregate = FALSE)
+    timestepLength <- 5
+    stopifnot(all(diff(unique(terra::time(land))) == timestepLength),
+              all(diff(unique(terra::time(transitions))) == timestepLength))
+    for (category in list(c("primf_harv", "primf"),
+                          c("secmf_harv", "secdf"),
+                          c("secyf_harv", "secdf"),
+                          c("primn_harv", "primn"),
+                          c("secnf_harv", "secdn"))) {
+      violations <- terra::as.data.frame(land[category[2]] < timestepLength * transitions[category[1]], na.rm = NA)
+      relativeViolations <- colSums(violations) / nrow(violations)
+      if (max(relativeViolations) > 0) {
+        years <- sub("\\.\\..+$", "", names(relativeViolations))
+        toolStatusMessage("note", paste0("share of land cells where wood harvest area (", category[1], ")",
+                                         " > land (", category[2], ") - ",
+                                         paste0(years, ": ", round(100 * relativeViolations, 2), "%",
+                                                collapse = ", ")))
+      }
+    }
+    # TODO until here-----------
+
     woodHarvestWeight <- transitions["bioh"]
-    # replace negative weight of wood harvest with 0
-    woodHarvestWeight <- terra::classify(woodHarvestWeight, cbind(-Inf, 0, 0))
+    minWoodHarvestWeight <- min(terra::minmax(woodHarvestWeight, compute = TRUE))
+    if (minWoodHarvestWeight < 0) {
+      # replace negative weight of wood harvest with 0
+      toolStatusMessage("note", paste0("replacing negative wood harvest weight (bioh) with 0 (min: ",
+                                       round(minWoodHarvestWeight, 3), " kg C yr-1)"))
+      woodHarvestWeight <- terra::classify(woodHarvestWeight, cbind(-Inf, 0, 0))
+    }
     terra::units(woodHarvestWeight) <- "kg C yr-1"
 
     years <- unique(terra::time(woodHarvestWeight))
@@ -50,6 +77,8 @@ calcNonlandTarget <- function(target = "luh2mod") {
 
     out <- c(woodHarvestArea, woodHarvestWeight, woodHarvestWeightType, fertilizer)
     terra::time(out, tstep = "years") <- as.integer(sub("^y([0-9]+).+", "\\1", names(out)))
+
+    toolExpectTrue(min(terra::minmax(out)) >= 0, "All values are >= 0")
 
     return(list(x = out,
                 class = "SpatRaster",

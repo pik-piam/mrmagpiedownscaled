@@ -100,6 +100,8 @@ calcNonlandHarmonizedCategories <- function(input = "magpie", target = "luh2mod"
   attr(x, "crs") <- crs
   attr(x, "geometry") <- geometry
 
+  # TODO wood harvest from primf -> secdf according to remapping done in LandHarmonizedCategories
+
   # check data for consistency
   toolExpectTrue(identical(unname(getSets(x)), c("region", "id", "year", "data")),
                  "Dimensions are named correctly")
