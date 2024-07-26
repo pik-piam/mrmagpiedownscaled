@@ -15,33 +15,40 @@ readLUH2v2h <- function(subtype = "states", subset = seq(1995, 2015, 5)) {
 
   if (subtype == "states") {
     x <- terra::rast("states.nc")
+    if (!isFALSE(subset)) {
+      x <- x[[terra::time(x) %in% subset]]
+    }
     # remove secma & secmb
     x <- x[[grep("secm[ab]", names(x), invert = TRUE)]]
     unit <- "1"
   } else if (subtype == "management") {
     x <- terra::rast("management.nc")
+    if (!isFALSE(subset)) {
+      x <- x[[terra::time(x) %in% subset]]
+    }
 
     # combf is a share of wood harvest like rndwd and fulwd, but we can ignore it as long as it is 0 everywhere
-    if (!identical(subset, seq(1995, 2015, 5))) { # check takes long, so skip for default subset (was tested before)
-      stopifnot(identical(max(terra::values(max(x["combf"])), na.rm = TRUE), 0))
-    }
+    stopifnot(identical(max(terra::values(max(x["combf"])), na.rm = TRUE), 0))
 
     x <- x["crpbf|rndwd|fulwd|fertl|irrig"]
     unit <- "1, except fertl: kg ha-1 yr-1"
   } else if (subtype == "transitions") {
     x <- terra::rast("transitions.nc")
+
+    # LUH uses from-semantics for transitions (value for 1994 describes what happens from 1994 to 1995)
+    # by adding 1 to time we get to-semantics (value for 1994 describes what happens from 1993 to 1994)
+    terra::time(x, tstep = "years") <- terra::time(x) + 1
+
+    if (!isFALSE(subset)) {
+      x <- x[[terra::time(x) %in% subset]]
+    }
     x <- x["bioh|harv"]
     unit <- "*_bioh: kg C yr-1, *_harv: 1"
-    terra::time(x, tstep = "years") <- terra::time(x) + 1
   } else {
     stop("subtype must be states, management, transitions or cellArea")
   }
 
   names(x) <- paste0("y", terra::time(x), "..", sub("_[0-9]+$", "", names(x)))
-
-  if (!isFALSE(subset)) {
-    x <- x[[terra::time(x) %in% subset]]
-  }
 
   return(list(x = x,
               class = "SpatRaster",

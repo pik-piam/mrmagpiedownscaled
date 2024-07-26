@@ -68,7 +68,12 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
                             harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
   getItems(transitions, raw = TRUE, dim = 3) <- sub("\\.", "_to_", getItems(transitions, dim = 3))
   getSets(transitions, fulldim = FALSE)[3] <- "transitions"
+
+  # we use to-semantics for transitions (value for 1994 describes what happens from 1993 to 1994)
+  # by subtracting 1 we get from-semantics (value for 1994 describes what happens from 1994 to 1995)
+  # which is what LUH uses
   getYears(transitions) <- getYears(transitions, as.integer = TRUE) - 1
+
   transitions <- adaptYearsRESCUE(transitions, years)
   transitions <- mbind(transitions, nonland)
   rm(nonland)
