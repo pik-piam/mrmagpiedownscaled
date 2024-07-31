@@ -10,31 +10,24 @@ calcNonlandTarget <- function(target = "luh2mod", years = seq(1995, 2015, 5), ti
   stopifnot(diff(years) == timestepLength)
 
   if (target %in% c("luh2", "luh2mod")) {
-    yearsToRead <- (min(years) - timestepLength + 1):max(years)
-    management <- readSource("LUH2v2h", subtype = "management", subset = yearsToRead, convert = FALSE)
-
     cellAreaKm2 <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
     # convert from km2 to ha
     cellAreaHa <- cellAreaKm2 * 100
     # convert from km2 to Mha
     cellAreaMha <- cellAreaKm2 / 10000
 
+    yearsToRead <- (min(years) - timestepLength + 1):max(years)
+
+    management <- readSource("LUH2v2h", subtype = "management", subset = yearsToRead, convert = FALSE)
+
     # need absolute values for downscaling, fertl_* is in kg ha-1 yr-1, convert to kg yr-1
     fertilizer <- management["fertl"] * cellAreaHa
-    terra::units(fertilizer) <- "kg yr-1"
     names(fertilizer) <- paste0(sub("fertl_", "", names(fertilizer)), "_fertilizer")
+    terra::units(fertilizer) <- "kg yr-1"
 
-    # average over n years (timestep length) to get numbers comparable to land input
-    yearCategory <- expand.grid(years, unique(sub("^.+\\.\\.", "", names(fertilizer))), stringsAsFactors = FALSE)
-    fertilizer <- do.call(c, Map(yearCategory[[1]], yearCategory[[2]], f = function(year, category) {
-      message(paste0("y", year, "..", category))
-      layer <- terra::mean(fertilizer[[paste0("y", (year - timestepLength + 1):year, "..", category)]])
-      names(layer) <- paste0("y", year, "..", category)
-      terra::time(layer, tstep = "years") <- year
-      return(layer)
-    }))
+    fertilizer <- toolAverageOverYears(fertilizer, years, timestepLength)
 
-    transitions <- readSource("LUH2v2h", subtype = "transitions", convert = FALSE)
+    transitions <- readSource("LUH2v2h", subtype = "transitions", subset = yearsToRead, convert = FALSE)
 
     # convert from shares to Mha yr-1
     woodHarvestArea <- c(transitions["primf_harv"] * cellAreaMha,
@@ -44,6 +37,8 @@ calcNonlandTarget <- function(target = "luh2mod", years = seq(1995, 2015, 5), ti
                          transitions["secnf_harv"] * cellAreaMha)
     names(woodHarvestArea) <- paste0(sub("_harv", "", names(woodHarvestArea)), "_wood_harvest_area")
     terra::units(woodHarvestArea) <- "Mha yr-1"
+
+    woodHarvestArea <- toolAverageOverYears(woodHarvestArea, years, timestepLength)
 
     # TODO revisit this check when LUH transitions are averaged over 5 years
     land <- calcOutput("LandTarget", target = target, aggregate = FALSE)
@@ -100,4 +95,15 @@ calcNonlandTarget <- function(target = "luh2mod", years = seq(1995, 2015, 5), ti
   } else {
     stop("Unsupported output type \"", target, "\"")
   }
+}
+
+toolAverageOverYears <- function(x, years, timestepLength) {
+  yearCategory <- expand.grid(years, unique(sub("^.+\\.\\.", "", names(x))), stringsAsFactors = FALSE)
+  return(do.call(c, Map(yearCategory[[1]], yearCategory[[2]], f = function(year, category) {
+    message(paste0("y", year, "..", category))
+    layer <- terra::mean(x[[paste0("y", (year - timestepLength + 1):year, "..", category)]])
+    names(layer) <- paste0("y", year, "..", category)
+    terra::time(layer, tstep = "years") <- year
+    return(layer)
+  })))
 }
