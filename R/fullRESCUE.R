@@ -19,7 +19,7 @@
 #' @param progress boolean defining whether progress should be printed
 #'
 #' @author Pascal Sauer, Jan Philipp Dietrich
-fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
+fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 2020:2100,
                        harmonizationPeriod = c(2015, 2050),
                        compression = 2, interpolate = FALSE, progress = TRUE) {
   stopifnot(...length() == 0, isFALSE(interpolate))

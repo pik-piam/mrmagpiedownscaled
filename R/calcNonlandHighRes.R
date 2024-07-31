@@ -4,7 +4,7 @@
 #' from the low resolution input dataset and the high resolution target dataset.
 #'
 #' @param input name of an input dataset, currently only "magpie"
-#' @param target name of a target dataset, currently only "luh2"
+#' @param target name of a target dataset, currently only "luh2mod"
 #' @param harmonizationPeriod Two integer values, before the first given
 #' year the target dataset is used, after the second given year the input
 #' dataset is used, in between harmonize between the two datasets
