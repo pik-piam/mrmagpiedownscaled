@@ -55,7 +55,3 @@ readLUH2v2h <- function(subtype = "states", subset = seq(1995, 2015, 5)) {
               cache = FALSE,
               unit = unit))
 }
-
-# TODO we should average fertl/bioh from years before and after 1995 if we
-# read 5 year timestep data only, e.g. bioh jumps from 36mio to 17mio from
-# one year to the nextin some cells
