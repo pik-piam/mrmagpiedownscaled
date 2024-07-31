@@ -6,9 +6,12 @@
 #' @param target name of the target dataset, currently only "luh2" and "luh2mod" are supported
 #' @return nonland target data
 #' @author Pascal Sauer
-calcNonlandTarget <- function(target = "luh2mod") {
+calcNonlandTarget <- function(target = "luh2mod", years = seq(1995, 2015, 5), timestepLength = 5) {
+  stopifnot(diff(years) == timestepLength)
+
   if (target %in% c("luh2", "luh2mod")) {
-    management <- readSource("LUH2v2h", subtype = "management", convert = FALSE)
+    yearsToRead <- (min(years) - timestepLength + 1):max(years)
+    management <- readSource("LUH2v2h", subtype = "management", subset = yearsToRead, convert = FALSE)
 
     cellAreaKm2 <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
     # convert from km2 to ha
@@ -20,6 +23,16 @@ calcNonlandTarget <- function(target = "luh2mod") {
     fertilizer <- management["fertl"] * cellAreaHa
     terra::units(fertilizer) <- "kg yr-1"
     names(fertilizer) <- paste0(sub("fertl_", "", names(fertilizer)), "_fertilizer")
+
+    # average over n years (timestep length) to get numbers comparable to land input
+    yearCategory <- expand.grid(years, unique(sub("^.+\\.\\.", "", names(fertilizer))), stringsAsFactors = FALSE)
+    fertilizer <- do.call(c, Map(yearCategory[[1]], yearCategory[[2]], f = function(year, category) {
+      message(paste0("y", year, "..", category))
+      layer <- terra::mean(fertilizer[[paste0("y", (year - timestepLength + 1):year, "..", category)]])
+      names(layer) <- paste0("y", year, "..", category)
+      terra::time(layer, tstep = "years") <- year
+      return(layer)
+    }))
 
     transitions <- readSource("LUH2v2h", subtype = "transitions", convert = FALSE)
 
