@@ -4,12 +4,14 @@
 \alias{toolDownscaleMagpieClassic}
 \title{toolDownscaleMagpieClassic}
 \usage{
-toolDownscaleMagpieClassic(x, xTarget)
+toolDownscaleMagpieClassic(x, xTarget, mapping)
 }
 \arguments{
 \item{x}{magpie dataset containing land to be downscaled}
 
 \item{xTarget}{target land use dataset as SpatRaster for initialization year}
+
+\item{mapping}{mapping between \code{x} and \code{xTarget}}
 }
 \value{
 downscaled land use dataset
