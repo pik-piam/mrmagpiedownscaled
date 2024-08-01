@@ -2,14 +2,15 @@
 #'
 #' Convert the downscaled land use data to the format required by the given project.
 #'
-#' @param project name of the project, currently only "RESCUE"
+#' @param outputFormat format in which the outputs should be prepared. Currently,
+#' only "ESM" for earth system model compatible input data is available.
 #' @param harmonizationPeriod Two integer values, before the first given
 #' year the target dataset is used, after the second given year the input
 #' dataset is used, in between harmonize between the two datasets
 #' @return land use data
 #' @author Pascal Sauer
-calcLandReport <- function(project = "RESCUE", harmonizationPeriod = c(2015, 2050)) {
-  if (project == "RESCUE") {
+calcLandReport <- function(outputFormat = "ESM", harmonizationPeriod = c(2015, 2050)) {
+  if (outputFormat == "ESM") {
     native <- calcOutput("LandHighRes", input = "magpie", target = "luh2mod",
                          harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
     cellArea <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
@@ -67,6 +68,6 @@ calcLandReport <- function(project = "RESCUE", harmonizationPeriod = c(2015, 205
                 description = paste("MAgPIE land use data downscaled to LUH2 resolution,",
                                     "unit is share of cell area, except manaf which is share of secdf")))
   } else {
-    stop("Can only report for project = 'RESCUE'")
+    stop("Can only report for outputFormat = 'ESM'")
   }
 }
