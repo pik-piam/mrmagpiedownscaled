@@ -4,10 +4,11 @@
 \alias{calcNonlandReport}
 \title{calcNonlandReport}
 \usage{
-calcNonlandReport(project = "RESCUE", harmonizationPeriod = c(2015, 2050))
+calcNonlandReport(outputFormat = "ESM", harmonizationPeriod = c(2015, 2050))
 }
 \arguments{
-\item{project}{name of the project, currently only "RESCUE"}
+\item{outputFormat}{format in which the outputs should be prepared. Currently,
+only "ESM" for earth system model compatible input data is available.}
 
 \item{harmonizationPeriod}{Two integer values, before the first given
 year the target dataset is used, after the second given year the input

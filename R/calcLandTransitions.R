@@ -3,7 +3,8 @@
 #' Ex-Post estimation of land use transitions based on land use state
 #' information
 #'
-#' @param project name of the project, currently only "RESCUE"
+#' @param outputFormat format in which the outputs should be prepared. Currently,
+#' only "ESM" for earth system model compatible input data is available.
 #' @param harmonizationPeriod Two integer values, before the first given
 #' year the target dataset is used, after the second given year the input
 #' dataset is used, in between harmonize between the two datasets
@@ -15,10 +16,10 @@
 #' period from 1995 to 2015 will be used.
 #' @return land use transition data
 #' @author Jan Philipp Dietrich, Pascal Sauer
-calcLandTransitions <- function(project = "RESCUE", harmonizationPeriod = c(2015, 2050), gross = TRUE) {
-  if (project != "RESCUE") stop("Can only report for project = 'RESCUE'")
+calcLandTransitions <- function(outputFormat = "ESM", harmonizationPeriod = c(2015, 2050), gross = TRUE) {
+  if (outputFormat != "ESM") stop("Can only report for outputFormat = 'ESM'")
 
-  land <- calcOutput("LandReport", project = "RESCUE",
+  land <- calcOutput("LandReport", outputFormat = "ESM",
                      harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
   land <- land[, , grep("(_|manaf)", getItems(land, dim = 3), invert = TRUE, value = TRUE)]
 

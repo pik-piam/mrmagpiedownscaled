@@ -1,6 +1,7 @@
-#' fullRESCUE
+#' fullESM
 #'
-#' Run the pipeline to generate harmonized and downscaled data to report for the RESCUE project.
+#' Run the pipeline to generate harmonized and downscaled data to report for the RESCUE, OptimESM
+#' and other projects where ESM compatible land use inputs are required.
 #' Write .nc files, print full report on consistency checks and write it to report.log.
 #'
 #' @param rev revision number of the data. If not provided the current date will be used instead.
@@ -19,9 +20,9 @@
 #' @param progress boolean defining whether progress should be printed
 #'
 #' @author Pascal Sauer, Jan Philipp Dietrich
-fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
-                       harmonizationPeriod = c(2015, 2050),
-                       compression = 2, interpolate = FALSE, progress = TRUE) {
+fullESM <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
+                    harmonizationPeriod = c(2015, 2050),
+                    compression = 2, interpolate = FALSE, progress = TRUE) {
   stopifnot(...length() == 0, isFALSE(interpolate))
   missingValue <- 1e20
   gridDefinition <- c(-179.875, 179.875, -89.875, 89.875, 0.25)
@@ -32,24 +33,24 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
                        scenario, if (scenario != "") "-",
                        revision, "_gn_", min(years), "-", max(years))
 
-  land <- calcOutput("LandReport", project = "RESCUE",
+  land <- calcOutput("LandReport", outputFormat = "ESM",
                      harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
-  land <- adaptYearsRESCUE(land, years)
+  land <- adaptYearsESM(land, years)
 
   statesFile <- paste0("multiple-states", fileSuffix, ".nc")
   statesVariables <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per", "pastr",
                        "primf", "primn", "range", "secdf", "secdn", "urban")
   write.magpie(land[, , statesVariables], statesFile, compression = compression,
                missval = missingValue, gridDefinition = gridDefinition, progress = progress)
-  addMetadataRESCUE(statesFile, revision, missingValue, resolution, compression, harmonizationPeriod)
+  addMetadataESM(statesFile, revision, missingValue, resolution, compression, harmonizationPeriod)
 
   landManagementVariables <- c("irrig_c3ann", "crpbf_c3ann", "irrig_c3nfx", "crpbf_c3nfx",
                                "irrig_c3per", "crpbf_c3per", "crpbf2_c3per", "irrig_c4ann",
                                "crpbf_c4ann", "irrig_c4per", "crpbf_c4per", "crpbf2_c4per", "manaf")
   land <- land[, , landManagementVariables]
-  nonland <- calcOutput("NonlandReport", project = "RESCUE",
+  nonland <- calcOutput("NonlandReport", outputFormat = "ESM",
                         harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
-  nonland <- adaptYearsRESCUE(nonland, years)
+  nonland <- adaptYearsESM(nonland, years)
   nonlandManagementVariables <- c("fertl_c3nfx", "fertl_c3per", "fertl_c3ann", "fertl_c4ann",
                                   "fertl_c4per", "rndwd", "fulwd")
   management <- mbind(land, nonland[, , nonlandManagementVariables])
@@ -58,37 +59,37 @@ fullRESCUE <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
   write.magpie(management, managementFile, compression = compression,
                missval = missingValue, gridDefinition = gridDefinition, progress = progress)
   rm(management)
-  addMetadataRESCUE(managementFile, revision, missingValue, resolution, compression, harmonizationPeriod)
+  addMetadataESM(managementFile, revision, missingValue, resolution, compression, harmonizationPeriod)
 
   woodSources <- c("primf", "secyf", "secmf", "primn", "secnf")
   woodHarvestVariables <- c(paste0(woodSources, "_bioh"), paste0(woodSources, "_harv"))
   nonland <- nonland[, , woodHarvestVariables]
 
-  transitions <- calcOutput("LandTransitions", project = "RESCUE",
+  transitions <- calcOutput("LandTransitions", outputFormat = "ESM",
                             harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
   getItems(transitions, raw = TRUE, dim = 3) <- sub("\\.", "_to_", getItems(transitions, dim = 3))
   getSets(transitions, fulldim = FALSE)[3] <- "transitions"
   getYears(transitions) <- getYears(transitions, as.integer = TRUE) - 1
-  transitions <- adaptYearsRESCUE(transitions, years)
+  transitions <- adaptYearsESM(transitions, years)
   transitions <- mbind(transitions, nonland)
   rm(nonland)
   transitionsFile <- paste0("multiple-transitions", fileSuffix, ".nc")
   write.magpie(transitions, transitionsFile, compression = compression,
                missval = missingValue, gridDefinition = gridDefinition, progress = progress)
   rm(transitions)
-  addMetadataRESCUE(transitionsFile, revision, missingValue, resolution, compression, harmonizationPeriod)
+  addMetadataESM(transitionsFile, revision, missingValue, resolution, compression, harmonizationPeriod)
 
   toolWriteMadratLog(logPath = "consistencyCheck.log")
 }
 
-adaptYearsRESCUE <- function(x, years) {
+adaptYearsESM <- function(x, years) {
   x <- x[, getYears(x, as.integer = TRUE) %in% years, ]
-  # account for unit "years since 1970-01-01 0:0:0" which addMetadataRESCUE sets
+  # account for unit "years since 1970-01-01 0:0:0" which addMetadataESM sets
   x <- setYears(x, getYears(x, as.integer = TRUE) - 1970)
   return(x)
 }
 
-addMetadataRESCUE <- function(ncFile, revision, missingValue, resolution, compression, harmonizationPeriod) {
+addMetadataESM <- function(ncFile, revision, missingValue, resolution, compression, harmonizationPeriod) {
   variableId <- sub("^(multiple-[^_]+).+$", "\\1", basename(ncFile))
   stopifnot(variableId %in% c("multiple-states", "multiple-management", "multiple-transitions"))
   nc <- ncdf4::nc_open(ncFile, write = TRUE)
