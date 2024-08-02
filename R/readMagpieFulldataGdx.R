@@ -42,13 +42,11 @@ readMagpieFulldataGdx <- function(subtype = "land", subset = 1995:2100) {
     unit <- "Mha yr-1"
     description <- "wood harvest area separated by source and age classes"
   } else if (subtype == "fertilizer") {
-    # suppressing the warning:
-    # due to non-iteration of fertilizer distribution, residual fertilizer deficit is moved to balanceflow.
-    suppressWarnings({
+    suppressSpecificWarnings({
       suppressMessages({
         x <- magpie4::NitrogenBudget(gdx, level = "cell", cropTypes = TRUE)
       })
-    })
+    }, "due to non-iteration of fertilizer distribution, residual fertilizer deficit is moved to balanceflow.")
     x <- collapseDim(x[, , "fertilizer"])
     getSets(x) <- c("region", "id", "year", "cropType")
     unit <- "Tg yr-1"
