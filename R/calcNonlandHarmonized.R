@@ -38,20 +38,10 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   }
 
   # account for primf/primn being recategorized to secdf/secdn in calcLandHarmonized
-  # get share of post-prim-fix land / pre-prim-fix land, apply that to wood harvest
-  prePrimFix <- calcOutput("LandHarmonized", input = input, target = target,
-                           harmonizationPeriod = harmonizationPeriod, method = method,
-                           primFix = FALSE, primCheck = FALSE, aggregate = FALSE)
-  prePrimFix <- prePrimFix[, , c("primf", "primn")]
-  postPrimFix <- calcOutput("LandHarmonized", input = input, target = target,
-                            harmonizationPeriod = harmonizationPeriod, method = method,
-                            primFix = TRUE, aggregate = FALSE)
-  postPrimFix <- postPrimFix[, , c("primf", "primn")]
-  stopifnot(all(postPrimFix <= prePrimFix))
-  postPreShare <- postPrimFix / prePrimFix
-  postPreShare[is.na(postPreShare)] <- 0
-  stopifnot(all(0 <= postPreShare & postPreShare <= 1))
-  if (any(postPreShare < 1)) {
+  primfixShares <- attr(calcOutput("LandHarmonized", input = input, target = target,
+                                   harmonizationPeriod = harmonizationPeriod,
+                                   method = method, aggregate = FALSE), "primfixShares")
+  if (any(primfixShares < 1)) {
     toolStatusMessage("note", paste("after harmonization primf/primn expansion was replaced",
                                     "by secdf/secdn, adapting wood harvest accordingly"))
 
@@ -60,7 +50,7 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
       totalBeforeForest <- dimSums(out[, , paste0(forest, "_", category)], 3)
 
       primForest <- paste0("primf_", category)
-      toSecForest <- out[, , primForest] * (1 - postPreShare[, , "primf"])
+      toSecForest <- out[, , primForest] * (1 - primfixShares[, , "primf"])
       out[, , primForest] <- out[, , primForest] - toSecForest
       stopifnot(out[, , primForest] >= 0)
       secYoung <- paste0("secyf_", category)
@@ -80,7 +70,7 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
       nonforest <- c("primn", "secnf")
       totalBeforeNonforest <- dimSums(out[, , paste0(nonforest, "_", category)], 3)
       primNonforest <- paste0("primn_", category)
-      toSecNonforest <- out[, , primNonforest] * (1 - postPreShare[, , "primn"])
+      toSecNonforest <- out[, , primNonforest] * (1 - primfixShares[, , "primn"])
       out[, , primNonforest] <- out[, , primNonforest] - toSecNonforest
       stopifnot(out[, , primNonforest] >= 0)
       secNonforest <- paste0("secnf_", category)
@@ -89,7 +79,7 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
       toolExpectLessDiff(totalBeforeNonforest,
                          dimSums(out[, , paste0(nonforest, "_", category)], 3),
                          10^-4, paste0("total wood harvest (", category, ") ",
-                                       "from forests is not affected by adaptation"))
+                                       "from non-forests is not affected by adaptation"))
     }
   }
 
