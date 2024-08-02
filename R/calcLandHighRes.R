@@ -18,8 +18,10 @@ calcLandHighRes <- function(input = "magpie", target = "luh2mod",
                   harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
   xTarget <- calcOutput("LandTarget", target = target, aggregate = FALSE)
 
+  mapping <- calcOutput("ResolutionMapping", input = input, target = target, aggregate = FALSE)
+
   if (downscaling == "magpieClassic") {
-    out <- toolDownscaleMagpieClassic(x, xTarget)
+    out <- toolDownscaleMagpieClassic(x, xTarget, mapping)
   } else {
     stop("Unsupported downscaling method \"", downscaling, "\"")
   }

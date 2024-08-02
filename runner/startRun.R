@@ -52,5 +52,5 @@ for (scenario in scenarios) {
             overwrite = TRUE)
   message("md5 of copied fulldata.gdx: ",
           tools::md5sum(file.path(getConfig("sourcefolder"), "MagpieFulldataGdx", "fulldata.gdx")))
-  try(retrieveData("RESCUE", rev = revision, scenario = gsub("_", "-", scenario), progress = FALSE))
+  try(retrieveData("ESM", rev = revision, scenario = gsub("_", "-", scenario), progress = FALSE))
 }

@@ -2,14 +2,15 @@
 #'
 #' Convert the downscaled nonland data to the format required by the given project.
 #'
-#' @param project name of the project, currently only "RESCUE"
+#' @param outputFormat format in which the outputs should be prepared. Currently,
+#' only "ESM" for earth system model compatible input data is available.
 #' @param harmonizationPeriod Two integer values, before the first given
 #' year the target dataset is used, after the second given year the input
 #' dataset is used, in between harmonize between the two datasets
 #' @return nonland data
 #' @author Pascal Sauer
-calcNonlandReport <- function(project = "RESCUE", harmonizationPeriod = c(2015, 2050)) {
-  if (project == "RESCUE") {
+calcNonlandReport <- function(outputFormat = "ESM", harmonizationPeriod = c(2015, 2050)) {
+  if (outputFormat == "ESM") {
     x <- calcOutput("NonlandHighRes", input = "magpie", target = "luh2mod",
                     harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
 
@@ -73,8 +74,8 @@ calcNonlandReport <- function(project = "RESCUE", harmonizationPeriod = c(2015, 
                 isocountries = FALSE,
                 min = 0,
                 unit = "rndwd & fulwd: 1; bioh: kg C yr-1; harv: 1; fertl: kg ha-1 yr-1",
-                description = "Downscaled nonland data report for RESCUE"))
+                description = "Downscaled nonland data report for use in ESMs"))
   } else {
-    stop("Can only report for project = 'RESCUE'")
+    stop("Can only report for outputFormat = 'ESM'")
   }
 }
