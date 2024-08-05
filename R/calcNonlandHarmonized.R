@@ -28,16 +28,14 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   xTarget <- xTarget[, , getItems(xInput, 3)] # harmonize order of dim 3
 
   if (method == "extrapolateFade") {
-    # growthAveragePeriod = 10 would lead to insane growth rate due to
-    # edge case (CHA.12 has 0 in 2005 but 8*10^7 in 2015), workaround by setting it to 15
     out <- toolHarmonizeExtrapolateFade(xInput, xTarget, harmonizationPeriod = harmonizationPeriod,
-                                        constantSum = FALSE, growthAveragePeriod = 15)
+                                        constantSum = FALSE)
   } else {
     harmonizer <- toolGetHarmonizer(method)
     out <- harmonizer(xInput, xTarget, harmonizationPeriod = harmonizationPeriod)
   }
 
-  # account for primf/primn being recategorized to secdf/secdn in calcLandHarmonized
+  # account for primf/primn expansion being recategorized to secdf/secdn in calcLandHarmonized
   primfixShares <- attr(calcOutput("LandHarmonized", input = input, target = target,
                                    harmonizationPeriod = harmonizationPeriod,
                                    method = method, aggregate = FALSE), "primfixShares")
