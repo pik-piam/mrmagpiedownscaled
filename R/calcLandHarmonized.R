@@ -91,6 +91,21 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   toolExpectTrue(all(out[, -1, c("primf", "primn")] <= setYears(out[, -nyears(out), c("primf", "primn")],
                                                                 getYears(out[, -1, ]))),
                  "primf and primn are never expanding", falseStatus = "warn")
+  toolExpectLessDiff(out[, getYears(out, as.integer = TRUE) <= harmonizationPeriod[1], ],
+                     target[, getYears(target, as.integer = TRUE) <= harmonizationPeriod[1], ],
+                     10^-5, "Returning reference data before harmonization period")
+  outAfterHarmonization <- out[, getYears(out, as.integer = TRUE) >= harmonizationPeriod[2], ]
+  inputAfterHarmonization <- input[, getYears(input, as.integer = TRUE) >= harmonizationPeriod[2], ]
+  nonprimfix <- setdiff(getItems(out, dim = 3), c("primf", "primn", "secdf", "secdn"))
+  toolExpectLessDiff(outAfterHarmonization[, , nonprimfix],
+                     inputAfterHarmonization[, , nonprimfix],
+                     10^-5, "Returning input data after harmonization period (not checking primf/primn/secdf/secdn)")
+  toolExpectLessDiff(dimSums(outAfterHarmonization[, , c("primf", "secdf")], 3),
+                     dimSums(inputAfterHarmonization[, , c("primf", "secdf")], 3),
+                     10^-5, "Returning input data after harmonization period (checking primf + secdf)")
+  toolExpectLessDiff(dimSums(outAfterHarmonization[, , c("primn", "secdn")], 3),
+                     dimSums(inputAfterHarmonization[, , c("primn", "secdn")], 3),
+                     10^-5, "Returning input data after harmonization period (checking primn + secdn)")
 
   return(list(x = out,
               class = "magpie",
