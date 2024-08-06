@@ -53,20 +53,11 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   # replace primf and primn expansion with secdf and secdn
   prePrimFix <- out[, , c("primf", "primn")]
 
-  stopifnot(nyears(out) >= 2)
-  for (i in 2:nyears(out)) {
-    primDiff <- out[, i, c("primf", "primn")] - setYears(out[, i - 1, c("primf", "primn")], getYears(out)[i])
-    primDiff[primDiff < 0] <- 0
-    # use pmin instead of subtracting to avoid tiny expansions due to numerical precision
-    out[, i, c("primf", "primn")] <- pmin(out[, i, c("primf", "primn")], out[, i - 1, c("primf", "primn")])
-    out[, i, c("secdf", "secdn")] <- out[, i, c("secdf", "secdn")] + setNames(primDiff, c("secdf", "secdn"))
-  }
+  primSecCategories <- c("primf", "primn", "secdf", "secdn")
+  out[, , primSecCategories] <- toolPrimFix(out[, , primSecCategories], warnThreshold = 100)
 
   postPrimFix <- out[, , c("primf", "primn")]
   stopifnot(all(postPrimFix <= prePrimFix))
-  if (any(prePrimFix > postPrimFix)) {
-    toolStatusMessage("note", "replaced primf/primn expansion with secdf/secdn expansion")
-  }
 
   # store how much primf/primn shrank to apply this to wood harvest
   primfixShares <- postPrimFix / prePrimFix
@@ -97,7 +88,7 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
 
   outAfterHarmonization <- out[, getYears(out, as.integer = TRUE) >= harmonizationPeriod[2], ]
   inputAfterHarmonization <- input[, getYears(input, as.integer = TRUE) >= harmonizationPeriod[2], ]
-  nonprimfix <- setdiff(getItems(out, dim = 3), c("primf", "primn", "secdf", "secdn"))
+  nonprimfix <- setdiff(getItems(out, dim = 3), primSecCategories)
   toolExpectLessDiff(outAfterHarmonization[, , nonprimfix],
                      inputAfterHarmonization[, , nonprimfix],
                      10^-5, "Returning input data after harmonization period (not checking primf/primn/secdf/secdn)")
