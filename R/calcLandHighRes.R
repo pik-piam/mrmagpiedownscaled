@@ -16,7 +16,9 @@ calcLandHighRes <- function(input = "magpie", target = "luh2mod",
                             harmonizationPeriod = c(2015, 2050), downscaling = "magpieClassic") {
   x <- calcOutput("LandHarmonized", input = input, target = target,
                   harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
+
   xTarget <- calcOutput("LandTarget", target = target, aggregate = FALSE)
+  xTarget <- as.magpie(xTarget[[terra::time(xTarget) == terra::time(xTarget)[1]]])
 
   mapping <- calcOutput("ResolutionMapping", input = input, target = target, aggregate = FALSE)
 
