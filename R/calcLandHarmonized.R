@@ -94,6 +94,7 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   toolExpectLessDiff(out[, getYears(out, as.integer = TRUE) <= harmonizationPeriod[1], ],
                      target[, getYears(target, as.integer = TRUE) <= harmonizationPeriod[1], ],
                      10^-5, "Returning reference data before harmonization period")
+
   outAfterHarmonization <- out[, getYears(out, as.integer = TRUE) >= harmonizationPeriod[2], ]
   inputAfterHarmonization <- input[, getYears(input, as.integer = TRUE) >= harmonizationPeriod[2], ]
   nonprimfix <- setdiff(getItems(out, dim = 3), c("primf", "primn", "secdf", "secdn"))

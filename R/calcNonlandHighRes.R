@@ -16,8 +16,8 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
 
   xTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
 
-  # use latest year of historical data as weight
-  weight <- xTarget[[terra::time(xTarget) == max(terra::time(xTarget))]]
+  stopifnot(harmonizationPeriod[1] %in% terra::time(xTarget))
+  weight <- xTarget[[terra::time(xTarget) == harmonizationPeriod[1]]]
   weight <- weight + 10^-10 # add 10^-10 to prevent weight 0
   names(weight) <- sub("^y[0-9]+\\.\\.", "", names(weight))
   stopifnot(setequal(getNames(xInput), names(weight)))
@@ -54,6 +54,10 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
   toolExpectTrue(setequal(getItems(out, dim = 3), getItems(xInput, dim = 3)),
                  "Nonland categories remain unchanged")
   toolExpectTrue(min(out) >= 0, "All values are >= 0")
+  outRaster <- as.SpatRaster(out[, harmonizationPeriod[1], ])
+  deviation <- terra::extend(outRaster, xTarget) - xTarget[[names(outRaster)]]
+  toolExpectLessDiff(max(abs(terra::minmax(deviation))), 0, 10^-5,
+                     paste("In", harmonizationPeriod[1], "downscaled data equals target data"))
 
   return(list(x = out,
               min = 0,
