@@ -8,7 +8,7 @@ fullESM(
   rev = NULL,
   ...,
   scenario = "",
-  years = 2015:2100,
+  years = 2020:2100,
   harmonizationPeriod = c(2015, 2050),
   compression = 2,
   interpolate = FALSE,

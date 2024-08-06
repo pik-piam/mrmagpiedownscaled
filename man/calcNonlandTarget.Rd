@@ -4,7 +4,11 @@
 \alias{calcNonlandTarget}
 \title{calcNonlandTarget}
 \usage{
-calcNonlandTarget(target = "luh2mod")
+calcNonlandTarget(
+  target = "luh2mod",
+  years = seq(1995, 2015, 5),
+  timestepLength = 5
+)
 }
 \arguments{
 \item{target}{name of the target dataset, currently only "luh2" and "luh2mod" are supported}

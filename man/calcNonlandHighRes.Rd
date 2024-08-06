@@ -13,7 +13,7 @@ calcNonlandHighRes(
 \arguments{
 \item{input}{name of an input dataset, currently only "magpie"}
 
-\item{target}{name of a target dataset, currently only "luh2"}
+\item{target}{name of a target dataset, currently only "luh2mod"}
 
 \item{harmonizationPeriod}{Two integer values, before the first given
 year the target dataset is used, after the second given year the input
