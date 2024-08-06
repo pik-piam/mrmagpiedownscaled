@@ -13,6 +13,7 @@ The same REMIND-MAgPIE runs are used for the downscaled land use dataset describ
 - fixed bug where total areas of a land type would not match before and after downscaling
 - fixed: primf/primn expansion is no longer happening
 - LUH data on wood harvest and fertilizer is now aggregated over n years to match input data semantics
+- fixed a bug where wrong reference year was used for downscaling
 
 ## 2024-04-25
 

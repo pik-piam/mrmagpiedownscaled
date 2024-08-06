@@ -18,12 +18,14 @@ calcLandHighRes <- function(input = "magpie", target = "luh2mod",
                   harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
 
   xTarget <- calcOutput("LandTarget", target = target, aggregate = FALSE)
-  xTarget <- as.magpie(xTarget[[terra::time(xTarget) == terra::time(xTarget)[1]]])
+  stopifnot(harmonizationPeriod[1] %in% terra::time(xTarget))
+  xTarget <- as.magpie(xTarget[[terra::time(xTarget) == harmonizationPeriod[1]]])
 
   mapping <- calcOutput("ResolutionMapping", input = input, target = target, aggregate = FALSE)
 
   if (downscaling == "magpieClassic") {
-    out <- toolDownscaleMagpieClassic(x, xTarget, mapping)
+    out <- toolDownscaleMagpieClassic(x[, getYears(x, as.integer = TRUE) >= harmonizationPeriod[1], ],
+                                      xTarget, mapping)
   } else {
     stop("Unsupported downscaling method \"", downscaling, "\"")
   }
@@ -32,13 +34,15 @@ calcLandHighRes <- function(input = "magpie", target = "luh2mod",
                  "Dimensions are named correctly")
   toolExpectTrue(setequal(getItems(out, dim = 3), getItems(x, dim = 3)),
                  "Land categories remain unchanged")
+  toolExpectLessDiff(out[, harmonizationPeriod[1], ], xTarget, 10^-5,
+                     paste("In", harmonizationPeriod[1], "output equals target"))
   toolExpectTrue(all(out >= 0), "All values are >= 0")
 
   outSum <- dimSums(out, dim = 3)
   toolExpectLessDiff(outSum, outSum[, 1, ], 10^-5,
                      "Total land area per cell in output stays constant over time")
 
-  globalSumIn <- dimSums(x, dim = 1)
+  globalSumIn <- dimSums(x[, getYears(out), ], dim = 1)
   globalSumOut <- dimSums(out, dim = 1)
   toolExpectLessDiff(dimSums(globalSumIn, 3), dimSums(globalSumOut, 3), 10^-5,
                      "Total global land area remains unchanged")
