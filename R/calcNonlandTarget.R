@@ -2,11 +2,15 @@
 #'
 #' Prepare the high resolution nonland target dataset for
 #' harmonization and downscaling, checking data for consistency before returning.
+#' Reads in yearly data and aggregates according to the given timestep length.
 #'
 #' @param target name of the target dataset, currently only "luh2" and "luh2mod" are supported
+#' @param years years to aggregate to/to return
+#' @param timestepLength length of the timestep in years, determines the
+#' first year that is read: min(years) - timestepLength + 1
 #' @return nonland target data
 #' @author Pascal Sauer
-calcNonlandTarget <- function(target = "luh2mod", years = seq(1995, 2015, 5), timestepLength = 5) {
+calcNonlandTarget <- function(target = "luh2mod", years = seq(1995, 2015, 5), timestepLength = years[2] - years[1]) {
   stopifnot(diff(years) == timestepLength)
 
   if (target %in% c("luh2", "luh2mod")) {
