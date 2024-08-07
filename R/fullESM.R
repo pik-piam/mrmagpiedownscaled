@@ -20,7 +20,7 @@
 #' @param progress boolean defining whether progress should be printed
 #'
 #' @author Pascal Sauer, Jan Philipp Dietrich
-fullESM <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
+fullESM <- function(rev = NULL, ..., scenario = "", years = 2020:2100,
                     harmonizationPeriod = c(2015, 2050),
                     compression = 2, interpolate = FALSE, progress = TRUE) {
   stopifnot(...length() == 0, isFALSE(interpolate))
@@ -69,6 +69,10 @@ fullESM <- function(rev = NULL, ..., scenario = "", years = 2015:2100,
                             harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
   getItems(transitions, raw = TRUE, dim = 3) <- sub("\\.", "_to_", getItems(transitions, dim = 3))
   getSets(transitions, fulldim = FALSE)[3] <- "transitions"
+
+  # we use to-semantics for transitions (value for 1994 describes what happens from 1993 to 1994)
+  # by subtracting 1 we get from-semantics (value for 1994 describes what happens from 1994 to 1995)
+  # which is what LUH uses
   getYears(transitions) <- getYears(transitions, as.integer = TRUE) - 1
   transitions <- adaptYearsESM(transitions, years)
   transitions <- mbind(transitions, nonland)
@@ -98,7 +102,7 @@ addMetadataESM <- function(ncFile, revision, missingValue, resolution, compressi
   })
   # global
   dateTime <- strftime(Sys.time(), format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
-  ncdf4::ncatt_put(nc, 0, "activity_id", "RESCUE")
+  ncdf4::ncatt_put(nc, 0, "activity_id", "RESCUE/OptimESM")
   ncdf4::ncatt_put(nc, 0, "contact", "pascal.sauer@pik-potsdam.de, dietrich@pik-potsdam.de")
   ncdf4::ncatt_put(nc, 0, "Conventions", "CF-1.6")
   ncdf4::ncatt_put(nc, 0, "creation_date", dateTime)
@@ -107,8 +111,7 @@ addMetadataESM <- function(ncFile, revision, missingValue, resolution, compressi
   ncdf4::ncatt_put(nc, 0, "dataset_version_number", as.character(revision))
   ncdf4::ncatt_put(nc, 0, "date", dateTime)
   ncdf4::ncatt_put(nc, 0, "frequency", "yr")
-  ncdf4::ncatt_put(nc, 0, "further_info_url",
-                   "https://github.com/pik-piam/mrdownscale/blob/main/inst/extdata/runner/changelog-rescue.md")
+  ncdf4::ncatt_put(nc, 0, "further_info_url", "https://github.com/pik-piam/mrdownscale/blob/main/runner/changelog.md")
   ncdf4::ncatt_put(nc, 0, "grid_label", "gn")
   ncdf4::ncatt_put(nc, 0, "host", "Potsdam Institute for Climate Impact Research")
   ncdf4::ncatt_put(nc, 0, "institution_id", "PIK")
@@ -117,11 +120,11 @@ addMetadataESM <- function(ncFile, revision, missingValue, resolution, compressi
   ncdf4::ncatt_put(nc, 0, "nominal_resolution", "50 km")
   ncdf4::ncatt_put(nc, 0, "realm", "land")
   ncdf4::ncatt_put(nc, 0, "references",
-                   "See: https://github.com/pik-piam/mrdownscale and https://rescue-climate.eu/ for references")
+                   "https://github.com/pik-piam/mrdownscale and https://rescue-climate.eu/ and https://optimesm-he.eu/")
   ncdf4::ncatt_put(nc, 0, "source_id", sub(paste0("^", variableId, "_"), "",
                                            sub("\\.nc$", "",
                                                basename(ncFile))))
-  ncdf4::ncatt_put(nc, 0, "target_mip", "RESCUE")
+  ncdf4::ncatt_put(nc, 0, "target_mip", "RESCUE/OptimESM")
   ncdf4::ncatt_put(nc, 0, "title", "MAgPIE Land-Use Data Harmonized and Downscaled using LUH2 v2h as reference")
   ncdf4::ncatt_put(nc, 0, "variable_id", variableId)
 
@@ -129,7 +132,6 @@ addMetadataESM <- function(ncFile, revision, missingValue, resolution, compressi
   ncdf4::ncatt_put(nc, 0, "harmonization_period", paste(harmonizationPeriod, collapse = "-"))
   ncdf4::ncatt_put(nc, 0, "harmonization_downscaling_tool", "https://github.com/pik-piam/mrdownscale")
   ncdf4::ncatt_put(nc, 0, "reference_dataset", "LUH2 v2h Release (10/14/16) from https://luh.umd.edu/data.shtml")
-  ncdf4::ncatt_put(nc, 0, "source", "Scenarios generated as part of the RESCUE project, see https://rescue-climate.eu/")
   ncdf4::ncatt_put(nc, 0, "source_version", as.character(revision))
 
   # time

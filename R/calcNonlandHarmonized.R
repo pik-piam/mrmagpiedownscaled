@@ -28,13 +28,57 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   xTarget <- xTarget[, , getItems(xInput, 3)] # harmonize order of dim 3
 
   if (method == "extrapolateFade") {
-    # growthAveragePeriod = 10 would lead to insane growth rate due to
-    # edge case (CHA.12 has 0 in 2005 but 8*10^7 in 2015), workaround by setting it to 15
     out <- toolHarmonizeExtrapolateFade(xInput, xTarget, harmonizationPeriod = harmonizationPeriod,
-                                        constantSum = FALSE, growthAveragePeriod = 15)
+                                        constantSum = FALSE)
   } else {
     harmonizer <- toolGetHarmonizer(method)
     out <- harmonizer(xInput, xTarget, harmonizationPeriod = harmonizationPeriod)
+  }
+
+  # account for primf/primn expansion being recategorized to secdf/secdn in calcLandHarmonized
+  primfixShares <- attr(calcOutput("LandHarmonized", input = input, target = target,
+                                   harmonizationPeriod = harmonizationPeriod,
+                                   method = method, aggregate = FALSE), "primfixShares")
+  if (any(primfixShares < 1)) {
+    toolStatusMessage("note", paste("after harmonization primf/primn expansion was replaced",
+                                    "by secdf/secdn, adapting wood harvest accordingly"))
+
+    for (category in c("bioh", "wood_harvest_area")) {
+      forest <- c("primf", "secyf", "secmf")
+      totalBeforeForest <- dimSums(out[, , paste0(forest, "_", category)], 3)
+
+      primForest <- paste0("primf_", category)
+      toSecForest <- out[, , primForest] * (1 - primfixShares[, , "primf"])
+      out[, , primForest] <- out[, , primForest] - toSecForest
+      stopifnot(out[, , primForest] >= 0)
+      secYoung <- paste0("secyf_", category)
+      secMature <- paste0("secmf_", category)
+      youngShare <- out[, , secYoung] / (out[, , secYoung] + out[, , secMature])
+      youngShare[is.na(youngShare)] <- 0.5
+      stopifnot(all(0 <= youngShare & youngShare <= 1))
+      out[, , secYoung] <- out[, , secYoung] + toSecForest * youngShare
+      out[, , secMature] <- out[, , secMature] + toSecForest * (1 - youngShare)
+
+      toolExpectLessDiff(totalBeforeForest,
+                         dimSums(out[, , paste0(forest, "_", category)], 3),
+                         10^-4, paste0("total wood harvest (", category, ") ",
+                                       "from forests is not affected by adaptation"))
+
+      # nonforest
+      nonforest <- c("primn", "secnf")
+      totalBeforeNonforest <- dimSums(out[, , paste0(nonforest, "_", category)], 3)
+      primNonforest <- paste0("primn_", category)
+      toSecNonforest <- out[, , primNonforest] * (1 - primfixShares[, , "primn"])
+      out[, , primNonforest] <- out[, , primNonforest] - toSecNonforest
+      stopifnot(out[, , primNonforest] >= 0)
+      secNonforest <- paste0("secnf_", category)
+      out[, , secNonforest] <- out[, , secNonforest] + toSecNonforest
+
+      toolExpectLessDiff(totalBeforeNonforest,
+                         dimSums(out[, , paste0(nonforest, "_", category)], 3),
+                         10^-4, paste0("total wood harvest (", category, ") ",
+                                       "from non-forests is not affected by adaptation"))
+    }
   }
 
   attr(out, "geometry") <- geometry

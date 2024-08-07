@@ -46,6 +46,11 @@ calcLandTransitions <- function(outputFormat = "ESM", harmonizationPeriod = c(20
     getYears(netChangeTrans) <- getYears(netChangeLand)
     netChangeTrans <- netChangeTrans * timestepLengths[, getYears(netChangeTrans), ]
 
+    if (max(transition) > 1.0001) {
+      toolStatusMessage("warn", paste0("Some shares are > 1 (max: ", max(transition), "), setting those to 1"))
+    }
+    transition[transition > 1] <- 1
+
     toolExpectLessDiff(netChangeTrans, netChangeLand[, , getItems(netChangeTrans, 3)],
                        10^-6, paste0("Transitions are consistent to states from ",
                                      getYears(land)[i], " to ", getYears(land)[i2]))
@@ -64,7 +69,7 @@ calcLandTransitions <- function(outputFormat = "ESM", harmonizationPeriod = c(20
               isocountries = FALSE,
               unit = "1",
               min = 0,
-              max = 1.0001,
+              max = 1,
               description = paste("MAgPIE land use transition data estimated from downscaled land use ",
                                   "state information. Unit is share of cell area."))
 

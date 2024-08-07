@@ -4,7 +4,7 @@
 #' from the low resolution input dataset and the high resolution target dataset.
 #'
 #' @param input name of an input dataset, currently only "magpie"
-#' @param target name of a target dataset, currently only "luh2"
+#' @param target name of a target dataset, currently only "luh2mod"
 #' @param harmonizationPeriod Two integer values, before the first given
 #' year the target dataset is used, after the second given year the input
 #' dataset is used, in between harmonize between the two datasets
@@ -16,8 +16,8 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
 
   xTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
 
-  # use latest year of historical data as weight
-  weight <- xTarget[[terra::time(xTarget) == max(terra::time(xTarget))]]
+  stopifnot(harmonizationPeriod[1] %in% terra::time(xTarget))
+  weight <- xTarget[[terra::time(xTarget) == harmonizationPeriod[1]]]
   weight <- weight + 10^-10 # add 10^-10 to prevent weight 0
   names(weight) <- sub("^y[0-9]+\\.\\.", "", names(weight))
   stopifnot(setequal(getNames(xInput), names(weight)))
@@ -46,6 +46,18 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
 
     return(result)
   }))
+
+  inSum <- dimSums(xInput, dim = 1)
+  outSum <- dimSums(out, dim = 1)
+  toolExpectTrue(max(abs(inSum - outSum) / inSum) < 10^-5,
+                 "Relative global sum difference per category before and after downscaling < 0.001%")
+  toolExpectTrue(setequal(getItems(out, dim = 3), getItems(xInput, dim = 3)),
+                 "Nonland categories remain unchanged")
+  toolExpectTrue(min(out) >= 0, "All values are >= 0")
+  outRaster <- as.SpatRaster(out[, harmonizationPeriod[1], ])
+  deviation <- terra::extend(outRaster, xTarget) - xTarget[[names(outRaster)]]
+  toolExpectLessDiff(max(abs(terra::minmax(deviation))), 0, 10^-5,
+                     paste("In", harmonizationPeriod[1], "downscaled data equals target data"))
 
   return(list(x = out,
               min = 0,

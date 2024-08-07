@@ -2,27 +2,37 @@
 #'
 #' Prepare the high resolution nonland target dataset for
 #' harmonization and downscaling, checking data for consistency before returning.
+#' Reads in yearly data and aggregates according to the given timestep length.
 #'
 #' @param target name of the target dataset, currently only "luh2" and "luh2mod" are supported
+#' @param years years to aggregate to/to return
+#' @param timestepLength length of the timestep in years, determines the
+#' first year that is read: min(years) - timestepLength + 1
 #' @return nonland target data
 #' @author Pascal Sauer
-calcNonlandTarget <- function(target = "luh2mod") {
-  if (target %in% c("luh2", "luh2mod")) {
-    management <- readSource("LUH2v2h", subtype = "management", convert = FALSE)
+calcNonlandTarget <- function(target = "luh2mod", years = seq(1995, 2015, 5), timestepLength = years[2] - years[1]) {
+  stopifnot(diff(years) == timestepLength)
 
+  if (target %in% c("luh2", "luh2mod")) {
     cellAreaKm2 <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
     # convert from km2 to ha
     cellAreaHa <- cellAreaKm2 * 100
     # convert from km2 to Mha
     cellAreaMha <- cellAreaKm2 / 10000
 
+    yearsToRead <- (min(years) - timestepLength + 1):max(years)
+
+    management <- readSource("LUH2v2h", subtype = "management", subset = yearsToRead, convert = FALSE)
+
+    ### fertilizer in kg yr-1
     # need absolute values for downscaling, fertl_* is in kg ha-1 yr-1, convert to kg yr-1
     fertilizer <- management["fertl"] * cellAreaHa
-    terra::units(fertilizer) <- "kg yr-1"
     names(fertilizer) <- paste0(sub("fertl_", "", names(fertilizer)), "_fertilizer")
+    fertilizer <- toolAverageOverYears(fertilizer, years, timestepLength, unit = "kg yr-1")
 
-    transitions <- readSource("LUH2v2h", subtype = "transitions", convert = FALSE)
+    transitions <- readSource("LUH2v2h", subtype = "transitions", subset = yearsToRead, convert = FALSE)
 
+    ### wood harvest area in Mha yr-1
     # convert from shares to Mha yr-1
     woodHarvestArea <- c(transitions["primf_harv"] * cellAreaMha,
                          transitions["primn_harv"] * cellAreaMha,
@@ -30,14 +40,40 @@ calcNonlandTarget <- function(target = "luh2mod") {
                          transitions["secyf_harv"] * cellAreaMha,
                          transitions["secnf_harv"] * cellAreaMha)
     names(woodHarvestArea) <- paste0(sub("_harv", "", names(woodHarvestArea)), "_wood_harvest_area")
-    terra::units(woodHarvestArea) <- "Mha yr-1"
+    woodHarvestArea <- toolAverageOverYears(woodHarvestArea, years, timestepLength, unit = "Mha yr-1")
 
+    # check wood harvest area is smaller than corresponding land area
+    land <- calcOutput("LandTarget", target = target, aggregate = FALSE)
+    stopifnot(all(diff(unique(terra::time(land))) == timestepLength),
+              all(diff(unique(terra::time(woodHarvestArea))) == timestepLength))
+    for (category in list(c("primf", "primf"),
+                          c("secmf", "secdf"),
+                          c("secyf", "secdf"),
+                          c("primn", "primn"),
+                          c("secnf", "secdn"))) {
+      violations <- terra::as.data.frame(land[category[2]] < timestepLength * woodHarvestArea[category[1]],
+                                         na.rm = NA)
+      relativeViolations <- colSums(violations) / nrow(violations)
+      if (max(relativeViolations) > 0) {
+        toolStatusMessage("note", paste0("share of land cells where wood harvest area (", category[1], ")",
+                                         " > land (", category[2], ") - ",
+                                         paste0(years, ": ", round(100 * relativeViolations, 2), "%",
+                                                collapse = ", ")))
+      }
+    }
+
+    ### wood harvest weight (bioh) in kg C yr-1
     woodHarvestWeight <- transitions["bioh"]
-    # replace negative weight of wood harvest with 0
-    woodHarvestWeight <- terra::classify(woodHarvestWeight, cbind(-Inf, 0, 0))
-    terra::units(woodHarvestWeight) <- "kg C yr-1"
+    minWoodHarvestWeight <- min(terra::minmax(woodHarvestWeight, compute = TRUE))
+    if (minWoodHarvestWeight < 0) {
+      # replace negative weight of wood harvest with 0
+      toolStatusMessage("note", paste0("replacing negative wood harvest weight (bioh) with 0 (min: ",
+                                       round(minWoodHarvestWeight, 3), " kg C yr-1)"))
+      woodHarvestWeight <- terra::classify(woodHarvestWeight, cbind(-Inf, 0, 0))
+    }
+    woodHarvestWeight <- toolAverageOverYears(woodHarvestWeight, years, timestepLength, unit = "kg C yr-1")
 
-    years <- unique(terra::time(woodHarvestWeight))
+    ### wood harvest weight type (fuelwood/roundwood) in kg C yr-1
     woodHarvestWeightType <- do.call(c, lapply(years, function(year) {
       total <- sum(woodHarvestWeight[[terra::time(woodHarvestWeight) == year]])
       roundwood <- total * management[[paste0("y", year, "..rndwd")]]
@@ -51,6 +87,8 @@ calcNonlandTarget <- function(target = "luh2mod") {
     out <- c(woodHarvestArea, woodHarvestWeight, woodHarvestWeightType, fertilizer)
     terra::time(out, tstep = "years") <- as.integer(sub("^y([0-9]+).+", "\\1", names(out)))
 
+    toolExpectTrue(min(terra::minmax(out)) >= 0, "All values are >= 0")
+
     return(list(x = out,
                 class = "SpatRaster",
                 unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha yr-1; fertilizer: kg yr-1",
@@ -58,4 +96,15 @@ calcNonlandTarget <- function(target = "luh2mod") {
   } else {
     stop("Unsupported output type \"", target, "\"")
   }
+}
+
+toolAverageOverYears <- function(x, years, timestepLength, unit) {
+  yearCategory <- expand.grid(years, unique(sub("^.+\\.\\.", "", names(x))), stringsAsFactors = FALSE)
+  return(do.call(c, Map(yearCategory[[1]], yearCategory[[2]], f = function(year, category) {
+    layer <- terra::mean(x[[paste0("y", (year - timestepLength + 1):year, "..", category)]])
+    names(layer) <- paste0("y", year, "..", category)
+    terra::time(layer, tstep = "years") <- year
+    terra::units(layer) <- unit
+    return(layer)
+  })))
 }

@@ -31,6 +31,16 @@ calcNonlandInput <- function(input = "magpie") {
                                      add = "category", "wood_harvest_area")
     getSets(woodHarvestArea)[["d3.2"]] <- "data"
 
+    # check wood harvest area * time step length (as unit is Mha yr-1) <=
+    # land of the correponding type (in the previous timestep)
+    land <- calcOutput("LandInput", aggregate = FALSE)
+    stopifnot(identical(getYears(woodHarvestArea), getYears(land)))
+    years <- getYears(land, as.integer = TRUE)
+    timestepLengths <- new.magpie(years = years[-1], fill = diff(years))
+    woodland <- setYears(land[, -nyears(land), getItems(woodHarvestArea, 3.2)], years[-1])
+    toolExpectTrue(min(woodland - timestepLengths * collapseDim(woodHarvestArea)[, -1, ]) >= -10^-10,
+                   "Wood harvest area is smaller than land of the corresponding type")
+
     fertilizer <- readSource("MagpieFulldataGdx", subtype = "fertilizer")
     fertilizer <- add_dimension(fertilizer, dim = 3.1,
                                 add = "category", "fertilizer")

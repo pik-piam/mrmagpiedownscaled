@@ -56,6 +56,13 @@ calcLandReport <- function(outputFormat = "ESM", harmonizationPeriod = c(2015, 2
 
     out <- mbind(cropData, nonCropData, manaf)
 
+    if (max(out) > 1.0001) {
+      toolStatusMessage("warn", paste0("Some shares are > 1 (max: ", max(out), "), setting those to 1"))
+    }
+    out[out > 1] <- 1
+
+    toolExpectTrue(min(out) >= 0, "All values are >= 0")
+    toolExpectTrue(max(out) <= 1, "All shares are <= 1")
     toolExpectTrue(all(out[, -1, c("primf", "primn")] <= setYears(out[, -nyears(out), c("primf", "primn")],
                                                                   getYears(out[, -1, ]))),
                    "primf and primn are never expanding", falseStatus = "warn")
@@ -64,7 +71,7 @@ calcLandReport <- function(outputFormat = "ESM", harmonizationPeriod = c(2015, 2
                 isocountries = FALSE,
                 unit = "1",
                 min = 0,
-                max = 1.0001,
+                max = 1,
                 description = paste("MAgPIE land use data downscaled to LUH2 resolution,",
                                     "unit is share of cell area, except manaf which is share of secdf")))
   } else {

@@ -38,7 +38,7 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   if (max(abs(inSum[, 1, ] - tSum[, 1, ])) >= 10^-5) {
     corr <- setYears(dimSums(target[, 1, ], dim = 3) / dimSums(input[, 1, ], dim = 3), NULL)
     input <- input * corr
-    toolStatusMessage("warn", paste0("input data multiplied with correction factors to match target areas ",
+    toolStatusMessage("note", paste0("input data multiplied with correction factors to match target areas ",
                                      "(max ratio = ", round(max(corr), 2),
                                      ", min ratio = ", round(min(corr), 2),  ")"))
   }
@@ -50,25 +50,23 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
 
   # during harmonization primf and primn expansion might be introduced due to
   # primf or primn differences between input and target dataset
-  # here we replace primf and primn expansion with secdf and secdn
-  primDiffs <- NULL
-  stopifnot(nyears(out) >= 2)
-  for (i in 2:nyears(out)) {
-    primDiff <- out[, i, c("primf", "primn")] - setYears(out[, i - 1, c("primf", "primn")], getYears(out)[i])
-    primDiff[primDiff < 0] <- 0
-    primDiffs <- mbind(primDiffs, primDiff)
-    # use pmin instead of subtracting to avoid tiny expansions due to numerical precision
-    out[, i, c("primf", "primn")] <- pmin(out[, i, c("primf", "primn")], out[, i - 1, c("primf", "primn")])
-    out[, i, c("secdf", "secdn")] <- out[, i, c("secdf", "secdn")] + setNames(primDiff, c("secdf", "secdn"))
-  }
+  # replace primf and primn expansion with secdf and secdn
+  prePrimFix <- out[, , c("primf", "primn")]
 
-  toolExpectTrue(max(primDiffs) <= 0, "harmonization does not introduce primf or primn expansion")
-  if (max(primDiffs) > 0) {
-    toolStatusMessage("note", "replaced primf/primn expansion with secdf/secdn expansion")
-  }
+  primSecCategories <- c("primf", "primn", "secdf", "secdn")
+  out[, , primSecCategories] <- toolPrimFix(out[, , primSecCategories], warnThreshold = 100)
+
+  postPrimFix <- out[, , c("primf", "primn")]
+  stopifnot(all(postPrimFix <= prePrimFix))
+
+  # store how much primf/primn shrank to apply this to wood harvest
+  primfixShares <- postPrimFix / prePrimFix
+  primfixShares[is.na(primfixShares)] <- 0
+  stopifnot(all(0 <= primfixShares & primfixShares <= 1))
 
   attr(out, "geometry") <- geometry
   attr(out, "crs")      <- crs
+  attr(out, "primfixShares") <- primfixShares
 
   # checks
   toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
@@ -84,6 +82,22 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   toolExpectTrue(all(out[, -1, c("primf", "primn")] <= setYears(out[, -nyears(out), c("primf", "primn")],
                                                                 getYears(out[, -1, ]))),
                  "primf and primn are never expanding", falseStatus = "warn")
+  toolExpectLessDiff(out[, getYears(out, as.integer = TRUE) <= harmonizationPeriod[1], ],
+                     target[, getYears(target, as.integer = TRUE) <= harmonizationPeriod[1], ],
+                     10^-5, "Returning reference data before harmonization period")
+
+  outAfterHarmonization <- out[, getYears(out, as.integer = TRUE) >= harmonizationPeriod[2], ]
+  inputAfterHarmonization <- input[, getYears(input, as.integer = TRUE) >= harmonizationPeriod[2], ]
+  nonprimfix <- setdiff(getItems(out, dim = 3), primSecCategories)
+  toolExpectLessDiff(outAfterHarmonization[, , nonprimfix],
+                     inputAfterHarmonization[, , nonprimfix],
+                     10^-5, "Returning input data after harmonization period (not checking primf/primn/secdf/secdn)")
+  toolExpectLessDiff(dimSums(outAfterHarmonization[, , c("primf", "secdf")], 3),
+                     dimSums(inputAfterHarmonization[, , c("primf", "secdf")], 3),
+                     10^-5, "Returning input data after harmonization period (checking primf + secdf)")
+  toolExpectLessDiff(dimSums(outAfterHarmonization[, , c("primn", "secdn")], 3),
+                     dimSums(inputAfterHarmonization[, , c("primn", "secdn")], 3),
+                     10^-5, "Returning input data after harmonization period (checking primn + secdn)")
 
   return(list(x = out,
               class = "magpie",

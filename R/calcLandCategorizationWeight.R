@@ -79,14 +79,14 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
 
   # project toolbox and luh2 data on x
   target <- .getTarget(geometry, crs)
+  # if a low res region (e.g. magpie cluster) hits only NA cells in toolbox, the result will be NA
   ptoolbox <- .projectData(toolbox, target)
   pluh2 <- .projectData(luh2, target)
 
   # convert to magclass
   mluh2 <- as.magpie(pluh2, spatial = which(terra::datatype(pluh2) != "double"))
   mtoolbox  <- as.magpie(ptoolbox, spatial = which(terra::datatype(ptoolbox) != "double"))
-  nas <- is.na(mtoolbox) # inlining this makes madrat think we call the tool function "toolbox[is.na"
-  mtoolbox[nas] <- 0 # TODO why are NAs introduced by projection here? # nolint
+  mtoolbox[is.na(mtoolbox)] <- 0
 
   .dummy <- function(x, map, availableItems) {
     # generate empty dummy for missing categories
@@ -113,7 +113,7 @@ calcLandCategorizationWeight <- function(map, geometry, crs) {
       toolStatusMessage("ok", "No dummy weights detected", level = 1)
     } else {
       if (length(dummy) > 3) dummy <- c(dummy[1:3], "..")
-      toolStatusMessage("warn", paste("Some categories contain dummy weight 10^-10:",
+      toolStatusMessage("note", paste("Some categories contain dummy weight 10^-10:",
                                       paste(dummy, collapse = ", ")), level = 1)
     }
   }
