@@ -95,6 +95,24 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   # SpatRaster can hold values up to ~10^40 before replacing with Inf, so check we are well below that
   toolExpectTrue(max(out) < 10^30, "All values are < 10^30")
 
+  # check wood harvest area * time step length (as unit is Mha yr-1) <=
+  # land of the correponding type (in the previous timestep)
+  land <- calcOutput("LandHarmonized", aggregate = FALSE)
+  woodHarvestArea <- out[, , sort(grep("wood_harvest_area$", getNames(out), value = TRUE))]
+  stopifnot(identical(getItems(woodHarvestArea, 3),
+                      paste0(c("primf", "primn", "secmf", "secnf", "secyf"),
+                             "_wood_harvest_area")))
+  getItems(woodHarvestArea, 3) <- c("primf", "primn", "secdf", "secdn", "secdf")
+  stopifnot(identical(getYears(woodHarvestArea), getYears(land)),
+            getItems(woodHarvestArea, 3) %in% getItems(land, 3))
+  years <- getYears(land, as.integer = TRUE)
+  timestepLengths <- new.magpie(years = years[-1], fill = diff(years))
+  woodland <- setYears(land[, -nyears(land), getItems(woodHarvestArea, 3)], years[-1])
+  landOvershoot <- min(woodland - timestepLengths * collapseDim(woodHarvestArea)[, -1, ])
+  toolExpectTrue(landOvershoot >= -10^-10, paste0("Wood harvest area is smaller than land ",
+                                                  "of the corresponding type ",
+                                                  "(maxdiff: ", landOvershoot, ")"))
+
   return(list(x = out,
               isocountries = FALSE,
               unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha yr-1; fertilizer: kg yr-1",
