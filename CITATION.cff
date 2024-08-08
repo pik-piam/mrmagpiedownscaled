@@ -3,7 +3,7 @@ message: If you use this software, please cite it using the metadata from this f
 type: software
 title: 'mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference
   data'
-version: 0.23.0
+version: 0.23.1
 date-released: '2024-08-08'
 abstract: Downscale and harmonize MAgPIE output using LUH2 as reference data.
 authors:

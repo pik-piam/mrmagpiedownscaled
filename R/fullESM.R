@@ -8,25 +8,22 @@
 #' When called via madrat::retrieveData rev will be converted to numeric_version.
 #' @param ... reserved for future use
 #' @param scenario scenario name to be included in filenames
-#' @param years Only years from this vector will be included in the output files. If interpolate is TRUE,
-#' all years given here will be included
+#' @param years vector of min and max year specifying the range of years for which
+#' years will be returned. Years outside of this range will be ignored.
 #' @param harmonizationPeriod Two integer values, before the first given
 #' year the target dataset is used, after the second given year the input
 #' dataset is used, in between harmonize between the two datasets
 #' @param compression compression level of the resulting .nc files, possible values are integers from 1-9,
 #' 1 = fastest, 9 = best compression
-#' @param interpolate boolean defining whether the data should be interpolated
-#' to include all years given in the years argument
 #' @param progress boolean defining whether progress should be printed
 #'
 #' @author Pascal Sauer, Jan Philipp Dietrich
-fullESM <- function(rev = NULL, ..., scenario = "", years = 2020:2100,
-                    harmonizationPeriod = c(2015, 2050),
-                    compression = 2, interpolate = FALSE, progress = TRUE) {
-  stopifnot(...length() == 0, isFALSE(interpolate))
+fullESM <- function(rev = NULL, ..., scenario = "", years = c(2020, 2100),
+                    harmonizationPeriod = c(2015, 2050), compression = 2, progress = TRUE) {
+  stopifnot(...length() == 0)
   missingValue <- 1e20
-  gridDefinition <- c(-179.875, 179.875, -89.875, 89.875, 0.25)
-  resolution <- gridDefinition[5]
+  resolution <- 0.25
+  gridDefinition <- c(-179.875, 179.875, -89.875, 89.875, resolution)
 
   revision <- if (is.null(rev)) format(Sys.time(), "%Y-%m-%d") else rev
   fileSuffix <- paste0("_input4MIPs_landState_RESCUE_PIK-MAgPIE-4-7-",
@@ -87,7 +84,7 @@ fullESM <- function(rev = NULL, ..., scenario = "", years = 2020:2100,
 }
 
 adaptYearsESM <- function(x, years) {
-  x <- x[, getYears(x, as.integer = TRUE) %in% years, ]
+  x <- x[, getYears(x, as.integer = TRUE) %in% min(years):max(years), ]
   # account for unit "years since 1970-01-01 0:0:0" which addMetadataESM sets
   x <- setYears(x, getYears(x, as.integer = TRUE) - 1970)
   return(x)
