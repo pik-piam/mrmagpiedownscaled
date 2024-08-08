@@ -68,6 +68,7 @@ calcNonlandReport <- function(outputFormat = "ESM", harmonizationPeriod = c(2015
 
     toolExpectTrue(min(out) >= 0, "All values are >= 0")
     toolExpectTrue(max(out[, , shares]) <= 1, "All shares are <= 1")
+    toolExpectLessDiff(dimSums(out[, , c("rndwd", "fulwd")], 3), 1, 10^-5, "shares sum to 1 (rndwd + fulwd)")
     toolExpectTrue(!any(is.na(out)), "No NAs in output")
 
     return(list(x = out,

@@ -63,6 +63,10 @@ calcLandReport <- function(outputFormat = "ESM", harmonizationPeriod = c(2015, 2
 
     toolExpectTrue(min(out) >= 0, "All values are >= 0")
     toolExpectTrue(max(out) <= 1, "All shares are <= 1")
+    landShares <- c("c3ann", "c3nfx",  "c3per", "c4ann", "c4per", "primf",
+                    "primn", "secdf", "secdn", "urban", "pastr", "range")
+    toolExpectTrue(max(dimSums(out[, , landShares], 3)) <= 1 + 10^-5,
+                   "land shares sum to <= 1 + 10^-5") # if < 1 the rest is likely water
     toolExpectTrue(all(out[, -1, c("primf", "primn")] <= setYears(out[, -nyears(out), c("primf", "primn")],
                                                                   getYears(out[, -1, ]))),
                    "primf and primn are never expanding", falseStatus = "warn")
@@ -72,8 +76,7 @@ calcLandReport <- function(outputFormat = "ESM", harmonizationPeriod = c(2015, 2
                 unit = "1",
                 min = 0,
                 max = 1,
-                description = paste("MAgPIE land use data downscaled to LUH2 resolution,",
-                                    "unit is share of cell area, except manaf which is share of secdf")))
+                description = paste("MAgPIE land use data downscaled to LUH2 resolution")))
   } else {
     stop("Can only report for outputFormat = 'ESM'")
   }
