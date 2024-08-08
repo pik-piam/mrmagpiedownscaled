@@ -1,6 +1,6 @@
 # Downscale and harmonize MAgPIE output using LUH2 as reference data
 
-R package **mrdownscale**, version **0.22.0**
+R package **mrdownscale**, version **0.23.0**
 
 [![CRAN status](https://www.r-pkg.org/badges/version/mrdownscale)](https://cran.r-project.org/package=mrdownscale) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11244475.svg)](https://doi.org/10.5281/zenodo.11244475) [![R build status](https://github.com/pik-piam/mrdownscale/workflows/check/badge.svg)](https://github.com/pik-piam/mrdownscale/actions) [![codecov](https://codecov.io/gh/pik-piam/mrdownscale/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/mrdownscale) 
 
@@ -39,7 +39,7 @@ In case of questions / problems please contact Pascal Sauer <pascal.sauer@pik-po
 
 To cite package **mrdownscale** in publications use:
 
-Sauer P, Dietrich J (2024). _mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference data_. doi:10.5281/zenodo.11244475 <https://doi.org/10.5281/zenodo.11244475>, R package version 0.22.0, <https://github.com/pik-piam/mrdownscale>.
+Sauer P, Dietrich J (2024). _mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference data_. doi:10.5281/zenodo.11244475 <https://doi.org/10.5281/zenodo.11244475>, R package version 0.23.0, <https://github.com/pik-piam/mrdownscale>.
 
 A BibTeX entry for LaTeX users is
 
@@ -48,7 +48,7 @@ A BibTeX entry for LaTeX users is
   title = {mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference data},
   author = {Pascal Sauer and Jan Philipp Dietrich},
   year = {2024},
-  note = {R package version 0.22.0},
+  note = {R package version 0.23.0},
   url = {https://github.com/pik-piam/mrdownscale},
   doi = {10.5281/zenodo.11244475},
 }
