@@ -23,7 +23,7 @@ calcESMStates <- function(harmonizationPeriod = c(2015, 2050)) {
               isocountries = FALSE,
               unit = "1",
               min = 0,
-              max = 1.0001,
+              max = 1,
               cache = FALSE,
               description = "ESM compatible states information"))
 }

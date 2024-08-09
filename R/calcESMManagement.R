@@ -30,9 +30,8 @@ calcESMManagement <- function(harmonizationPeriod = c(2015, 2050)) {
 
   return(list(x = x,
               isocountries = FALSE,
-              unit = "1",
+              unit = "1 or kg ha-1 yr-1",
               min = 0,
-              max = 1.0001,
               cache = FALSE,
               description = "ESM compatible management information"))
 }
