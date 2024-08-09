@@ -48,6 +48,12 @@ calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2mod") {
     primnChange[primnChange > 0] <- 0
     newValues <- out[, i, c("primn", "secdn")] + mbind(primnChange, secdnChange)
 
+    if (anyNA(newValues)) {
+      toolStatusMessage("warn", paste("Numerical problems in calcLandHarmonizedCategories,",
+                                      "NA values found!"))
+      newValues[is.na(newValues)] <- 0
+    }
+
     if (min(newValues) < -10^-10) {
       toolStatusMessage("warn", paste("Numerical problems in calcLandHarmonizedCategories,",
                                       "values should be >= 0, but found", min(newValues)))
