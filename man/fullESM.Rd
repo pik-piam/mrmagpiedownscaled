@@ -8,7 +8,6 @@ fullESM(
   rev = NULL,
   ...,
   scenario = "",
-  years = c(2020, 2100),
   harmonizationPeriod = c(2015, 2050),
   compression = 2,
   progress = TRUE
@@ -21,9 +20,6 @@ When called via madrat::retrieveData rev will be converted to numeric_version.}
 \item{...}{reserved for future use}
 
 \item{scenario}{scenario name to be included in filenames}
-
-\item{years}{vector of min and max year specifying the range of years for which
-years will be returned. Years outside of this range will be ignored.}
 
 \item{harmonizationPeriod}{Two integer values, before the first given
 year the target dataset is used, after the second given year the input
