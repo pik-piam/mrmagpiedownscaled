@@ -25,9 +25,9 @@ calcESMTransitions <- function(harmonizationPeriod = c(2015, 2050)) {
   # by subtracting 1 we get from-semantics (value for 1994 describes what happens from 1994 to 1995)
   # which is what LUH uses
   getYears(x) <- getYears(x, as.integer = TRUE) - 1
-  x <- mbind(x, nonland)
+  x <- mbind(x[, getYears(x, as.integer = TRUE) %in% 2020:2100, ],
+             nonland[, getYears(nonland, as.integer = TRUE) %in% 2020:2100, ])
 
-  x <- x[, getYears(x, as.integer = TRUE) %in% 2020:2100, ]
   # account for unit "years since 1970-01-01 0:0:0"
   x <- setYears(x, getYears(x, as.integer = TRUE) - 1970)
 
