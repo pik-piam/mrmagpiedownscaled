@@ -8,10 +8,8 @@ fullESM(
   rev = NULL,
   ...,
   scenario = "",
-  years = 2020:2100,
   harmonizationPeriod = c(2015, 2050),
   compression = 2,
-  interpolate = FALSE,
   progress = TRUE
 )
 }
@@ -23,18 +21,12 @@ When called via madrat::retrieveData rev will be converted to numeric_version.}
 
 \item{scenario}{scenario name to be included in filenames}
 
-\item{years}{Only years from this vector will be included in the output files. If interpolate is TRUE,
-all years given here will be included}
-
 \item{harmonizationPeriod}{Two integer values, before the first given
 year the target dataset is used, after the second given year the input
 dataset is used, in between harmonize between the two datasets}
 
 \item{compression}{compression level of the resulting .nc files, possible values are integers from 1-9,
 1 = fastest, 9 = best compression}
-
-\item{interpolate}{boolean defining whether the data should be interpolated
-to include all years given in the years argument}
 
 \item{progress}{boolean defining whether progress should be printed}
 }
