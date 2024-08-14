@@ -26,60 +26,41 @@
 #' to look back from last year to determine growth rate
 #' @author Jan Philipp Dietrich
 
-toolHarmonizeExtrapolateFade <- function(input, target, harmonizationPeriod,
-                                         constantSum, growthAveragePeriod = 10) {
+toolHarmonizeExtrapolateFade <- function(input, target, harmonizationPeriod, constantSum) {
   # extrapolate target data till the end of the harmonization period, then
   # fade from one dataset to the other
   a <- harmonizationPeriod[1]
   b <- harmonizationPeriod[2]
   inputYears <- getYears(input, as.integer = TRUE)
   targetYears <- getYears(target, as.integer = TRUE)
+  transitionYears <- inputYears[inputYears > a & inputYears < b]
   stopifnot(length(harmonizationPeriod) == 2,
             round(harmonizationPeriod) == harmonizationPeriod,
             b > a,
             a %in% inputYears,
             a %in% targetYears,
             b %in% inputYears,
-            min(targetYears) <= a - growthAveragePeriod,
             all.equal(getItems(input, dim = 1), getItems(target, dim = 1)),
             all.equal(getItems(input, dim = 3), getItems(target, dim = 3)))
 
-  # calculate average growth over growth period in target data
-  .growth <- function(target, growthPeriodEnd, growthAveragePeriod, constantSum) {
-    growthPeriod <- time_interpolate(target, c(growthPeriodEnd - growthAveragePeriod, growthPeriodEnd))
-    growth <- setYears(growthPeriod[, 2, ] / growthPeriod[, 1, ], NULL)^(1 / growthAveragePeriod)
-    growth[is.na(growth) | is.infinite(growth)] <- 1
-    if (constantSum) {
-      # set growth rates to 0 for land types with an area share of less than 0.1% to avoid distortions
-      # due to potentially unrealistic growth rates (values to be resetted are first set to negative values
-      # via multiplication with -1 and afterwards set to a growth rate of 1)
-      growth <- growth * (2 * setYears(growthPeriod[, 1, ] / dimSums(growthPeriod[, 1, ], dim = 3) > 0.001, NULL) - 1)
-      growth[growth < 0 | is.na(growth)] <- 1
-    }
-    return(growth)
-  }
-  growth <- .growth(target, growthPeriodEnd = a, growthAveragePeriod, constantSum)
-  transitionYears <- inputYears[inputYears >= a & inputYears <= b]
-  extrapolationYears <- transitionYears[transitionYears > max(targetYears)]
-  lastAvailableTransitionYear <-  max(transitionYears[transitionYears <= max(targetYears)])
-  extrapolationRange <- (extrapolationYears - lastAvailableTransitionYear)
-  names(extrapolationRange) <- paste0("y", extrapolationYears)
-  extrapolationRange <- as.magpie(extrapolationRange)
+  # TODO update documentation
+  exTarget <- time_interpolate(target, transitionYears, extrapolation_type = "linear")
+  exTarget[exTarget < 0] <- 0
 
-  exTarget  <- time_interpolate(target, transitionYears, extrapolation_type = "constant",
-                                integrate_interpolated_years = TRUE)
-  # dampen growth rates by taking the square root of it to reduce too extreme behavior
-  exTarget[, extrapolationYears, ] <- exTarget[, extrapolationYears, ] * growth^(extrapolationRange / 2)
   if (constantSum) {
     # scale exTarget so that its total sum over all layers agrees for all time steps with the sum over all layers
     # in target in the harmonization year (e.g. makes sure that the land changes in a land data set do not alter
     # the total sum of land.)
-    exTarget[, extrapolationYears, ] <- exTarget[, extrapolationYears, ] *
-      dimSums(setYears(target[, a, ], NULL), dim = 3) / dimSums(exTarget[, extrapolationYears, ], dim = 3)
+    exTarget <- exTarget * dimSums(setYears(target[, a, ], NULL), dim = 3) / dimSums(exTarget, dim = 3)
+    exTarget[is.na(exTarget)] <- 0
   }
-  out <- convergence(exTarget[, transitionYears, ], input[, transitionYears, ],
+
+  # fade over from extrapolated target data to input data
+  out <- convergence(exTarget, input[, transitionYears, ],
                      start_year = a, end_year = b, type = "s")
-  out <- mbind(target[, (getYears(target, as.integer = TRUE) < min(getYears(out, as.integer = TRUE))), ], out,
-               input[, (getYears(input, as.integer = TRUE) > max(getYears(out, as.integer = TRUE))), ])
+
+  out <- mbind(target[, getYears(target, as.integer = TRUE) < min(getYears(out, as.integer = TRUE)), ],
+               out,
+               input[, getYears(input, as.integer = TRUE) > max(getYears(out, as.integer = TRUE)), ])
   return(out)
 }

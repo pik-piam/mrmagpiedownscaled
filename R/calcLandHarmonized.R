@@ -46,7 +46,6 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   if (method == "extrapolateFade") method <- "extrapolateFadeConstantSum"
   harmonizer <- toolGetHarmonizer(method)
   out <- harmonizer(input, target, harmonizationPeriod = harmonizationPeriod)
-  out[is.na(out)] <- 0 # why are NAs introduced here? input and target have no NAs
 
   # during harmonization primf and primn expansion might be introduced due to
   # primf or primn differences between input and target dataset
