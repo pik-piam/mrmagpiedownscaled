@@ -24,8 +24,7 @@
 #' is suppossed to stay contstant (e.g. sum over all land types) or not.
 #' @param growthAveragePeriod when projecting into the future, how many years
 #' to look back from last year to determine growth rate
-#' @author Jan Philipp Dietrich
-
+#' @author Jan Philipp Dietrich, Pascal Sauer
 toolHarmonizeExtrapolateFade <- function(input, target, harmonizationPeriod, constantSum) {
   # extrapolate target data till the end of the harmonization period, then
   # fade from one dataset to the other
@@ -44,7 +43,7 @@ toolHarmonizeExtrapolateFade <- function(input, target, harmonizationPeriod, con
             all.equal(getItems(input, dim = 3), getItems(target, dim = 3)))
 
   # TODO update documentation
-  exTarget <- time_interpolate(target, transitionYears, extrapolation_type = "linear")
+  exTarget <- toolExtrapolateLinear(target, transitionYears)
   exTarget[exTarget < 0] <- 0
 
   if (constantSum) {
@@ -63,4 +62,25 @@ toolHarmonizeExtrapolateFade <- function(input, target, harmonizationPeriod, con
                out,
                input[, getYears(input, as.integer = TRUE) > max(getYears(out, as.integer = TRUE)), ])
   return(out)
+}
+
+toolExtrapolateLinear <- function(x, years) {
+  stopifnot(names(dimnames(x))[2] == "year",
+            !is.na(x))
+
+  spatial <- strsplit(names(dimnames(x))[1], "\\.")[[1]]
+
+  return(do.call(mbind, lapply(getItems(x, 1), function(location) {
+    return(do.call(mbind, lapply(getItems(x, 3), function(category) {
+      d <- as.data.frame(x[location, , category], rev = 3)
+
+      model <- stats::lm(.value ~ year, data = d)
+
+      prediction <- d[rep(1, length(years)), ]
+      prediction$year <- years
+      prediction$.value <- stats::predict(model, newdata = prediction)
+
+      return(as.magpie(prediction, spatial = spatial, temporal = "year"))
+    })))
+  })))
 }
