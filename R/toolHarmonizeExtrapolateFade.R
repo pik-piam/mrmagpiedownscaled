@@ -78,7 +78,13 @@ toolExtrapolateLinear <- function(x, years) {
 
       prediction <- d[rep(1, length(years)), ]
       prediction$year <- years
-      prediction$.value <- stats::predict(model, newdata = prediction)
+
+      # use linear trend only if signicant
+      if (all(d$.value == d$.value[1]) || summary(model)$coefficients["year", "Pr(>|t|)"] > 0.05) {
+        prediction$.value <- mean(d$.value)
+      } else {
+        prediction$.value <- stats::predict(model, newdata = prediction)
+      }
 
       return(as.magpie(prediction, spatial = spatial, temporal = "year"))
     })))
