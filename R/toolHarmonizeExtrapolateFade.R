@@ -7,10 +7,9 @@
 #' into the future so that it covers the whole transition period and 2) fade
 #' over from the extrapolated target data to the input data.
 #'
-#' Extrapolation of target data is achieved by taking the historically observed
-#' growth rates of the different categories, dampen them (to avoid overestimation
-#' of trends), apply them into the future and finally, if \code{constantSum} is
-#' set to TRUE, normalize the result to the total sum of each spatial entity.
+#' Extrapolation is done by \code{\link{toolExtrapolate}}. After extrapolation
+#' negative values are replaced by zeros and if \code{constantSum} is
+#' set to TRUE, the result is normalized to the total sum of each spatial entity.
 #'
 #' Please note that it is crucial to set the switch \code{constantSum} correctly
 #' for the specific application as otherwise the results will be inconsistent.
@@ -42,8 +41,7 @@ toolHarmonizeExtrapolateFade <- function(input, target, harmonizationPeriod, con
             all.equal(getItems(input, dim = 1), getItems(target, dim = 1)),
             all.equal(getItems(input, dim = 3), getItems(target, dim = 3)))
 
-  # TODO update documentation
-  exTarget <- toolExtrapolateLinear(target, transitionYears)
+  exTarget <- toolExtrapolate(target, transitionYears)
   exTarget[exTarget < 0] <- 0
 
   if (constantSum) {
@@ -62,31 +60,4 @@ toolHarmonizeExtrapolateFade <- function(input, target, harmonizationPeriod, con
                out,
                input[, getYears(input, as.integer = TRUE) > max(getYears(out, as.integer = TRUE)), ])
   return(out)
-}
-
-toolExtrapolateLinear <- function(x, years) {
-  stopifnot(names(dimnames(x))[2] == "year",
-            !is.na(x))
-
-  spatial <- strsplit(names(dimnames(x))[1], "\\.")[[1]]
-
-  return(do.call(mbind, lapply(getItems(x, 1), function(location) {
-    return(do.call(mbind, lapply(getItems(x, 3), function(category) {
-      d <- as.data.frame(x[location, , category], rev = 3)
-
-      model <- stats::lm(.value ~ year, data = d)
-
-      prediction <- d[rep(1, length(years)), ]
-      prediction$year <- years
-
-      # use linear trend only if signicant
-      if (all(d$.value == d$.value[1]) || summary(model)$coefficients["year", "Pr(>|t|)"] > 0.05) {
-        prediction$.value <- mean(d$.value)
-      } else {
-        prediction$.value <- stats::predict(model, newdata = prediction)
-      }
-
-      return(as.magpie(prediction, spatial = spatial, temporal = "year"))
-    })))
-  })))
 }
