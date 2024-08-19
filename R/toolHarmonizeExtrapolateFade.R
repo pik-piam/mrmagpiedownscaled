@@ -14,19 +14,18 @@
 #' Please note that it is crucial to set the switch \code{constantSum} correctly
 #' for the specific application as otherwise the results will be inconsistent.
 #'
-#' @param input input data
-#' @param target target data
+#' @param input input data as magpie object
+#' @param target target data as magpie object
 #' @param harmonizationPeriod Two integer values, before the first given
 #' year the target dataset is used, after the second given year the input
 #' dataset is used, in between harmonize between the two datasets
 #' @param constantSum boolean indicating whether the total sum over all layers
 #' is suppossed to stay contstant (e.g. sum over all land types) or not.
-#' @param growthAveragePeriod when projecting into the future, how many years
-#' to look back from last year to determine growth rate
+#' @return harmonized data set as magpie object with data from input for years
+#' before the harmonization period, data from target for years after the
+#' harmonization period and a smooth transition in between.
 #' @author Jan Philipp Dietrich, Pascal Sauer
 toolHarmonizeExtrapolateFade <- function(input, target, harmonizationPeriod, constantSum) {
-  # extrapolate target data till the end of the harmonization period, then
-  # fade from one dataset to the other
   a <- harmonizationPeriod[1]
   b <- harmonizationPeriod[2]
   inputYears <- getYears(input, as.integer = TRUE)

@@ -4,18 +4,12 @@
 \alias{toolHarmonizeExtrapolateFade}
 \title{toolHarmonizeExtrapolateFade}
 \usage{
-toolHarmonizeExtrapolateFade(
-  input,
-  target,
-  harmonizationPeriod,
-  constantSum,
-  growthAveragePeriod = 10
-)
+toolHarmonizeExtrapolateFade(input, target, harmonizationPeriod, constantSum)
 }
 \arguments{
-\item{input}{input data}
+\item{input}{input data as magpie object}
 
-\item{target}{target data}
+\item{target}{target data as magpie object}
 
 \item{harmonizationPeriod}{Two integer values, before the first given
 year the target dataset is used, after the second given year the input
@@ -23,9 +17,11 @@ dataset is used, in between harmonize between the two datasets}
 
 \item{constantSum}{boolean indicating whether the total sum over all layers
 is suppossed to stay contstant (e.g. sum over all land types) or not.}
-
-\item{growthAveragePeriod}{when projecting into the future, how many years
-to look back from last year to determine growth rate}
+}
+\value{
+harmonized data set as magpie object with data from input for years
+before the harmonization period, data from target for years after the
+harmonization period and a smooth transition in between.
 }
 \description{
 Tool function for creating a harmonized data set with a smooth transition
@@ -36,14 +32,13 @@ A smooth transition is achieved in 2 steps: 1) extrapolating the target data
 into the future so that it covers the whole transition period and 2) fade
 over from the extrapolated target data to the input data.
 
-Extrapolation of target data is achieved by taking the historically observed
-growth rates of the different categories, dampen them (to avoid overestimation
-of trends), apply them into the future and finally, if \code{constantSum} is
-set to TRUE, normalize the result to the total sum of each spatial entity.
+Extrapolation is done by \code{\link{toolExtrapolate}}. After extrapolation
+negative values are replaced by zeros and if \code{constantSum} is
+set to TRUE, the result is normalized to the total sum of each spatial entity.
 
 Please note that it is crucial to set the switch \code{constantSum} correctly
 for the specific application as otherwise the results will be inconsistent.
 }
 \author{
-Jan Philipp Dietrich
+Jan Philipp Dietrich, Pascal Sauer
 }
