@@ -118,7 +118,8 @@ toolWoodHarvestArea <- function(x, land, fix) {
                              c("secnf_wood_harvest_area", "secdn")))
   colnames(map) <- c("harvest", "land")
 
-  stopifnot(setequal(getItems(x, 3), map$harvest))
+  stopifnot(setequal(getItems(x, 3), map$harvest),
+            setequal(getItems(x, 1), getItems(land, 1)))
 
   woodHarvestAreaBefore <- x
   woodHarvestArea <- woodHarvestAreaBefore

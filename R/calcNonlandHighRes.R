@@ -59,6 +59,11 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
   toolExpectLessDiff(max(abs(terra::minmax(deviation))), 0, 10^-5,
                      paste("In", harmonizationPeriod[1], "downscaled data equals target data"))
 
+  land <- calcOutput("LandHighRes", input = input, target = target,
+                     harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
+  toolWoodHarvestArea(out[, getYears(land), grep("wood_harvest_area$", getItems(out, 3))],
+                      land, fix = FALSE)
+
   return(list(x = out,
               min = 0,
               isocountries = FALSE,
