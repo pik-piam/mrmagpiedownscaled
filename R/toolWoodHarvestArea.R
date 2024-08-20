@@ -1,4 +1,5 @@
 #' toolWoodHarvestArea
+#'
 #' Check wood harvest area is not exceeding land area of the corresponding
 #' type in the previous timestep divided by timestep length. Optionally fix
 #' by simply reducing wood harvest area to at most match land area.
