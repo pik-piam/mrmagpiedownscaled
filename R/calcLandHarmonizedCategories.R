@@ -55,7 +55,6 @@ calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2mod") {
   attr(out, "crs") <- attr(x, "crs")
   attr(out, "geometry") <- attr(x, "geometry")
 
-  # check data for consistency
   toolExpectLessDiff(dimSums(out[, , c("primn", "secdn")], 3), totaln, 10^-5,
                      paste("No change in sum of primn and secdn when replacing",
                            "primn expansion with secdn expansion"))
