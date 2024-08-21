@@ -31,16 +31,21 @@ calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2mod") {
   # if totaln shrinks, shrink primn and secdn according to their proportions in the previous timestep
   # if totaln expands, expand only secdn, primn stays constant
   totaln <- dimSums(out[, , c("primn", "secdn")], 3)
+  outt <- out[, , c("primn", "secdn")]
   for (i in seq_len(nyears(totaln) - 1)) {
+    if (getYears(totaln)[i] == "y2060"){
+      browser()
+    }
     dif <- totaln[, i + 1, ] - totaln[, i, ]
-    change <- out[, i, c("primn", "secdn")] / totaln[, i, ] * collapseDim(dif)
+    change <- out[, i, c("primn", "secdn")] * (collapseDim(dif) / totaln[, i, ])
+    stopifnot(!is.infinite(change))
 
     # handle totaln[ , i, ] == 0
     changeOnlySecdn <- change
     changeOnlySecdn[, , "primn"] <- 0
     changeOnlySecdn[, , "secdn"] <- dif
     change[is.na(change)] <- changeOnlySecdn[is.na(change)]
-    stopifnot(!is.finite(change))  # TODO this will fail
+    stopifnot(is.finite(change))
 
     primnChange <- change[, , "primn"]
     secdnChange <- change[, , "secdn"]
@@ -61,7 +66,14 @@ calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2mod") {
     newValues[newValues < 0] <- 0
     out[, i + 1, c("primn", "secdn")] <- newValues
   }
-  stopifnot(all.equal(dimSums(out[, , c("primn", "secdn")], 3), totaln))
+  browser()
+  browser()
+  dif <- dimSums(out[, , c("primn", "secdn")], 3) - totaln
+  summary(dif)
+  where(dif < -10^-5)$true$individual
+  toolExpectLessDiff(dimSums(out[, , c("primn", "secdn")], 3), totaln, 10^-5,
+                     paste("sum of primn and secdn does not change when replacing",
+                           "primn expansion with secdn expansion"))
 
   attr(out, "crs") <- attr(x, "crs")
   attr(out, "geometry") <- attr(x, "geometry")
