@@ -29,6 +29,6 @@ downscaleRunESM <- function(outputdir, revision = NULL, scenario = NULL, ...) {
 
   redirectSource("MagpieFulldataGdx", c(clustermap, gdx), linkOthers = FALSE)
   stopifnot(length(getConfig("redirections")) >= 1)
-  retrieveData("ESM", rev = revision, scenario = scenario, progress = FALSE,
-               outputfolder = outputdir, ...)
+  retrieveData("ESM", rev = revision, puc = FALSE, scenario = scenario,
+               progress = FALSE, outputfolder = outputdir, ...)
 }
