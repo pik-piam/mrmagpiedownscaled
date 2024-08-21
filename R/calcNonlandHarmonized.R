@@ -86,7 +86,7 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
                                              calcOutput("LandHarmonized", input = input, target = target,
                                                         harmonizationPeriod = harmonizationPeriod,
                                                         method = method, aggregate = FALSE),
-                                             fix = TRUE)
+                                             fix = FALSE)
 
   attr(out, "geometry") <- geometry
   attr(out, "crs")      <- crs
