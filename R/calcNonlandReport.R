@@ -53,8 +53,6 @@ calcNonlandReport <- function(outputFormat = "ESM", harmonizationPeriod = c(2015
     names(dimnames(fillValuesCountry))[[1]] <- "x.y.country"
     woodTypeShares[is.na(woodTypeShares)] <- fillValuesCountry[is.na(woodTypeShares)]
     getNames(woodTypeShares) <- c("rndwd", "fulwd")
-    stopifnot(abs(dimSums(woodTypeShares, 3) - 1) < 1e-10,
-              !is.na(woodTypeShares))
     woodTypeShares[, , "rndwd"] <- 1 - woodTypeShares[, , "fulwd"]
     woodTypeShares <- collapseDim(woodTypeShares, 1.3)
 

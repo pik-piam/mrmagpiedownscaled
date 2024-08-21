@@ -25,7 +25,7 @@ calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2mod") {
   ref <- calcOutput("LandCategorizationWeight", map = map, geometry = attr(x, "geometry"),
                     crs = attr(x, "crs"), aggregate = FALSE)
   y   <- toolAggregate(x, map, dim = 3, from = "dataInput", to = "merge", weight = ref)
-  out <- toolAggregate(y, map, dim = 3, from = "merge",     to = "dataOutput") # TODO this has Inf when using /p/projects/landuse/users/dietrich/git/magpie/output/default_2024-08-09_11.28.56
+  out <- toolAggregate(y, map, dim = 3, from = "merge",     to = "dataOutput")
 
   # category remapping does not take into account that primn cannot expand, so redistribute:
   # if totaln shrinks, shrink primn and secdn according to their proportions in the previous timestep
@@ -40,7 +40,7 @@ calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2mod") {
     changeOnlySecdn[, , "primn"] <- 0
     changeOnlySecdn[, , "secdn"] <- dif
     change[is.na(change)] <- changeOnlySecdn[is.na(change)]
-    stopifnot(!is.na(change))
+    stopifnot(!is.finite(change))  # TODO this will fail
 
     primnChange <- change[, , "primn"]
     secdnChange <- change[, , "secdn"]
