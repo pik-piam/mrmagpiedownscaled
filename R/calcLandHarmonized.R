@@ -14,38 +14,32 @@
 #' @author Pascal Sauer, Jan Philipp Dietrich
 calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
                                harmonizationPeriod = c(2015, 2050),
-                               method = "extrapolateFade") {
-  input    <- calcOutput("LandHarmonizedCategories", input = input,
-                         target = target, aggregate = FALSE)
-  geometry <- attr(input, "geometry")
-  crs      <- attr(input, "crs")
+                               method = "fade") {
+  xInput    <- calcOutput("LandHarmonizedCategories", input = input,
+                          target = target, aggregate = FALSE)
+  geometry <- attr(xInput, "geometry")
+  crs      <- attr(xInput, "crs")
 
-  target <- calcOutput("LandTarget", target = target, aggregate = FALSE)
-  # bring target data to spatial resolution of input data
-  ref    <- as.SpatVector(input[, 1, 1])[, c(".region", ".id")]
-  target <- terra::extract(target, ref, sum, na.rm = TRUE, bind = TRUE)
-  target <- as.magpie(target)
-  stopifnot(setequal(getItems(input, 3), getItems(target, 3)))
-  target <- target[, , getItems(input, 3)] # harmonize order of dim 3
+  xTarget <- calcOutput("LandTargetExtrapolated", input = input, target = target,
+                        harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
 
   # checks and corrections
-  inSum <- dimSums(input, dim = 3)
-  tSum <- dimSums(target, dim = 3)
+  inSum <- dimSums(xInput, dim = 3)
+  tSum <- dimSums(xTarget, dim = 3)
   toolExpectLessDiff(inSum, inSum[, 1, ], 10^-5, "Total areas in input stay constant over time")
   toolExpectLessDiff(tSum, tSum[, 1, ], 10^-5, "Total areas in target stay constant over time")
   toolExpectLessDiff(inSum[, 1, ], tSum[, 1, ], 10^-5,
                      "Total areas are the same in target and input data")
   if (max(abs(inSum[, 1, ] - tSum[, 1, ])) >= 10^-5) {
-    corr <- setYears(dimSums(target[, 1, ], dim = 3) / dimSums(input[, 1, ], dim = 3), NULL)
-    input <- input * corr
+    corr <- setYears(dimSums(xTarget[, 1, ], dim = 3) / dimSums(xInput[, 1, ], dim = 3), NULL)
+    xInput <- xInput * corr
     toolStatusMessage("note", paste0("input data multiplied with correction factors to match target areas ",
                                      "(max ratio = ", round(max(corr), 2),
                                      ", min ratio = ", round(min(corr), 2),  ")"))
   }
 
-  if (method == "extrapolateFade") method <- "extrapolateFadeConstantSum"
   harmonizer <- toolGetHarmonizer(method)
-  out <- harmonizer(input, target, harmonizationPeriod = harmonizationPeriod)
+  out <- harmonizer(xInput, xTarget, harmonizationPeriod = harmonizationPeriod)
 
   # during harmonization primf and primn expansion might be introduced due to
   # primf or primn differences between input and target dataset
@@ -72,21 +66,21 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   toolExpectTrue(!is.null(attr(out, "crs")), "Data contains CRS information")
   toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")),
                  "Dimensions are named correctly")
-  toolExpectTrue(setequal(getItems(out, dim = 3), getItems(input, dim = 3)),
+  toolExpectTrue(setequal(getItems(out, dim = 3), getItems(xInput, dim = 3)),
                  "Land categories remain unchanged")
   toolExpectTrue(all(out >= 0), "All values are >= 0")
   outSum <- dimSums(out, dim = 3)
   toolExpectLessDiff(outSum, outSum[, 1, ], 10^-5, "Total areas in output stay constant over time")
-  toolExpectLessDiff(outSum, dimSums(input, dim = 3), 10^-5, "Total areas remain unchanged")
+  toolExpectLessDiff(outSum, dimSums(xInput, dim = 3), 10^-5, "Total areas remain unchanged")
   toolExpectTrue(all(out[, -1, c("primf", "primn")] <= setYears(out[, -nyears(out), c("primf", "primn")],
                                                                 getYears(out[, -1, ]))),
                  "primf and primn are never expanding", falseStatus = "warn")
   toolExpectLessDiff(out[, getYears(out, as.integer = TRUE) <= harmonizationPeriod[1], ],
-                     target[, getYears(target, as.integer = TRUE) <= harmonizationPeriod[1], ],
+                     xTarget[, getYears(xTarget, as.integer = TRUE) <= harmonizationPeriod[1], ],
                      10^-5, "Returning reference data before harmonization period")
 
   outAfterHarmonization <- out[, getYears(out, as.integer = TRUE) >= harmonizationPeriod[2], ]
-  inputAfterHarmonization <- input[, getYears(input, as.integer = TRUE) >= harmonizationPeriod[2], ]
+  inputAfterHarmonization <- xInput[, getYears(xInput, as.integer = TRUE) >= harmonizationPeriod[2], ]
   nonprimfix <- setdiff(getItems(out, dim = 3), primSecCategories)
   toolExpectLessDiff(outAfterHarmonization[, , nonprimfix],
                      inputAfterHarmonization[, , nonprimfix],

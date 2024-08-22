@@ -13,7 +13,7 @@
 #' @author Pascal Sauer
 calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
                                   harmonizationPeriod = c(2015, 2050),
-                                  method = "extrapolateFade") {
+                                  method = "fade") {
   xInput <- calcOutput("NonlandHarmonizedCategories", input = input, aggregate = FALSE)
   geometry <- attr(xInput, "geometry")
   crs <- attr(xInput, "crs")
@@ -27,21 +27,26 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   stopifnot(setequal(getItems(xInput, 3), getItems(xTarget, 3)))
   xTarget <- xTarget[, , getItems(xInput, 3)] # harmonize order of dim 3
 
-  if (method == "extrapolateFade") {
+  if (method == "fade") {
+    # extrapolate
     bioh <- grep("bioh$", getItems(xInput, 3), value = TRUE)
     woodHarvestArea <- grep("wood_harvest_area$", getItems(xInput, 3), value = TRUE)
     harvestWeightType <- grep("harvest_weight_type$", getItems(xInput, 3), value = TRUE)
     fertilizer <- grep("fertilizer$", getItems(xInput, 3), value = TRUE)
     stopifnot(setequal(c(bioh, woodHarvestArea, harvestWeightType, fertilizer), getItems(xInput, 3)))
 
-    out <- mbind(toolHarmonizeExtrapolateFade(xInput[, , c(bioh, woodHarvestArea, harvestWeightType)],
-                                              xTarget[, , c(bioh, woodHarvestArea, harvestWeightType)],
-                                              harmonizationPeriod = harmonizationPeriod,
-                                              constantSum = FALSE, linearModel = FALSE, fallback = "last"),
-                 toolHarmonizeExtrapolateFade(xInput[, , fertilizer],
-                                              xTarget[, , fertilizer],
-                                              harmonizationPeriod = harmonizationPeriod,
-                                              constantSum = FALSE))
+    inputYears <- getYears(xInput, as.integer = TRUE)
+    transitionYears <- inputYears[inputYears > harmonizationPeriod[1] & inputYears < harmonizationPeriod[2]]
+    woodHarvest <- toolExtrapolate(xTarget[, , c(bioh, woodHarvestArea, harvestWeightType)], transitionYears,
+                                   linearModel = FALSE, fallback = "last")
+    fertilizer <- toolExtrapolate(xTarget[, , fertilizer], transitionYears)
+    xTargetExtrapolated <- mbind(woodHarvest, fertilizer)
+    xTargetExtrapolated[xTargetExtrapolated < 0] <- 0
+    xTargetExtrapolated <- mbind(xTarget, xTargetExtrapolated)
+
+    # harmonize/fade
+    out <- toolHarmonizeFade(xInput, xTargetExtrapolated, harmonizationPeriod = harmonizationPeriod)
+    stopifnot(setequal(getItems(out, 3), getItems(xInput, 3)))
   } else {
     harmonizer <- toolGetHarmonizer(method)
     out <- harmonizer(xInput, xTarget, harmonizationPeriod = harmonizationPeriod)
