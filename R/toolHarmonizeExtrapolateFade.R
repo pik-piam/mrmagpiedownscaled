@@ -21,11 +21,12 @@
 #' dataset is used, in between harmonize between the two datasets
 #' @param constantSum boolean indicating whether the total sum over all layers
 #' is suppossed to stay contstant (e.g. sum over all land types) or not.
+#' @param ... additional arguments passed to \code{\link{toolExtrapolate}}
 #' @return harmonized data set as magpie object with data from input for years
 #' before the harmonization period, data from target for years after the
 #' harmonization period and a smooth transition in between.
 #' @author Jan Philipp Dietrich, Pascal Sauer
-toolHarmonizeExtrapolateFade <- function(input, target, harmonizationPeriod, constantSum) {
+toolHarmonizeExtrapolateFade <- function(input, target, harmonizationPeriod, constantSum, ...) {
   a <- harmonizationPeriod[1]
   b <- harmonizationPeriod[2]
   inputYears <- getYears(input, as.integer = TRUE)
@@ -40,7 +41,7 @@ toolHarmonizeExtrapolateFade <- function(input, target, harmonizationPeriod, con
             all.equal(getItems(input, dim = 1), getItems(target, dim = 1)),
             all.equal(getItems(input, dim = 3), getItems(target, dim = 3)))
 
-  exTarget <- toolExtrapolate(target, transitionYears)
+  exTarget <- toolExtrapolate(target, transitionYears, ...)
   exTarget[exTarget < 0] <- 0
 
   if (constantSum) {

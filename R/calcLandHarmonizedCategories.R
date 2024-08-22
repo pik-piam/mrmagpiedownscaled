@@ -33,40 +33,31 @@ calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2mod") {
   totaln <- dimSums(out[, , c("primn", "secdn")], 3)
   for (i in seq_len(nyears(totaln) - 1)) {
     dif <- totaln[, i + 1, ] - totaln[, i, ]
-    change <- out[, i, c("primn", "secdn")] / totaln[, i, ] * collapseDim(dif)
 
-    # handle totaln[ , i, ] == 0
-    changeOnlySecdn <- change
-    changeOnlySecdn[, , "primn"] <- 0
-    changeOnlySecdn[, , "secdn"] <- dif
-    change[is.na(change)] <- changeOnlySecdn[is.na(change)]
-    stopifnot(!is.finite(change))  # TODO this will fail
+    stopifnot(out[, i, c("primn", "secdn")] >= 0)
+    expansion <- out[, i, c("primn", "secdn")] * 0
+    expansion[, , "secdn"] <- dif
+    expansion[expansion < 0] <- 0
 
-    primnChange <- change[, , "primn"]
-    secdnChange <- change[, , "secdn"]
-    secdnChange[primnChange > 0] <- secdnChange[primnChange > 0] + primnChange[primnChange > 0]
-    primnChange[primnChange > 0] <- 0
-    newValues <- out[, i, c("primn", "secdn")] + mbind(primnChange, secdnChange)
+    shrinking <- out[, i, c("primn", "secdn")] * (collapseDim(dif) / totaln[, i, ])
+    shrinking[is.na(shrinking) | shrinking > 0] <- 0
 
-    if (anyNA(newValues)) {
-      toolStatusMessage("warn", paste("Numerical problems in calcLandHarmonizedCategories,",
-                                      "NA values found!"))
-      newValues[is.na(newValues)] <- 0
-    }
-
-    if (min(newValues) < -10^-10) {
-      toolStatusMessage("warn", paste("Numerical problems in calcLandHarmonizedCategories,",
-                                      "values should be >= 0, but found", min(newValues)))
+    newValues <- out[, i, c("primn", "secdn")] + expansion + shrinking
+    if (!all(is.finite(newValues) & newValues >= -10^-10)) {
+      summ <- summary(newValues)
+      toolExpectTrue(FALSE, paste("Unexpected values while replacing primn expansion with secdn expansion, summary:",
+                                  paste(names(summ), summ, collapse = ", ")))
     }
     newValues[newValues < 0] <- 0
     out[, i + 1, c("primn", "secdn")] <- newValues
   }
-  stopifnot(all.equal(dimSums(out[, , c("primn", "secdn")], 3), totaln))
 
   attr(out, "crs") <- attr(x, "crs")
   attr(out, "geometry") <- attr(x, "geometry")
 
-  # check data for consistency
+  toolExpectLessDiff(dimSums(out[, , c("primn", "secdn")], 3), totaln, 10^-5,
+                     paste("No change in sum of primn and secdn when replacing",
+                           "primn expansion with secdn expansion"))
   toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")),
                  "Dimensions are named correctly")
   toolExpectTrue(setequal(getItems(out, dim = 3), map$dataOutput), "Land categories match target definition")

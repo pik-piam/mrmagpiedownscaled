@@ -28,8 +28,20 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   xTarget <- xTarget[, , getItems(xInput, 3)] # harmonize order of dim 3
 
   if (method == "extrapolateFade") {
-    out <- toolHarmonizeExtrapolateFade(xInput, xTarget, harmonizationPeriod = harmonizationPeriod,
-                                        constantSum = FALSE)
+    bioh <- grep("bioh$", getItems(xInput, 3), value = TRUE)
+    woodHarvestArea <- grep("wood_harvest_area$", getItems(xInput, 3), value = TRUE)
+    harvestWeightType <- grep("harvest_weight_type$", getItems(xInput, 3), value = TRUE)
+    fertilizer <- grep("fertilizer$", getItems(xInput, 3), value = TRUE)
+    stopifnot(setequal(c(bioh, woodHarvestArea, harvestWeightType, fertilizer), getItems(xInput, 3)))
+
+    out <- mbind(toolHarmonizeExtrapolateFade(xInput[, , c(bioh, woodHarvestArea, harvestWeightType)],
+                                              xTarget[, , c(bioh, woodHarvestArea, harvestWeightType)],
+                                              harmonizationPeriod = harmonizationPeriod,
+                                              constantSum = FALSE, linearModel = FALSE, fallback = "last"),
+                 toolHarmonizeExtrapolateFade(xInput[, , fertilizer],
+                                              xTarget[, , fertilizer],
+                                              harmonizationPeriod = harmonizationPeriod,
+                                              constantSum = FALSE))
   } else {
     harmonizer <- toolGetHarmonizer(method)
     out <- harmonizer(xInput, xTarget, harmonizationPeriod = harmonizationPeriod)
