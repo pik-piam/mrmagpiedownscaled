@@ -20,8 +20,10 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   geometry <- attr(xInput, "geometry")
   crs      <- attr(xInput, "crs")
 
+  inputYears <- getYears(xInput, as.integer = TRUE)
+  transitionYears <- inputYears[inputYears > harmonizationPeriod[1] & inputYears < harmonizationPeriod[2]]
   xTarget <- calcOutput("LandTargetExtrapolated", input = input, target = target,
-                        harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
+                        transitionYears = transitionYears, aggregate = FALSE)
 
   # checks and corrections
   inSum <- dimSums(xInput, dim = 3)
