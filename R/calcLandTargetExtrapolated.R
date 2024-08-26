@@ -23,6 +23,7 @@ calcLandTargetExtrapolated <- function(input = "magpie", target = "luh2mod",
   targetArea <- dimSums(setYears(xTarget[, max(histYears), ], NULL), dim = 3)
   exTarget <- exTarget * targetArea / dimSums(exTarget, dim = 3)
   exTarget[is.na(exTarget)] <- 0
+  out <- mbind(xTarget, exTarget)
 
   # ------- calculate wood harvest shares -------
   harvestHist <- calcOutput("NonlandTargetLowRes", input = input, target = target, aggregate = FALSE)
@@ -52,8 +53,6 @@ calcLandTargetExtrapolated <- function(input = "magpie", target = "luh2mod",
   totalShareNature[is.na(totalShareNature)] <- 0
   totalShareNature[totalShareNature > 1] <- 1
   stopifnot(0 <= totalShareNature, totalShareNature <= 1)
-
-  out <- mbind(xTarget, exTarget)
 
   # calculate wood harvest area, reduce primf and primn so they are consistent with harvest
   harvest <- add_columns(harvest, paste0("y", transitionYears), dim = 2)
@@ -131,9 +130,15 @@ calcLandTargetExtrapolated <- function(input = "magpie", target = "luh2mod",
   exHarvest <- toolDisaggregateWoodHarvest(exHarvest, weight = weight)
   outHarvest <- mbind(harvestHist, exHarvest)
 
-
+  # consistency checks land
   toolExpectLessDiff(out[, histYears, ], xTarget, 0,
                      "In historical period, land was not changed")
+  toolExpectLessDiff(dimSums(out, 3), targetArea, 10^-5, "Total area is constant over time")
+  toolExpectTrue(all(out[, -1, c("primf", "primn")] <= setYears(out[, -nyears(out), c("primf", "primn")],
+                                                                getYears(out)[-1])),
+                 "primf and primn are never expanding", falseStatus = "warn")
+
+  # consistency checks wood harvest area
   toolExpectLessDiff(outHarvest[, histYears, ], harvestHist, 0,
                      "In historical period, wood harvest area was not changed")
   toolExpectTrue(min(outHarvest) >= 0, "wood harvest area is >= 0")
