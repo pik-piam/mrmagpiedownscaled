@@ -57,3 +57,16 @@ toolAggregateWoodHarvest <- function(woodHarvest) {
 
   return(toolAggregate(woodHarvest, map, from = "harvest", to = "land", dim = 3))
 }
+
+toolDisaggregateWoodHarvest <- function(woodHarvest, weight) {
+  map <- as.data.frame(rbind(c("primf_wood_harvest_area", "primf"),
+                             c("secyf_wood_harvest_area", "secdf"),
+                             c("secmf_wood_harvest_area", "secdf"),
+                             c("primn_wood_harvest_area", "primn"),
+                             c("secnf_wood_harvest_area", "secdn")))
+  colnames(map) <- c("harvest", "land")
+
+  stopifnot(setequal(getItems(woodHarvest, 3), map$land))
+
+  return(toolAggregate(woodHarvest, map, weight = weight, from = "land", to = "harvest", dim = 3))
+}
