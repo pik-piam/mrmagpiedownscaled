@@ -16,6 +16,8 @@ calcLandTargetExtrapolated <- function(input = "magpie", target = "luh2mod",
   exTarget <- toolExtrapolate(xTarget, transitionYears)
   exTarget[exTarget < 0] <- 0
 
+  # TODO describe what happens from here in documentation
+
   # ---------- normalize -------------
   # normalize exTarget so that its total sum over all layers agrees for all time steps
   # with the sum over all layers in target in the harmonization year (e.g. makes sure
