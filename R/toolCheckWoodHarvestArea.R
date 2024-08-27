@@ -1,4 +1,4 @@
-#' toolWoodHarvestArea
+#' toolCheckWoodHarvestArea
 #'
 #' Check wood harvest area is not exceeding land area of the corresponding
 #' type in the previous timestep divided by timestep length.
@@ -7,9 +7,10 @@
 #' paste0(c("primf", "secyf", "secmf", "primn", "secnf"), "_wood_harvest_area")
 #' @param land magpie object with at least the following categories:
 #' c("primf", "secdf", "primn", "secdn")
+#' @param notePrefix character to prepend to the check's message
 #'
 #' @author Pascal Sauer
-toolWoodHarvestArea <- function(x, land) {
+toolCheckWoodHarvestArea <- function(x, land, notePrefix = "") {
   stopifnot(setequal(getItems(x, 1), getItems(land, 1)))
   woodHarvestArea <- toolAggregateWoodHarvest(x)
   stopifnot(getItems(woodHarvestArea, 3) %in% getItems(land, 3))
@@ -21,7 +22,7 @@ toolWoodHarvestArea <- function(x, land) {
   woodland <- setYears(land[, -nyears(land), getItems(woodHarvestArea, 3)], years[-1])
 
   landOvershoot <- min(woodland - timestepLengths * collapseDim(woodHarvestArea)[, -1, ])
-  toolExpectTrue(landOvershoot >= -10^-10, paste0("Wood harvest area is smaller than land ",
+  toolExpectTrue(landOvershoot >= -10^-10, paste0(notePrefix, "wood harvest area is smaller than land ",
                                                   "of the corresponding type ",
                                                   "(max overshoot: ", signif(-landOvershoot, 3), " Mha)"),
                  level = 1)

@@ -76,11 +76,20 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   }
 
   categories <- grep("wood_harvest_area$", getItems(out, 3), value = TRUE)
-  out[, , categories] <- toolWoodHarvestArea(out[, , categories],
-                                             calcOutput("LandHarmonized", input = input, target = target,
-                                                        harmonizationPeriod = harmonizationPeriod,
-                                                        method = method, aggregate = FALSE),
-                                             fix = FALSE)
+
+  # check if wood harvest area is exceeding land area
+  land <- calcOutput("LandHarmonized", input = input, target = target,
+                     harmonizationPeriod = harmonizationPeriod,
+                     method = method, aggregate = FALSE)
+
+  histYears <- getYears(out, as.integer = TRUE)
+  histYears <- histYears[histYears <= harmonizationPeriod[1]]
+  toolCheckWoodHarvestArea(out[, histYears, categories], land[, histYears, ],
+                           "In historical period, ")
+
+  futureYears <- setdiff(getYears(out, as.integer = TRUE), histYears)
+  toolCheckWoodHarvestArea(out[, futureYears, categories], land[, futureYears, ],
+                           "After historical period, ")
 
   attr(out, "geometry") <- geometry
   attr(out, "crs")      <- crs

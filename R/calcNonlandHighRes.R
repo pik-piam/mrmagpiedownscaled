@@ -64,7 +64,7 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
 
   land <- calcOutput("LandHighRes", input = input, target = target,
                      harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
-  toolWoodHarvestArea(out[, getYears(land), grep("wood_harvest_area$", getItems(out, 3))], land)
+  toolCheckWoodHarvestArea(out[, getYears(land), grep("wood_harvest_area$", getItems(out, 3))], land)
 
   return(list(x = out,
               min = 0,
