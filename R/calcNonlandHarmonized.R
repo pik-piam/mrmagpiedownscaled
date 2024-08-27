@@ -18,39 +18,10 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   geometry <- attr(xInput, "geometry")
   crs <- attr(xInput, "crs")
 
-  # get target data in spatial resolution of input data
-  xTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
-  ref <- as.SpatVector(xInput[, 1, 1])[, c(".region", ".id")]
-  xTarget <- terra::extract(xTarget, ref, sum, na.rm = TRUE, bind = TRUE)
-  xTarget <- as.magpie(xTarget)
+  xTarget <- calcOutput("NonlandTargetExtrapolated", input = input, target = target, aggregate = FALSE)
 
-  stopifnot(setequal(getItems(xInput, 3), getItems(xTarget, 3)))
-  xTarget <- xTarget[, , getItems(xInput, 3)] # harmonize order of dim 3
-
-  if (method == "fade") {
-    # extrapolate
-    bioh <- grep("bioh$", getItems(xInput, 3), value = TRUE)
-    woodHarvestArea <- grep("wood_harvest_area$", getItems(xInput, 3), value = TRUE)
-    harvestWeightType <- grep("harvest_weight_type$", getItems(xInput, 3), value = TRUE)
-    fertilizer <- grep("fertilizer$", getItems(xInput, 3), value = TRUE)
-    stopifnot(setequal(c(bioh, woodHarvestArea, harvestWeightType, fertilizer), getItems(xInput, 3)))
-
-    inputYears <- getYears(xInput, as.integer = TRUE)
-    transitionYears <- inputYears[inputYears > harmonizationPeriod[1] & inputYears < harmonizationPeriod[2]]
-    woodHarvest <- toolExtrapolate(xTarget[, , c(bioh, woodHarvestArea, harvestWeightType)], transitionYears,
-                                   linearModel = FALSE, fallback = "last")
-    fertilizer <- toolExtrapolate(xTarget[, , fertilizer], transitionYears)
-    xTargetExtrapolated <- mbind(woodHarvest, fertilizer)
-    xTargetExtrapolated[xTargetExtrapolated < 0] <- 0
-    xTargetExtrapolated <- mbind(xTarget, xTargetExtrapolated)
-
-    # harmonize/fade
-    out <- toolHarmonizeFade(xInput, xTargetExtrapolated, harmonizationPeriod = harmonizationPeriod)
-    stopifnot(setequal(getItems(out, 3), getItems(xInput, 3)))
-  } else {
-    harmonizer <- toolGetHarmonizer(method)
-    out <- harmonizer(xInput, xTarget, harmonizationPeriod = harmonizationPeriod)
-  }
+  harmonizer <- toolGetHarmonizer(method)
+  out <- harmonizer(xInput, xTarget, harmonizationPeriod = harmonizationPeriod)
 
   # account for primf/primn expansion being recategorized to secdf/secdn in calcLandHarmonized
   primfixShares <- attr(calcOutput("LandHarmonized", input = input, target = target,
