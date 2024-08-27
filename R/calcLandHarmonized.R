@@ -15,7 +15,7 @@
 calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
                                harmonizationPeriod = c(2015, 2050),
                                method = "fade") {
-  xInput    <- calcOutput("LandHarmonizedCategories", input = input,
+  xInput    <- calcOutput("LandInputRecategorized", input = input,
                           target = target, aggregate = FALSE)
   geometry <- attr(xInput, "geometry")
   crs      <- attr(xInput, "crs")

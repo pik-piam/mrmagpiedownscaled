@@ -1,4 +1,4 @@
-#' calcLandHarmonizedCategories
+#' calcLandInputRecategorized
 #'
 #' Computes the land input data in target land categories. Splitting of land
 #' categories is performed under use of internal land weights reflecting the
@@ -12,7 +12,7 @@
 #' @param input name of the land input source to be used
 #' @param target name of the land target source to be used
 #' @author Jan Philipp Dietrich
-calcLandHarmonizedCategories <- function(input = "magpie", target = "luh2mod") {
+calcLandInputRecategorized <- function(input = "magpie", target = "luh2mod") {
   map <- toolLandCategoriesMapping(input, target)
   x   <- calcOutput("LandInput", input = input, aggregate = FALSE)
 

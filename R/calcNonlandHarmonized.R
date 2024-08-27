@@ -14,7 +14,7 @@
 calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
                                   harmonizationPeriod = c(2015, 2050),
                                   method = "fade") {
-  xInput <- calcOutput("NonlandHarmonizedCategories", input = input, aggregate = FALSE)
+  xInput <- calcOutput("NonlandInputRecategorized", input = input, aggregate = FALSE)
   geometry <- attr(xInput, "geometry")
   crs <- attr(xInput, "crs")
 

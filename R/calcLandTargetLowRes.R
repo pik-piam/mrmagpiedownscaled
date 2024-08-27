@@ -1,6 +1,6 @@
 # TODO documentation
 calcLandTargetLowRes <- function(input = "magpie", target = "luh2mod") {
-  xInput <- calcOutput("LandHarmonizedCategories", input = input,
+  xInput <- calcOutput("LandInputRecategorized", input = input,
                        target = target, aggregate = FALSE)
   xTarget <- calcOutput("LandTarget", target = target, aggregate = FALSE)
 

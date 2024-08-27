@@ -1,6 +1,6 @@
 # TODO documentation
 calcNonlandTargetLowRes <- function(input = "magpie", target = "luh2mod") {
-  xInput <- calcOutput("NonlandHarmonizedCategories", input = input, aggregate = FALSE)
+  xInput <- calcOutput("NonlandInputRecategorized", input = input, aggregate = FALSE)
 
   # get target data in spatial resolution of input data
   xTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
