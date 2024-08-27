@@ -64,8 +64,7 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
 
   land <- calcOutput("LandHighRes", input = input, target = target,
                      harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
-  toolWoodHarvestArea(out[, getYears(land), grep("wood_harvest_area$", getItems(out, 3))],
-                      land, fix = FALSE)
+  toolWoodHarvestArea(out[, getYears(land), grep("wood_harvest_area$", getItems(out, 3))], land)
 
   return(list(x = out,
               min = 0,
@@ -73,3 +72,5 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
               unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha yr-1; fertilizer: kg yr-1",
               description = "Downscaled nonland data"))
 }
+# TODO use woody land (instead of historical harvest_area) as weight for harvest_area
+# TODO distribute bioh according to harvest_area

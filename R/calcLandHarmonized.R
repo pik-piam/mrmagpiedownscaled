@@ -61,7 +61,6 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
 
   attr(out, "geometry") <- geometry
   attr(out, "crs")      <- crs
-  attr(out, "primfixShares") <- primfixShares
 
   # checks
   toolExpectTrue(!is.null(attr(out, "geometry")), "Data contains geometry information")
@@ -99,5 +98,6 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
               isocountries = FALSE,
               unit = "Mha",
               min = 0,
-              description = "Harmonized land data"))
+              description = "Harmonized land data",
+              primfixShares = primfixShares))
 }

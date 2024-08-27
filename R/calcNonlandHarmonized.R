@@ -24,9 +24,9 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   out <- harmonizer(xInput, xTarget, harmonizationPeriod = harmonizationPeriod)
 
   # account for primf/primn expansion being recategorized to secdf/secdn in calcLandHarmonized
-  primfixShares <- attr(calcOutput("LandHarmonized", input = input, target = target,
-                                   harmonizationPeriod = harmonizationPeriod,
-                                   method = method, aggregate = FALSE), "primfixShares")
+  primfixShares <- calcOutput("LandHarmonized", input = input, target = target,
+                              harmonizationPeriod = harmonizationPeriod,
+                              method = method, aggregate = FALSE, supplementary = TRUE)$primfixShares
   if (any(primfixShares < 1)) {
     toolStatusMessage("note", paste("after harmonization primf/primn expansion was replaced",
                                     "by secdf/secdn, adapting wood harvest accordingly"))
