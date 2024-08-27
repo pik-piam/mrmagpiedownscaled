@@ -15,7 +15,7 @@ calcNonlandTargetLowRes <- function(input = "magpie", target = "luh2mod") {
 
   return(list(x = xTarget,
               isocountries = FALSE,
-              unit = "Mha",
+              unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha yr-1; fertilizer: kg yr-1",
               min = 0,
               description = "Land target data at the same low resolution as the input dataset for harmonization"))
 }
