@@ -27,6 +27,12 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   primfixShares <- calcOutput("LandHarmonized", input = input, target = target,
                               harmonizationPeriod = harmonizationPeriod,
                               method = method, aggregate = FALSE, supplementary = TRUE)$primfixShares
+
+  # harvest in e.g. 2000 describes yearly harvest from 1995 to 2000, so need to check against land in 1995
+  # primfix in 1995 corresponds to harvest in 2000, so shift accordingly
+  primfixShares[, -1, ] <- setYears(primfixShares[, -nyears(primfixShares), ], getYears(primfixShares)[-1])
+  primfixShares[, 1, ] <- 1
+
   if (any(primfixShares < 1)) {
     toolStatusMessage("note", paste("after harmonization primf/primn expansion was replaced",
                                     "by secdf/secdn, adapting wood harvest accordingly"))
@@ -43,7 +49,7 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
       secMature <- paste0("secmf_", category)
       youngShare <- out[, , secYoung] / (out[, , secYoung] + out[, , secMature])
       youngShare[is.na(youngShare)] <- 0.5
-      stopifnot(all(0 <= youngShare & youngShare <= 1))
+      stopifnot(0 <= youngShare, youngShare <= 1)
       out[, , secYoung] <- out[, , secYoung] + toSecForest * youngShare
       out[, , secMature] <- out[, , secMature] + toSecForest * (1 - youngShare)
 

@@ -34,6 +34,7 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
                      "Total areas are the same in target and input data")
   if (max(abs(inSum[, 1, ] - tSum[, 1, ])) >= 10^-5) {
     corr <- setYears(dimSums(xTarget[, 1, ], dim = 3) / dimSums(xInput[, 1, ], dim = 3), NULL)
+    stopifnot(is.finite(corr), corr >= 0)
     xInput <- xInput * corr
     toolStatusMessage("note", paste0("input data multiplied with correction factors to match target areas ",
                                      "(max ratio = ", round(max(corr), 2),
@@ -57,7 +58,7 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   # store how much primf/primn shrank to apply this to wood harvest
   primfixShares <- postPrimFix / prePrimFix
   primfixShares[is.na(primfixShares)] <- 0
-  stopifnot(all(0 <= primfixShares & primfixShares <= 1))
+  stopifnot(0 <= primfixShares, primfixShares <= 1)
 
   attr(out, "geometry") <- geometry
   attr(out, "crs")      <- crs
