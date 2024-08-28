@@ -32,107 +32,50 @@ calcLandTargetExtrapolated <- function(input = "magpie", target = "luh2mod",
   # ------- calculate wood harvest shares -------
   harvestHist <- calcOutput("NonlandTargetLowRes", input = input, target = target, aggregate = FALSE)
   harvestHist <- harvestHist[, , endsWith(getItems(harvestHist, 3), "wood_harvest_area")]
-  harvest <- toolAggregateWoodHarvest(harvestHist)
-  timestepLength <- unique(diff(getYears(harvest, as.integer = TRUE)))
-  stopifnot(length(timestepLength) == 1)
-  harvest <- harvest * timestepLength # harvest is per year, need per timestep
-  stopifnot(identical(dimnames(harvest)[1:2], dimnames(xTarget)[1:2]))
+  maxHarvestHist <- toolMaxHarvestPerYear(xTarget)
+  stopifnot(setequal(getItems(harvestHist, 1), getItems(maxHarvestHist, 1)),
+            setequal(getItems(harvestHist[, -1, ], 2), getItems(maxHarvestHist, 2)),
+            setequal(getItems(harvestHist, 3), getItems(maxHarvestHist, 3)))
 
-  # calculate share: primf|primn wood harvest area / total primf|primn area
-  primShare <- dimSums(harvest[, , c("primf", "primn")], 2) / dimSums(xTarget[, , c("primf", "primn")], 2)
-  primShare[is.na(primShare)] <- 0
-  primShare[primShare > 1] <- 1
-  stopifnot(0 <= primShare, primShare <= 1)
+  # calculate share: wood harvest area / max possible harvest
+  harvestShare <- dimSums(harvestHist[, -1, ], 2) / dimSums(maxHarvestHist, 2)
+  harvestShare[is.na(harvestShare)] <- 0
+  harvestShare[harvestShare > 1] <- 1
 
-  # calculate share: forest (primf + secdf) wood harvest area / total forest area
-  forest <- c("primf", "secdf")
-  totalShareForest <- dimSums(harvest[, , forest], c(2, 3)) / dimSums(xTarget[, , forest], c(2, 3))
-  totalShareForest[is.na(totalShareForest)] <- 0
-  totalShareForest[totalShareForest > 1] <- 1
-  stopifnot(0 <= totalShareForest, totalShareForest <= 1)
+  secymf <- paste0(c("secyf", "secmf"), "_wood_harvest_area")
+  normalization <- dimSums(harvestShare[, , secymf], 3) + 10^-10 # + 10^-10 to ensure sum <= 1
+  normalization[normalization < 1] <- 1
+  harvestShare[, , secymf] <- harvestShare[, , secymf] / normalization
 
-  # calculate share: nature (primn + secdn) wood harvest area / total nature area
-  nature <- c("primn", "secdn")
-  totalShareNature <- dimSums(harvest[, , nature], c(2, 3)) / dimSums(xTarget[, , nature], c(2, 3))
-  totalShareNature[is.na(totalShareNature)] <- 0
-  totalShareNature[totalShareNature > 1] <- 1
-  stopifnot(0 <= totalShareNature, totalShareNature <= 1)
+  stopifnot(0 <= harvestShare, harvestShare <= 1,
+            dimSums(harvestShare[, , secymf], 3) <= 1)
 
   # calculate wood harvest area, reduce primf and primn so they are consistent with harvest
-  harvest <- add_columns(harvest, paste0("y", transitionYears), dim = 2)
+  harvest <- add_columns(harvestHist, paste0("y", transitionYears), dim = 2)
+  timestepLength <- unique(diff(getYears(out, as.integer = TRUE)))
+  stopifnot(identical(getYears(harvest), getYears(out)),
+            length(timestepLength) == 1, timestepLength > 0)
   for (i in match(transitionYears, getYears(out, as.integer = TRUE))) {
-    overHarvest <- new.magpie(getItems(out, 1), fill = 0)
+    primfn <- c("primf", "primn")
+    secdfn <- c("secdf", "secdn")
 
-    for (category in c("forest", "nature")) {
-      if (category == "forest") {
-        prim <- "primf"
-        secd <- "secdf"
-        totalShare <- totalShareForest
-      } else if (category == "nature") {
-        prim <- "primn"
-        secd <- "secdn"
-        totalShare <- totalShareNature
-      }
+    # in toolMaxHarvestPerYear out[, i, ] is only used to determine timestepLength and then thrown away
+    harvest[, i, ] <- harvestShare * toolMaxHarvestPerYear(out[, c(i - 1, i), ])
 
-      # if prim[i] > prim[i-1] - prim_harvest[i-1]: convert excess to secd
-      maxPossiblePrim <- out[, i - 1, prim] - harvest[, i - 1, prim]
-      maxPossiblePrim <- toolNegativeToZero(maxPossiblePrim, status = "warn")
+    harvestAgg <- toolAggregateWoodHarvest(harvest[, i, ])
+    maxPossiblePrim <- out[, i - 1, primfn] - timestepLength * harvestAgg[, , primfn]
 
-      toSecd <- out[, i, prim] - maxPossiblePrim
-      toSecd[toSecd < 0] <- 0
-      out[, i, secd] <- out[, i, secd] + toSecd
-      out[, i, prim] <- pmin(out[, i, prim], maxPossiblePrim)
+    # more prim than in previous timestep is not possible, convert to secd
+    toSecd <- out[, i, primfn] - maxPossiblePrim
+    toSecd[toSecd < 0] <- 0
+    getItems(toSecd, 3) <- c("secdf", "secdn")
+    out[, i, secdfn] <- out[, i, secdfn] + toSecd
+    out[, i, primfn] <- pmin(out[, i, primfn], maxPossiblePrim)
 
-      totalHarvest <- dimSums(out[, i, c(prim, secd)], 3) * totalShare
-      harvest[, i, prim] <- min(totalHarvest, out[, i, prim] * primShare[, , prim])
-      secdHarvest <- totalHarvest - harvest[, i, prim]
-
-      stopifnot(secdHarvest >= 0)
-      oh <- out[, i, secd] - secdHarvest
-      oh <- -1 * oh
-      oh[oh < 0] <- 0
-      overHarvest <- overHarvest + collapseDim(oh)
-
-      harvest[, i, secd]  <- pmin(secdHarvest, out[, i, secd])
-
-      stopifnot(harvest[, i, c(prim, secd)] >= 0,
-                harvest[, i, c(prim, secd)] <= out[, i, c(prim, secd)])
-    }
-
-    stopifnot(overHarvest >= 0)
-
-    for (category in c("secdf", "secdn", "primf", "primn")) {
-      unharvested <- out[, i, category] - harvest[, i, category]
-      overHarvest <- overHarvest - unharvested
-      overHarvest[overHarvest < 0] <- 0
-      harvest[, i, category] <- pmin(out[, i, category], harvest[, i, category] + overHarvest)
-    }
-
-    if (max(overHarvest) > 0) {
-      toolStatusMessage(if (max(overHarvest) > 10^-5) "warn" else "note",
-                        paste0("Excess wood harvest area in ", getYears(out)[i],
-                               ": ", max(overHarvest), "Mha"))
-    }
+    woodland <- out[, , getItems(harvestAgg, 3)]
+    stopifnot(harvestAgg <= woodland[, i - 1, ] / timestepLength,
+              woodland[, i, primfn] <= woodland[, i - 1, primfn] - timestepLength * harvestAgg[, , primfn])
   }
-
-  exHarvest <- harvest[, transitionYears, ]
-  stopifnot(exHarvest <= out[, transitionYears, getItems(exHarvest, 3)])
-  # dividing and later multiplying by the timestepLength might not be exactly the same (numerical limits)
-  exHarvest <- pmin(exHarvest / timestepLength,
-                    out[, transitionYears, getItems(exHarvest, 3)] / (timestepLength + 10^-10))
-  # divide by timestepLength + 10^-10 to ensure the following check works
-  stopifnot(timestepLength * exHarvest <= out[, transitionYears, getItems(exHarvest, 3)])
-
-  youngMatureShare <- dimSums(harvestHist[, , paste0(c("secyf", "secmf"), "_wood_harvest_area")], dim = 2)
-  youngMatureShare <- youngMatureShare / dimSums(youngMatureShare, 3)
-  youngMatureShare[is.na(youngMatureShare)] <- 0.5
-  stopifnot(abs(dimSums(youngMatureShare, 3) - 1) < 10^-5,
-            0 <= youngMatureShare, youngMatureShare <= 1)
-  weight <- add_dimension(youngMatureShare, dim = 2, add = "year", nm = getItems(exHarvest, 2))
-  weight <- add_columns(weight, setdiff(getItems(harvestHist, 3), getItems(weight, 3)),
-                        dim = 3, fill = 1)
-  exHarvest <- toolDisaggregateWoodHarvest(exHarvest, weight = weight)
-  outHarvest <- mbind(harvestHist, exHarvest)
 
   # consistency checks land
   toolExpectLessDiff(out[, histYears, ], xTarget, 0,
@@ -143,17 +86,17 @@ calcLandTargetExtrapolated <- function(input = "magpie", target = "luh2mod",
                  "primf and primn are never expanding", falseStatus = "warn")
 
   # consistency checks wood harvest area
-  toolExpectLessDiff(outHarvest[, histYears, ], harvestHist, 0,
+  toolExpectLessDiff(harvest[, histYears, ], harvestHist, 0,
                      "In historical period, wood harvest area was not changed")
-  toolExpectTrue(min(outHarvest) >= 0, "wood harvest area is >= 0")
+  toolExpectTrue(min(harvest) >= 0, "wood harvest area is >= 0")
 
-  histYears <- getYears(outHarvest, as.integer = TRUE)
+  histYears <- getYears(harvest, as.integer = TRUE)
   histYears <- histYears[histYears < transitionYears[1]]
-  toolCheckWoodHarvestArea(outHarvest[, histYears, ], out[, histYears, ],
+  toolCheckWoodHarvestArea(harvest[, histYears, ], out[, histYears, ],
                            "In historical period, ")
 
-  futureYears <- setdiff(getYears(outHarvest, as.integer = TRUE), histYears)
-  toolCheckWoodHarvestArea(outHarvest[, futureYears, ], out[, futureYears, ],
+  futureYears <- setdiff(getYears(harvest, as.integer = TRUE), histYears)
+  toolCheckWoodHarvestArea(harvest[, futureYears, ], out[, futureYears, ],
                            "After historical period, ")
 
   return(list(x = out,
@@ -161,7 +104,7 @@ calcLandTargetExtrapolated <- function(input = "magpie", target = "luh2mod",
               unit = "Mha",
               min = 0,
               description = "Extrapolated land target data for harmonization",
-              woodHarvestArea = outHarvest))
+              woodHarvestArea = harvest))
 }
 
 toolNegativeToZero <- function(x, warnThreshold = -10^-5, status = "note") {
