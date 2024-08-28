@@ -1,30 +1,43 @@
 #' toolCheckWoodHarvestArea
 #'
 #' Check wood harvest area is not exceeding land area of the corresponding
-#' type in the previous timestep divided by timestep length.
+#' type divided by timestep length. Also, check that primf and primn
+#' are reduced by at least as much as they were harvested.
 #'
-#' @param x magpie object with exactly the following categories:
+#' @param harvest magpie object with exactly the following categories:
 #' paste0(c("primf", "secyf", "secmf", "primn", "secnf"), "_wood_harvest_area")
 #' @param land magpie object with at least the following categories:
 #' c("primf", "secdf", "primn", "secdn")
 #' @param notePrefix character to prepend to the check's message
 #'
 #' @author Pascal Sauer
-toolCheckWoodHarvestArea <- function(x, land, notePrefix = "") {
-  stopifnot(setequal(getItems(x, 1), getItems(land, 1)))
-  woodHarvestArea <- toolAggregateWoodHarvest(x)
-  stopifnot(getItems(woodHarvestArea, 3) %in% getItems(land, 3))
-
-  stopifnot(identical(getYears(woodHarvestArea), getYears(land)),
-            getItems(woodHarvestArea, 3) %in% getItems(land, 3))
+toolCheckWoodHarvestArea <- function(harvest, land, notePrefix = "") {
+  stopifnot(setequal(getItems(harvest, 1), getItems(land, 1)))
+  harvest <- toolAggregateWoodHarvest(harvest)
+  stopifnot(getItems(harvest, 3) %in% getItems(land, 3),
+            identical(getYears(harvest), getYears(land)))
   years <- getYears(land, as.integer = TRUE)
-  timestepLengths <- new.magpie(years = years[-1], fill = diff(years))
-  woodland <- setYears(land[, -nyears(land), getItems(woodHarvestArea, 3)], years[-1])
 
-  landOvershoot <- min(woodland - timestepLengths * collapseDim(woodHarvestArea)[, -1, ])
-  toolExpectTrue(landOvershoot >= -10^-10, paste0(notePrefix, "wood harvest area is smaller than land ",
-                                                  "of the corresponding type ",
-                                                  "(max overshoot: ", signif(-landOvershoot, 3), " Mha)"),
+  maxHarvestPerYear <- toolMaxHarvestPerYear(land, disaggregate = FALSE)
+  excessHarvestPerYear <- harvest[, -1, ] - maxHarvestPerYear
+  stopifnot(identical(getItems(excessHarvestPerYear, 2), getItems(maxHarvestPerYear, 2)))
+
+  msg <- paste0(" (max yearly excess harvest: ", signif(max(excessHarvestPerYear), 3), " Mha)")
+  toolExpectTrue(max(excessHarvestPerYear) <= 10^-10,
+                 paste0(notePrefix, "wood harvest area is smaller than land ",
+                        "of the corresponding type", if (max(excessHarvestPerYear) > 10^-10) msg),
+                 level = 1)
+
+  prim <- c("primf", "primn")
+  timestepLength <- new.magpie(years = years[-1], fill = diff(years))
+  maxPrim <- setYears(land[, -nyears(land), prim], years[-1]) - timestepLength * harvest[, -1, prim]
+  primExcess <- land[, -1, prim] - maxPrim
+
+  msg <- paste0(" (", signif(max(primExcess), 3), "Mha more primf/primn than possible)")
+  toolExpectTrue(max(primExcess) <= 10^-10,
+                 paste0(notePrefix, "primf and primn are shrinking by at least ",
+                        "their respective wood harvest area",
+                        if (max(primExcess) > 10^-10) msg),
                  level = 1)
 }
 
@@ -52,4 +65,19 @@ toolDisaggregateWoodHarvest <- function(woodHarvest, weight) {
   stopifnot(setequal(getItems(woodHarvest, 3), map$land))
 
   return(toolAggregate(woodHarvest, map, weight = weight, from = "land", to = "harvest", dim = 3))
+}
+
+toolMaxHarvestPerYear <- function(land, disaggregate = TRUE) {
+  timestepLength <- new.magpie(years = getYears(land)[-1],
+                               fill = diff(getYears(land, as.integer = TRUE)))
+  stopifnot(timestepLength > 0)
+  land <- land[, , c("primf", "primn", "secdf", "secdn")]
+  if (disaggregate) {
+    getItems(land, 3) <- paste0(c("primf", "primn", "secyf", "secnf"), "_wood_harvest_area")
+    land <- add_columns(land, "secmf_wood_harvest_area")
+    land[, , "secmf_wood_harvest_area"] <- land[, , "secyf_wood_harvest_area"]
+  }
+  maxHarvest <- setYears(land[, -nyears(land), ], getYears(land)[-1])
+  maxHarvestPerYear <- maxHarvest / timestepLength
+  return(maxHarvestPerYear)
 }

@@ -9,6 +9,8 @@
 #' @author Pascal Sauer
 calcLandTargetExtrapolated <- function(input = "magpie", target = "luh2mod",
                                        transitionYears = seq(2020, 2045, 5)) {
+  stopifnot(identical(transitionYears, sort(transitionYears)))
+
   xTarget <- calcOutput("LandTargetLowRes", input = input, target = target, aggregate = FALSE)
   histYears <- getYears(xTarget, as.integer = TRUE)
 
@@ -145,36 +147,14 @@ calcLandTargetExtrapolated <- function(input = "magpie", target = "luh2mod",
                      "In historical period, wood harvest area was not changed")
   toolExpectTrue(min(outHarvest) >= 0, "wood harvest area is >= 0")
 
-  # aggregate back again to also check for numerical problems during dis-/aggregation
-  harvest <- toolAggregateWoodHarvest(outHarvest) * timestepLength
+  histYears <- getYears(outHarvest, as.integer = TRUE)
+  histYears <- histYears[histYears < transitionYears[1]]
+  toolCheckWoodHarvestArea(outHarvest[, histYears, ], out[, histYears, ],
+                           "In historical period, ")
 
-  overHarvest <- out[, , getItems(harvest, 3)] - harvest
-  histMaxExcess <- paste0(" (max excess harvest: ", signif(-min(overHarvest[, histYears, ]), 3), "Mha)")
-  toolExpectTrue(min(overHarvest[, histYears, ]) >= 0,
-                 paste0("In historical period, wood harvest area does not exceed land area",
-                        if (min(overHarvest[, histYears, ]) < 0) histMaxExcess))
-
-  exMaxExcess <- paste0(" (max excess harvest: ", signif(-min(overHarvest[, transitionYears, ]), 3), "Mha)")
-  toolExpectTrue(min(overHarvest[, transitionYears, ]) >= 0,
-                 paste0("In extrapolation period, wood harvest area does not exceed land area",
-                        if (min(overHarvest[, transitionYears, ]) < 0) exMaxExcess))
-
-  pr <- c("primf", "primn")
-  primExcess <- setYears(out[, getYears(out)[-nyears(out)], pr] - harvest[, getYears(out)[-nyears(out)], pr],
-                         getYears(out)[-1]) - out[, -1, pr]
-  histPrimExcess <- paste0(" (", signif(-min(primExcess[, histYears[-1], ]), 3),
-                           "Mha more primf/primn than possible)")
-  toolExpectTrue(min(primExcess[, histYears[-1], ]) >= 0,
-                 paste0("In historical period, primf and primn are shrinking by at least ",
-                        "their respective wood harvest area",
-                        if (min(primExcess[, histYears[-1], ]) < 0) histPrimExcess))
-
-  exPrimExcess <- paste0(" (", signif(-min(primExcess[, transitionYears[-1], ]), 3),
-                         "Mha more primf/primn than possible)")
-  toolExpectTrue(min(primExcess[, transitionYears[-1], ]) >= 0,
-                 paste0("In extrapolation period, primf and primn are shrinking by at least ",
-                        "their respective wood harvest area",
-                        if (min(primExcess[, transitionYears[-1], ]) < 0) exPrimExcess))
+  futureYears <- setdiff(getYears(outHarvest, as.integer = TRUE), histYears)
+  toolCheckWoodHarvestArea(outHarvest[, futureYears, ], out[, futureYears, ],
+                           "After historical period, ")
 
   return(list(x = out,
               isocountries = FALSE,
