@@ -1,0 +1,101 @@
+calcWoodHarvestAreaHarmonized <- function(input = "magpie", target = "luh2mod",
+                                          harmonizationPeriod = c(2015, 2050),
+                                          method = "fade") {
+  landHarmonized <- calcOutput("LandHarmonized", input = input, target = target,
+                               harmonizationPeriod = harmonizationPeriod,
+                               method = method, aggregate = FALSE)
+  attr(landHarmonized, "geometry") <- NULL
+  attr(landHarmonized, "crs") <- NULL
+  attr(landHarmonized, "comment") <- NULL
+
+  # calculate prim harvest based on prim land reduction
+  prim <- c("primf", "primn")
+  primDiff <- setYears(landHarmonized[, -nyears(landHarmonized), prim],
+                       getYears(landHarmonized)[-1]) - landHarmonized[, -1, prim]
+  stopifnot(primDiff >= 0)
+  timestepLength <- new.magpie(years = getYears(landHarmonized)[-1],
+                               fill = diff(getYears(landHarmonized, as.integer = TRUE)))
+  stopifnot(timestepLength > 0)
+  # - 10^-10 to ensure timestepLength * primHarv <= primDiff
+  primHarv <- primDiff / timestepLength
+  stopifnot(primHarv >= 0)
+  primHarv <- pmax(primHarv - 10^-10, 0)
+  stopifnot(timestepLength * primHarv <= primDiff)
+
+  # calculate raw (inconsistent with land) harmonized wood harvest area
+  harmonizer <- toolGetHarmonizer(method)
+  xInput <- calcOutput("NonlandInputRecategorized", input = input, target = target, aggregate = FALSE)
+  xInput <- xInput[, , woodHarvestAreaCategories()]
+  xTarget <- calcOutput("NonlandTargetExtrapolated", input = input, target = target,
+                        transitionYears = transitionYears, aggregate = FALSE)
+  xTarget <- xTarget[, , woodHarvestAreaCategories()]
+  rawHarvestHarmonized <- harmonizer(xInput, xTarget, harmonizationPeriod = harmonizationPeriod)
+
+  afterHarmonization <- getYears(xInput, as.integer = TRUE)
+  afterHarmonization <- afterHarmonization[afterHarmonization >= harmonizationPeriod[2]]
+  stopifnot(rawHarvestHarmonized >= 0,
+            rawHarvestHarmonized[, afterHarmonization, ] == xInput[, afterHarmonization, ])
+  rawHarvestHarmonized <- toolAggregateWoodHarvest(rawHarvestHarmonized)
+
+  # shift harvest from prim to secd to match prim land reduction
+  primHarvDiff <- rawHarvestHarmonized[, -1, prim] - primHarv
+  secd <- c("secdf", "secdn")
+  secdHarv <- rawHarvestHarmonized[, -1, secd] + magclass::setNames(primHarvDiff, secd)
+  secdHarv[secdHarv < 0] <- 0 # harvest from prim already overachieves harvest target
+  stopifnot(primHarv[, , "primf"] + secdHarv[, , "secdf"] + 10^-10 >=
+              rawHarvestHarmonized[, -1, "primf"] + rawHarvestHarmonized[, -1, "secdf"],
+            primHarv[, , "primn"] + secdHarv[, , "secdn"] + 10^-10 >=
+              rawHarvestHarmonized[, -1, "primn"] + rawHarvestHarmonized[, -1, "secdn"])
+
+  # check secd excess harvest, try to shift excess secdf to secdn and vice versa
+  maxSecdHarv <- toolMaxHarvestPerYear(landHarmonized, disaggregate = FALSE)[, , secd]
+  excessSecdHarvest <- secdHarv - maxSecdHarv
+  secdHarv <- pmin(secdHarv, maxSecdHarv)
+  excessSecdHarvest[excessSecdHarvest < 0] <- 0
+  excessSecdHarvest <- dimSums(excessSecdHarvest, 3)
+
+  potentialHarvestLeft <- maxSecdHarv - secdHarv
+  smaller <- pmin(potentialHarvestLeft[, , "secdf"], potentialHarvestLeft[, , "secdn"])
+  stopifnot(smaller[excessSecdHarvest > 0] == 0)
+
+  secdHarv <- pmin(secdHarv + excessSecdHarvest, maxSecdHarv)
+  excessSecdHarvest <- excessSecdHarvest - dimSums(potentialHarvestLeft, 3)
+  excessSecdHarvest[excessSecdHarvest < 0] <- 0
+
+  # report excess harvest
+  histYears <- getYears(xTarget, as.integer = TRUE)
+  histYears <- histYears[histYears <= harmonizationPeriod[1]]
+  futureYears <- setdiff(getYears(xInput, as.integer = TRUE), histYears)
+
+  excessGlobal <- dimSums(excessSecdHarvest[, futureYears, ], 1)
+  excessGlobal <- as.data.frame(excessGlobal, rev = 3)
+  excessGlobal <- excessGlobal[excessGlobal$.value > 10^-10, ]
+  msg <- paste0(" (global excess harvest area in Mha yr-1: ",
+                paste0(excessGlobal$year, ": ", signif(excessGlobal$.value, 3), collapse = ", "),
+                "; other years are ok)")
+  toolExpectTrue(nrow(excessGlobal) == 0,
+                 paste0("Harvest area fits into available land",
+                        if (nrow(excessGlobal) != 0) msg))
+
+  # assemble output
+  out <- mbind(primHarv, secdHarv)
+  out <- out[, futureYears, ]
+  out <- toolDisaggregateWoodHarvest(out, xTarget[, harmonizationPeriod[1], ] + 10^-30)
+
+  out <- mbind(xTarget[, histYears, ], out)
+  stopifnot(dimSums(out[, -1, ], 3) + excessSecdHarvest + 10^-10 >=
+              dimSums(rawHarvestHarmonized[, -1, ], 3))
+
+  # consistency checks
+  toolExpectTrue(min(out) >= 0, "All values are >= 0")
+  toolExpectLessDiff(out[, histYears, ], xTarget[, histYears, ], 0,
+                     "history is not changed by harmonization")
+  toolCheckWoodHarvestArea(out[, histYears, ], landHarmonized[, histYears, ], "In historical period, ")
+  toolCheckWoodHarvestArea(out[, futureYears, ], landHarmonized[, futureYears, ], "After historical period, ")
+
+  return(list(x = out,
+              isocountries = FALSE,
+              unit = "Mha yr-1",
+              min = 0,
+              description = "Harmonized wood harvest area data"))
+}

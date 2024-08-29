@@ -12,84 +12,23 @@
 #' @return harmonized nonland data
 #' @author Pascal Sauer
 calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
-                                  harmonizationPeriod = c(2015, 2050),
-                                  method = "fade") {
-  xInput <- calcOutput("NonlandInputRecategorized", input = input, aggregate = FALSE)
+                                  harmonizationPeriod = c(2015, 2050), method = "fade") {
+  xInput <- calcOutput("NonlandInputRecategorized", input = input, target = target, aggregate = FALSE)
   geometry <- attr(xInput, "geometry")
   crs <- attr(xInput, "crs")
 
-  xTarget <- calcOutput("NonlandTargetExtrapolated", input = input, target = target, aggregate = FALSE)
+  xTarget <- calcOutput("NonlandTargetExtrapolated", input = input, target = target,
+                        transitionYears = transitionYears, aggregate = FALSE)
 
   harmonizer <- toolGetHarmonizer(method)
-  out <- harmonizer(xInput, xTarget, harmonizationPeriod = harmonizationPeriod)
+  out <- harmonizer(xInput[, , woodHarvestAreaCategories(), invert = TRUE],
+                    xTarget[, , woodHarvestAreaCategories(), invert = TRUE],
+                    harmonizationPeriod = harmonizationPeriod)
 
-  # account for primf/primn expansion being recategorized to secdf/secdn in calcLandHarmonized
-  primfixShares <- calcOutput("LandHarmonized", input = input, target = target,
-                              harmonizationPeriod = harmonizationPeriod,
-                              method = method, aggregate = FALSE, supplementary = TRUE)$primfixShares
-
-  # harvest in e.g. 2000 describes yearly harvest from 1995 to 2000, so need to check against land in 1995
-  # primfix in 1995 corresponds to harvest in 2000, so shift accordingly
-  primfixShares[, -1, ] <- setYears(primfixShares[, -nyears(primfixShares), ], getYears(primfixShares)[-1])
-  primfixShares[, 1, ] <- 1
-
-  if (any(primfixShares < 1)) {
-    toolStatusMessage("note", paste("after harmonization primf/primn expansion was replaced",
-                                    "by secdf/secdn, adapting wood harvest accordingly"))
-
-    for (category in c("bioh", "wood_harvest_area")) {
-      forest <- c("primf", "secyf", "secmf")
-      totalBeforeForest <- dimSums(out[, , paste0(forest, "_", category)], 3)
-
-      primForest <- paste0("primf_", category)
-      toSecForest <- out[, , primForest] * (1 - primfixShares[, , "primf"])
-      out[, , primForest] <- out[, , primForest] - toSecForest
-      stopifnot(out[, , primForest] >= 0)
-      secYoung <- paste0("secyf_", category)
-      secMature <- paste0("secmf_", category)
-      youngShare <- out[, , secYoung] / (out[, , secYoung] + out[, , secMature])
-      youngShare[is.na(youngShare)] <- 0.5
-      stopifnot(0 <= youngShare, youngShare <= 1)
-      out[, , secYoung] <- out[, , secYoung] + toSecForest * youngShare
-      out[, , secMature] <- out[, , secMature] + toSecForest * (1 - youngShare)
-
-      toolExpectLessDiff(totalBeforeForest,
-                         dimSums(out[, , paste0(forest, "_", category)], 3),
-                         10^-4, paste0("total wood harvest (", category, ") ",
-                                       "from forests is not affected by adaptation"))
-
-      # nonforest
-      nonforest <- c("primn", "secnf")
-      totalBeforeNonforest <- dimSums(out[, , paste0(nonforest, "_", category)], 3)
-      primNonforest <- paste0("primn_", category)
-      toSecNonforest <- out[, , primNonforest] * (1 - primfixShares[, , "primn"])
-      out[, , primNonforest] <- out[, , primNonforest] - toSecNonforest
-      stopifnot(out[, , primNonforest] >= 0)
-      secNonforest <- paste0("secnf_", category)
-      out[, , secNonforest] <- out[, , secNonforest] + toSecNonforest
-
-      toolExpectLessDiff(totalBeforeNonforest,
-                         dimSums(out[, , paste0(nonforest, "_", category)], 3),
-                         10^-4, paste0("total wood harvest (", category, ") ",
-                                       "from non-forests is not affected by adaptation"))
-    }
-  }
-
-  categories <- grep("wood_harvest_area$", getItems(out, 3), value = TRUE)
-
-  # check if wood harvest area is exceeding land area
-  land <- calcOutput("LandHarmonized", input = input, target = target,
-                     harmonizationPeriod = harmonizationPeriod,
-                     method = method, aggregate = FALSE)
-
-  histYears <- getYears(out, as.integer = TRUE)
-  histYears <- histYears[histYears <= harmonizationPeriod[1]]
-  toolCheckWoodHarvestArea(out[, histYears, categories], land[, histYears, ],
-                           "In historical period, ")
-
-  futureYears <- setdiff(getYears(out, as.integer = TRUE), histYears)
-  toolCheckWoodHarvestArea(out[, futureYears, categories], land[, futureYears, ],
-                           "After historical period, ")
+  harvestArea <- calcOutput("WoodHarvestAreaHarmonized", input = input, target = target,
+                            harmonizationPeriod = harmonizationPeriod, method = method, aggregate = FALSE)
+  # TODO! adapt bioh and harvest_weight_type to match the harmonized harvest area
+  out <- mbind(out, harvestArea)
 
   attr(out, "geometry") <- geometry
   attr(out, "crs")      <- crs
@@ -111,3 +50,56 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
               min = 0,
               description = "Harmonized nonland data"))
 }
+
+# toolApplyPrimfixShares <- function(harvest, primfixShares) {
+#   stopifnot(setequal(getItems(harvest, 3), woodHarvestAreaCategories()),
+#             identical(getYears(harvest), getYears(primfixShares)))
+#   # harvest in e.g. 2000 describes yearly harvest from 1995 to 2000, so need to check against land in 1995
+#   # primfix in 1995 corresponds to harvest in 2000, so shift accordingly
+#   primfixShares[, -1, ] <- setYears(primfixShares[, -nyears(primfixShares), ], getYears(primfixShares)[-1])
+#   primfixShares[, 1, ] <- 1
+#   if (any(primfixShares < 1)) {
+#     toolStatusMessage("note", paste("after harmonization primf/primn expansion was replaced",
+#                                     "by secdf/secdn, adapting wood harvest accordingly"))
+
+#     for (category in c("wood_harvest_area")) { # TODO category "bioh"?
+#       forest <- c("primf", "secyf", "secmf")
+#       totalBeforeForest <- dimSums(harvest[, , paste0(forest, "_", category)], 3)
+
+#       primForest <- paste0("primf_", category)
+#       toSecForest <- harvest[, , primForest] * (1 - primfixShares[, , "primf"])
+#       harvest[, , primForest] <- harvest[, , primForest] - toSecForest
+#       stopifnot(harvest[, , primForest] >= 0)
+#       secYoung <- paste0("secyf_", category)
+#       secMature <- paste0("secmf_", category)
+#       youngShare <- harvest[, , secYoung] / (harvest[, , secYoung] + harvest[, , secMature])
+#       youngShare[is.na(youngShare)] <- 0.5
+#       stopifnot(0 <= youngShare, youngShare <= 1)
+#       harvest[, , secYoung] <- harvest[, , secYoung] + toSecForest * youngShare
+#       harvest[, , secMature] <- harvest[, , secMature] + toSecForest * (1 - youngShare)
+
+#       toolExpectLessDiff(totalBeforeForest,
+#                          dimSums(harvest[, , paste0(forest, "_", category)], 3),
+#                          10^-4, paste0("total wood harvest (", category, ") ",
+#                                        "from forests is not affected by adaptation"),
+#                          level = 1)
+
+#       # nonforest
+#       nonforest <- c("primn", "secnf")
+#       totalBeforeNonforest <- dimSums(harvest[, , paste0(nonforest, "_", category)], 3)
+#       primNonforest <- paste0("primn_", category)
+#       toSecNonforest <- harvest[, , primNonforest] * (1 - primfixShares[, , "primn"])
+#       harvest[, , primNonforest] <- harvest[, , primNonforest] - toSecNonforest
+#       stopifnot(harvest[, , primNonforest] >= 0)
+#       secNonforest <- paste0("secnf_", category)
+#       harvest[, , secNonforest] <- harvest[, , secNonforest] + toSecNonforest
+
+#       toolExpectLessDiff(totalBeforeNonforest,
+#                          dimSums(harvest[, , paste0(nonforest, "_", category)], 3),
+#                          10^-4, paste0("total wood harvest (", category, ") ",
+#                                        "from non-forests is not affected by adaptation"),
+#                          level = 1)
+#     }
+#   }
+#   return(harvest)
+# }

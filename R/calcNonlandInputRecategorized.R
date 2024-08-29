@@ -12,8 +12,8 @@
 #' @return nonland data with target categories
 #' @author Pascal Sauer
 calcNonlandInputRecategorized <- function(input = "magpie", target = "luh2mod",
-                                            youngShareWoodHarvestArea = 0.95,
-                                            youngShareWoodHarvestWeight = 0.5) {
+                                          youngShareWoodHarvestArea = 0.95,
+                                          youngShareWoodHarvestWeight = 0.5) {
   x <- calcOutput("NonlandInput", input = input, aggregate = FALSE)
   resolutionMapping <- calcOutput("ResolutionMapping", input = input, target = target, aggregate = FALSE)
   resolutionMapping$cluster <- resolutionMapping$lowRes
@@ -104,7 +104,7 @@ calcNonlandInputRecategorized <- function(input = "magpie", target = "luh2mod",
   toolExpectTrue(identical(unname(getSets(x)), c("region", "id", "year", "data")),
                  "Dimensions are named correctly")
   toolExpectTrue(setequal(getNames(x),
-                          c(paste0(c("primf", "primn", "secmf", "secyf", "secnf"), "_wood_harvest_area"),
+                          c(woodHarvestAreaCategories(),
                             paste0(c("primf", "primn", "secmf", "secyf", "secnf"), "_bioh"),
                             paste0(c("roundwood", "fuelwood"), "_harvest_weight_type"),
                             paste0(c("c3ann", "c4ann", "c3per", "c4per", "c3nfx"), "_fertilizer"))),

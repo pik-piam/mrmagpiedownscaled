@@ -11,41 +11,80 @@
 #' @return downscaled nonland data
 #' @author Pascal Sauer
 calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizationPeriod = c(2015, 2050)) {
-  xInput <- calcOutput("NonlandHarmonized", input = input, target = target,
+  x <- calcOutput("NonlandHarmonized", input = input, target = target,
+                  harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
+
+  futureYears <- getYears(x, as.integer = TRUE)
+  futureYears <- futureYears[futureYears > harmonizationPeriod[1]]
+
+  x <- x[, futureYears, ]
+
+  weight <- calcOutput("LandHighRes", input = input, target = target,
                        harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
+  weight <- weight[, , c("urban", "pastr", "range"), invert = TRUE]
+  map <- as.data.frame(rbind(c("primf", "primf"),
+                             c("primn", "primn"),
+                             c("secdn", "secdn"),
+                             c("c3ann_irrigated", "c3ann"),
+                             c("c3ann_rainfed", "c3ann"),
+                             c("c3ann_irrigated_biofuel_1st_gen", "c3ann"),
+                             c("c3ann_rainfed_biofuel_1st_gen", "c3ann"),
+                             c("c3nfx_irrigated", "c3nfx"),
+                             c("c3nfx_rainfed", "c3nfx"),
+                             c("c3nfx_irrigated_biofuel_1st_gen", "c3nfx"),
+                             c("c3nfx_rainfed_biofuel_1st_gen", "c3nfx"),
+                             c("c3per_irrigated", "c3per"),
+                             c("c3per_rainfed", "c3per"),
+                             c("c3per_irrigated_biofuel_1st_gen", "c3per"),
+                             c("c3per_rainfed_biofuel_1st_gen", "c3per"),
+                             c("c3per_irrigated_biofuel_2nd_gen", "c3per"),
+                             c("c3per_rainfed_biofuel_2nd_gen", "c3per"),
+                             c("c4ann_irrigated", "c4ann"),
+                             c("c4ann_rainfed", "c4ann"),
+                             c("c4ann_irrigated_biofuel_1st_gen", "c4ann"),
+                             c("c4ann_rainfed_biofuel_1st_gen", "c4ann"),
+                             c("c4per_irrigated", "c4per"),
+                             c("c4per_rainfed", "c4per"),
+                             c("c4per_irrigated_biofuel_1st_gen", "c4per"),
+                             c("c4per_rainfed_biofuel_1st_gen", "c4per"),
+                             c("c4per_irrigated_biofuel_2nd_gen", "c4per"),
+                             c("c4per_rainfed_biofuel_2nd_gen", "c4per"),
+                             c("forestry", "secdf"),
+                             c("secdf", "secdf")))
+  colnames(map) <- c("from", "to")
+  weight <- toolAggregate(weight, map, from = "from", to = "to", dim = 3)
 
-  xTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
+  # wood harvest area, use land in previous year (as that is what's harvested) as weight
+  harvestArea <- x[, , woodHarvestAreaCategories()]
+  attr(harvestArea, "geometry") <- NULL
+  attr(harvestArea, "comment") <- NULL
+  attr(harvestArea, "crs") <- NULL
 
-  stopifnot(harmonizationPeriod[1] %in% terra::time(xTarget))
-  weight <- xTarget[[terra::time(xTarget) == harmonizationPeriod[1]]]
-  weight <- weight + 10^-10 # add 10^-10 to prevent weight 0
-  names(weight) <- sub("^y[0-9]+\\.\\.", "", names(weight))
-  stopifnot(setequal(getNames(xInput), names(weight)))
+  nonlandTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
+  nonlandTarget <- as.magpie(nonlandTarget[[terra::time(nonlandTarget) == harmonizationPeriod[1]]])
+  nonlandTarget <- nonlandTarget[, , woodHarvestAreaCategories()]
 
-  # simple weighted disaggregation
-  out <- do.call(mbind, lapply(seq_along(getNames(xInput)), function(i) {
-    category <- getNames(xInput)[[i]]
-    message(i, "/", length(getNames(xInput)), " ", category)
-    x <- as.SpatVector(xInput[, , category])
-    x$.region <- NULL
-    x$.id <- NULL
+  w <- weight[, , woodlandCategories()]
+  w <- setYears(w[, -nyears(w), ],
+                getYears(w)[-1])
+  w <- toolDisaggregateWoodHarvest(w, nonlandTarget + 10^-30)
+  w <- w + 10^-30
 
-    # calculate weight sum in each cluster
-    clusterTotal <- terra::extract(weight[[category]], x, ID = FALSE, fun = "sum", na.rm = TRUE)
-    stopifnot(all(clusterTotal[[1]] > 0))
+  resmap <- calcOutput("ResolutionMapping", input = input, target = target, aggregate = FALSE)
+  harvestAreaDownscaled <- toolAggregate(harvestArea, resmap, weight = w, from = "lowRes", to = "cell", dim = 1)
 
-    # divide input cluster values by weight sum, now it only needs to be multiplied by weight and we're done
-    for (n in names(x)) {
-      x[[n]] <- x[[n]] / clusterTotal
-    }
 
-    factorRaster <- do.call(c, lapply(names(x), function(name) {
-      return(terra::rasterize(x, weight[[category]], field = name, fun = "max"))
-    }))
-    result <- as.magpie(factorRaster * weight[[category]])
+  bioh <- x[, , sub("wood_harvest_area$", "bioh", woodHarvestAreaCategories())]
+  weightBioh <- harvestAreaDownscaled + 10^-30
+  getItems(weightBioh, 3) <- sub("wood_harvest_area$", "bioh", getItems(weightBioh, 3))
+  stopifnot(getItems(weightBioh, 3) == getItems(bioh, 3))
+  biohDownscaled <- toolAggregate(bioh, resmap, weight = weightBioh, from = "lowRes", to = "cell", dim = 1)
 
-    return(result)
-  }))
+  # TODO fertilizer
+
+  # TODO harvest_weight_type
+
+
 
   inSum <- dimSums(xInput, dim = 1)
   outSum <- dimSums(out, dim = 1)
@@ -72,5 +111,3 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
               unit = "harvest_weight & bioh: kg C yr-1; harvest_area: Mha yr-1; fertilizer: kg yr-1",
               description = "Downscaled nonland data"))
 }
-# TODO use woody land (instead of historical harvest_area) as weight for harvest_area
-# TODO distribute bioh according to harvest_area

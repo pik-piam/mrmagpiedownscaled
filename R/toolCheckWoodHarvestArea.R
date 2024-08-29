@@ -41,13 +41,28 @@ toolCheckWoodHarvestArea <- function(harvest, land, notePrefix = "") {
                  level = 1)
 }
 
-toolAggregateWoodHarvest <- function(woodHarvest) {
+toolWoodHarvestMapping <- function() {
   map <- as.data.frame(rbind(c("primf_wood_harvest_area", "primf"),
                              c("secyf_wood_harvest_area", "secdf"),
                              c("secmf_wood_harvest_area", "secdf"),
                              c("primn_wood_harvest_area", "primn"),
                              c("secnf_wood_harvest_area", "secdn")))
   colnames(map) <- c("harvest", "land")
+  return(map)
+}
+
+toolBiohMapping <- function() {
+  map <- as.data.frame(rbind(c("primf_bioh", "primf"),
+                             c("secyf_bioh", "secdf"),
+                             c("secmf_bioh", "secdf"),
+                             c("primn_bioh", "primn"),
+                             c("secnf_bioh", "secdn")))
+  colnames(map) <- c("bioh", "land")
+  return(map)
+}
+
+toolAggregateWoodHarvest <- function(woodHarvest) {
+  map <- toolWoodHarvestMapping()
 
   stopifnot(setequal(getItems(woodHarvest, 3), map$harvest))
 
@@ -55,12 +70,7 @@ toolAggregateWoodHarvest <- function(woodHarvest) {
 }
 
 toolDisaggregateWoodHarvest <- function(woodHarvest, weight) {
-  map <- as.data.frame(rbind(c("primf_wood_harvest_area", "primf"),
-                             c("secyf_wood_harvest_area", "secdf"),
-                             c("secmf_wood_harvest_area", "secdf"),
-                             c("primn_wood_harvest_area", "primn"),
-                             c("secnf_wood_harvest_area", "secdn")))
-  colnames(map) <- c("harvest", "land")
+  map <- toolWoodHarvestMapping()
 
   stopifnot(setequal(getItems(woodHarvest, 3), map$land))
 
@@ -80,4 +90,12 @@ toolMaxHarvestPerYear <- function(land, disaggregate = TRUE) {
   maxHarvest <- setYears(land[, -nyears(land), ], getYears(land)[-1])
   maxHarvestPerYear <- maxHarvest / timestepLength
   return(maxHarvestPerYear)
+}
+
+woodHarvestAreaCategories <- function() {
+  return(paste0(c("primf", "secyf", "secmf", "primn", "secnf"), "_wood_harvest_area"))
+}
+
+woodlandCategories <- function() {
+  return(c("primf", "secdf", "primn", "secdn"))
 }
