@@ -17,11 +17,11 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
   futureYears <- getYears(x, as.integer = TRUE)
   futureYears <- futureYears[futureYears > harmonizationPeriod[1]]
 
-  x <- x[, futureYears, ]
+  resmap <- calcOutput("ResolutionMapping", input = input, target = target, aggregate = FALSE)
 
-  weight <- calcOutput("LandHighRes", input = input, target = target,
-                       harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
-  weight <- weight[, , c("urban", "pastr", "range"), invert = TRUE]
+  landHighRes <- calcOutput("LandHighRes", input = input, target = target,
+                            harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
+  land <- landHighRes[, , c("urban", "pastr", "range", "forestry"), invert = TRUE]
   map <- as.data.frame(rbind(c("primf", "primf"),
                              c("primn", "primn"),
                              c("secdn", "secdn"),
@@ -49,61 +49,68 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
                              c("c4per_rainfed_biofuel_1st_gen", "c4per"),
                              c("c4per_irrigated_biofuel_2nd_gen", "c4per"),
                              c("c4per_rainfed_biofuel_2nd_gen", "c4per"),
-                             c("forestry", "secdf"),
+                            #  c("forestry", "secdf"), # TODO!
                              c("secdf", "secdf")))
   colnames(map) <- c("from", "to")
-  weight <- toolAggregate(weight, map, from = "from", to = "to", dim = 3)
+  land <- toolAggregate(land, map, from = "from", to = "to", dim = 3)
 
   # wood harvest area, use land in previous year (as that is what's harvested) as weight
-  harvestArea <- x[, , woodHarvestAreaCategories()]
-  attr(harvestArea, "geometry") <- NULL
-  attr(harvestArea, "comment") <- NULL
-  attr(harvestArea, "crs") <- NULL
+  whaCat <- woodHarvestAreaCategories()
+  harvestArea <- x[, futureYears, whaCat]
 
   nonlandTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
-  nonlandTarget <- as.magpie(nonlandTarget[[terra::time(nonlandTarget) == harmonizationPeriod[1]]])
-  nonlandTarget <- nonlandTarget[, , woodHarvestAreaCategories()]
+  nonlandTarget <- as.magpie(nonlandTarget)
 
-  w <- weight[, , woodlandCategories()]
-  w <- setYears(w[, -nyears(w), ],
-                getYears(w)[-1])
-  w <- toolDisaggregateWoodHarvest(w, nonlandTarget + 10^-30)
-  w <- w + 10^-30
+  weightHarvestArea <- land[, , woodlandCategories()]
+  weightHarvestArea <- setYears(weightHarvestArea[, -nyears(weightHarvestArea), ],
+                                getYears(weightHarvestArea)[-1])
+  weightHarvestArea <- toolDisaggregateWoodHarvest(weightHarvestArea,
+                                                   nonlandTarget[, harmonizationPeriod[1], whaCat] + 10^-30)
+  weightHarvestArea <- weightHarvestArea + 10^-30
 
-  resmap <- calcOutput("ResolutionMapping", input = input, target = target, aggregate = FALSE)
-  harvestAreaDownscaled <- toolAggregate(harvestArea, resmap, weight = w, from = "lowRes", to = "cell", dim = 1)
+  harvestAreaDownscaled <- toolAggregate(harvestArea, resmap, weight = weightHarvestArea,
+                                         from = "lowRes", to = "cell", dim = 1)
 
 
-  bioh <- x[, , sub("wood_harvest_area$", "bioh", woodHarvestAreaCategories())]
+  bioh <- x[, futureYears, sub("wood_harvest_area$", "bioh", whaCat)]
   weightBioh <- harvestAreaDownscaled + 10^-30
   getItems(weightBioh, 3) <- sub("wood_harvest_area$", "bioh", getItems(weightBioh, 3))
   stopifnot(getItems(weightBioh, 3) == getItems(bioh, 3))
   biohDownscaled <- toolAggregate(bioh, resmap, weight = weightBioh, from = "lowRes", to = "cell", dim = 1)
 
-  # TODO fertilizer
 
-  # TODO harvest_weight_type
+  fertilizer <- x[, futureYears, grep("fertilizer$", getItems(x, 3))]
+  weightFertilizer <- land[, futureYears, sub("_fertilizer$", "", getItems(fertilizer, 3))]
+  getItems(weightFertilizer, 3) <- getItems(fertilizer, 3)
+  weightFertilizer <- weightFertilizer + 10^-30
+  fertilizerDownscaled <- toolAggregate(fertilizer, resmap, weight = weightFertilizer,
+                                        from = "lowRes", to = "cell", dim = 1)
 
 
+  harvestType <- x[, futureYears, grep("harvest_weight_type$", getItems(x, 3))]
+  weightHarvestType <- nonlandTarget[, harmonizationPeriod[1], getItems(harvestType, 3)]
+  weightHarvestType <- collapseDim(weightHarvestType) + 10^-30
+  harvestTypeDownscaled <- toolAggregate(harvestType, resmap, weight = weightHarvestType,
+                                         from = "lowRes", to = "cell", dim = 1)
 
-  inSum <- dimSums(xInput, dim = 1)
+
+  out <- mbind(nonlandTarget,
+               mbind(harvestAreaDownscaled, biohDownscaled, fertilizerDownscaled, harvestTypeDownscaled))
+
+  inSum <- dimSums(x, dim = 1)
   outSum <- dimSums(out, dim = 1)
+  stopifnot(identical(getYears(inSum), getYears(outSum)),
+            setequal(getItems(inSum, 3), getItems(outSum, 3)))
 
   maxdiff <- max(abs(inSum - outSum) / inSum, na.rm = TRUE)
   toolExpectTrue(maxdiff < 10^-5,
                  paste0("Relative global sum difference per category before and after downscaling < 10^-5 ",
                         "(max relative diff: ", signif(maxdiff, 2), ")"))
-  toolExpectTrue(setequal(getItems(out, dim = 3), getItems(xInput, dim = 3)),
+  toolExpectTrue(setequal(getItems(out, dim = 3), getItems(x, dim = 3)),
                  "Nonland categories remain unchanged")
   toolExpectTrue(min(out) >= 0, "All values are >= 0")
-  outRaster <- as.SpatRaster(out[, harmonizationPeriod[1], ])
-  deviation <- terra::extend(outRaster, xTarget) - xTarget[[names(outRaster)]]
-  toolExpectLessDiff(max(abs(terra::minmax(deviation))), 0, 10^-5,
-                     paste("In", harmonizationPeriod[1], "downscaled data equals target data"))
 
-  land <- calcOutput("LandHighRes", input = input, target = target,
-                     harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
-  toolCheckWoodHarvestArea(out[, getYears(land), grep("wood_harvest_area$", getItems(out, 3))], land)
+  toolCheckWoodHarvestArea(out[, getYears(landHighRes), whaCat], landHighRes)
 
   return(list(x = out,
               min = 0,
