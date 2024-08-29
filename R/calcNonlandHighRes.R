@@ -102,6 +102,8 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
   stopifnot(identical(getYears(inSum), getYears(outSum)),
             setequal(getItems(inSum, 3), getItems(outSum, 3)))
 
+  toolExpectLessDiff(inSum, outSum, 0.1,
+                     "No significant global sum difference per category before and after downscaling")
   maxdiff <- max(abs(inSum - outSum) / inSum, na.rm = TRUE)
   toolExpectTrue(maxdiff < 10^-5,
                  paste0("Relative global sum difference per category before and after downscaling < 10^-5 ",
