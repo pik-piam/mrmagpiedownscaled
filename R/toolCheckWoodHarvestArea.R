@@ -7,7 +7,7 @@
 #' @param harvest magpie object with exactly the following categories:
 #' paste0(c("primf", "secyf", "secmf", "primn", "secnf"), "_wood_harvest_area")
 #' @param land magpie object with at least the following categories:
-#' c("primf", "secdf", "primn", "secdn")
+#' c("primf", "secdf", "forestry", "primn", "secdn")
 #' @param notePrefix character to prepend to the check's message
 #'
 #' @author Pascal Sauer
@@ -69,19 +69,11 @@ toolAggregateWoodHarvest <- function(woodHarvest) {
   return(toolAggregate(woodHarvest, map, from = "harvest", to = "land", dim = 3))
 }
 
-toolDisaggregateWoodHarvest <- function(woodHarvest, weight) {
-  map <- toolWoodHarvestMapping()
-
-  stopifnot(setequal(getItems(woodHarvest, 3), map$land))
-
-  return(toolAggregate(woodHarvest, map, weight = weight, from = "land", to = "harvest", dim = 3))
-}
-
 toolMaxHarvestPerYear <- function(land, disaggregate = TRUE) {
   timestepLength <- new.magpie(years = getYears(land)[-1],
                                fill = diff(getYears(land, as.integer = TRUE)))
   stopifnot(timestepLength > 0)
-  land <- land[, , c("primf", "primn", "secdf", "secdn")]
+  land <- toolWoodland(land)[, , c("primf", "primn", "secdf", "secdn")]
   if (disaggregate) {
     getItems(land, 3) <- paste0(c("primf", "primn", "secyf", "secnf"), "_wood_harvest_area")
     land <- add_columns(land, "secmf_wood_harvest_area")
@@ -96,6 +88,16 @@ woodHarvestAreaCategories <- function() {
   return(paste0(c("primf", "secyf", "secmf", "primn", "secnf"), "_wood_harvest_area"))
 }
 
-woodlandCategories <- function() {
-  return(c("primf", "secdf", "primn", "secdn"))
+# extract woodland categories from land, aggregate forestry and secdf to secdf
+# useful when working with wood harvest area / bioh
+toolWoodland <- function(land) {
+  land <- land[, , c("primf", "secdf", "forestry", "primn", "secdn")]
+  map <- as.data.frame(rbind(c("secdf", "secdf"),
+                             c("forestry", "secdf"),
+                             c("secdn", "secdn"),
+                             c("primf", "primf"),
+                             c("primn", "primn")))
+  colnames(map) <- c("from", "to")
+  land <- toolAggregate(land, map, from = "from", to = "to", dim = 3)
+  return(land)
 }

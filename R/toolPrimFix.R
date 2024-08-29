@@ -18,9 +18,9 @@ toolPrimFix <- function(x, noteThreshold = 10^-10, warnThreshold = 10^-5) {
     primDiff <- x[, i, c("primf", "primn")] - setYears(x[, i - 1, c("primf", "primn")], getYears(x)[i])
     primDiff[primDiff < 0] <- 0
     maxDiff <- max(maxDiff, max(primDiff))
-    # use pmin instead of subtracting to avoid tiny expansions due to numerical precision
+    # use pmin instead of subtracting to avoid tiny expansions due to numerical imprecision
     x[, i, c("primf", "primn")] <- pmin(x[, i, c("primf", "primn")], x[, i - 1, c("primf", "primn")])
-    x[, i, c("secdf", "secdn")] <- x[, i, c("secdf", "secdn")] + setNames(primDiff, c("secdf", "secdn"))
+    x[, i, c("secdf", "secdn")] <- x[, i, c("secdf", "secdn")] + magclass::setNames(primDiff, c("secdf", "secdn"))
   }
 
   if (maxDiff > warnThreshold) {

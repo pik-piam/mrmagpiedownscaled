@@ -21,8 +21,10 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
 
   landHighRes <- calcOutput("LandHighRes", input = input, target = target,
                             harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
-  land <- landHighRes[, , c("urban", "pastr", "range", "forestry"), invert = TRUE]
+  land <- landHighRes[, , c("urban", "pastr", "range"), invert = TRUE]
   map <- as.data.frame(rbind(c("primf", "primf"),
+                             c("forestry", "forestry"),
+                             c("secdf", "secdf"),
                              c("primn", "primn"),
                              c("secdn", "secdn"),
                              c("c3ann_irrigated", "c3ann"),
@@ -48,9 +50,7 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
                              c("c4per_irrigated_biofuel_1st_gen", "c4per"),
                              c("c4per_rainfed_biofuel_1st_gen", "c4per"),
                              c("c4per_irrigated_biofuel_2nd_gen", "c4per"),
-                             c("c4per_rainfed_biofuel_2nd_gen", "c4per"),
-                            #  c("forestry", "secdf"), # TODO!
-                             c("secdf", "secdf")))
+                             c("c4per_rainfed_biofuel_2nd_gen", "c4per")))
   colnames(map) <- c("from", "to")
   land <- toolAggregate(land, map, from = "from", to = "to", dim = 3)
 
@@ -61,11 +61,12 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
   nonlandTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
   nonlandTarget <- as.magpie(nonlandTarget)
 
-  weightHarvestArea <- land[, , woodlandCategories()]
+  weightHarvestArea <- toolWoodland(land)
   weightHarvestArea <- setYears(weightHarvestArea[, -nyears(weightHarvestArea), ],
                                 getYears(weightHarvestArea)[-1])
-  weightHarvestArea <- toolDisaggregateWoodHarvest(weightHarvestArea,
-                                                   nonlandTarget[, harmonizationPeriod[1], whaCat] + 10^-30)
+  weightHarvestArea <- toolAggregate(weightHarvestArea, toolWoodHarvestMapping(),
+                                     weight = nonlandTarget[, harmonizationPeriod[1], whaCat] + 10^-30,
+                                     from = "land", to = "harvest", dim = 3)
   weightHarvestArea <- weightHarvestArea + 10^-30
 
   harvestAreaDownscaled <- toolAggregate(harvestArea, resmap, weight = weightHarvestArea,

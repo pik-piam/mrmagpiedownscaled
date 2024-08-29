@@ -44,6 +44,7 @@ calcNonlandTarget <- function(target = "luh2mod", years = seq(1995, 2015, 5), ti
 
     # check wood harvest area is smaller than corresponding land area
     land <- calcOutput("LandTarget", target = target, aggregate = FALSE)
+    # TODO! aggregate secdf + forestry
     stopifnot(all(diff(unique(terra::time(land))) == timestepLength),
               all(diff(unique(terra::time(woodHarvestArea))) == timestepLength))
     for (category in list(c("primf", "primf"),
@@ -51,6 +52,7 @@ calcNonlandTarget <- function(target = "luh2mod", years = seq(1995, 2015, 5), ti
                           c("secyf", "secdf"),
                           c("primn", "primn"),
                           c("secnf", "secdn"))) {
+      # TODO! need to compare harvest to land in previous timestep
       violations <- terra::as.data.frame(land[category[2]] < timestepLength * woodHarvestArea[category[1]],
                                          na.rm = NA)
       relativeViolations <- colSums(violations) / nrow(violations)

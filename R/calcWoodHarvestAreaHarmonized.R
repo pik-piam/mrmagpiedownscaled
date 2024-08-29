@@ -4,9 +4,6 @@ calcWoodHarvestAreaHarmonized <- function(input = "magpie", target = "luh2mod",
   landHarmonized <- calcOutput("LandHarmonized", input = input, target = target,
                                harmonizationPeriod = harmonizationPeriod,
                                method = method, aggregate = FALSE)
-  attr(landHarmonized, "geometry") <- NULL
-  attr(landHarmonized, "crs") <- NULL
-  attr(landHarmonized, "comment") <- NULL
 
   # calculate prim harvest based on prim land reduction
   prim <- c("primf", "primn")
@@ -80,7 +77,9 @@ calcWoodHarvestAreaHarmonized <- function(input = "magpie", target = "luh2mod",
   # assemble output
   out <- mbind(primHarv, secdHarv)
   out <- out[, futureYears, ]
-  out <- toolDisaggregateWoodHarvest(out, xTarget[, harmonizationPeriod[1], ] + 10^-30)
+  out <- toolAggregate(out, toolWoodHarvestMapping(),
+                       weight = xTarget[, harmonizationPeriod[1], ] + 10^-30,
+                       from = "land", to = "harvest", dim = 3)
 
   out <- mbind(xTarget[, histYears, ], out)
   stopifnot(dimSums(out[, -1, ], 3) + excessSecdHarvest + 10^-10 >=

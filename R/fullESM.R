@@ -50,3 +50,8 @@ fullESM <- function(rev = NULL, ..., scenario = "", harmonizationPeriod = c(2015
 
   toolWriteMadratLog(logPath = "consistencyCheck.log")
 }
+# TODO rename secdf to secdf_no_forestry if it does not include forestry, otherwise secdf sometimes
+# includes forestry and sometimes not
+
+# TODO switch to from-semantics for wood harvest (just like LUH), so harvest[2000] actually harvests
+# land[2000] instead of land[1995]

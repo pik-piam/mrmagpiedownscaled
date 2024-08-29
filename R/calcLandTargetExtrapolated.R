@@ -68,11 +68,11 @@ calcLandTargetExtrapolated <- function(input = "magpie", target = "luh2mod",
     # more prim than in previous timestep is not possible, convert to secd
     toSecd <- out[, i, primfn] - maxPossiblePrim
     toSecd[toSecd < 0] <- 0
-    getItems(toSecd, 3) <- c("secdf", "secdn")
+    getItems(toSecd, 3) <- secdfn
     out[, i, secdfn] <- out[, i, secdfn] + toSecd
     out[, i, primfn] <- pmin(out[, i, primfn], maxPossiblePrim)
 
-    woodland <- out[, , getItems(harvestAgg, 3)]
+    woodland <- toolWoodland(out)[, , getItems(harvestAgg, 3)]
     stopifnot(harvestAgg <= woodland[, i - 1, ] / timestepLength,
               woodland[, i, primfn] <= woodland[, i - 1, primfn] - timestepLength * harvestAgg[, , primfn])
   }
