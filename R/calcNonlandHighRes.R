@@ -1,7 +1,14 @@
 #' calcNonlandHighRes
 #'
-#' This function performs the downscaling: It calculates a high resolution dataset
-#' from the low resolution input dataset and the high resolution target dataset.
+#' Calculate a high resolution dataset from the low resolution input dataset
+#' and high resolution data.
+#'
+#' Wood harvest area is disaggregated using the maximum possible harvest per
+#' year which is based on the downscaled land data. Bioh
+#' is disaggregated using the just disaggregated wood harvest area as weight.
+#' Fertilizer is disaggregated using the downscaled land data. Harvest weight
+#' type is disaggregated using the nonland target data in the first year of
+#' the harmonization period as weight.
 #'
 #' @param input name of an input dataset, currently only "magpie"
 #' @param target name of a target dataset, currently only "luh2mod"

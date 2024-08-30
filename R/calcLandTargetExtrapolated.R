@@ -1,11 +1,21 @@
 #' calcLandTargetExtrapolated
 #'
-#' First aggregate to low resolution, then extrapolate to the given years
-#' using toolExtrapolate.
+#' Aggregated low resolution target data is extrapolated to the given years
+#' using toolExtrapolate and normalized afterwards, so that the total sum over
+#' all land types is unchanged.
+#' To account for the relationship between wood
+#' harvest area and primary land (which is no longer primary once it has been
+#' harvested) wood harvest area is calculated here even though it is otherwise
+#' considered a nonland variable. The share of primary land that was
+#' harvested in the historical period is calculated and then multiplied
+#' by the maximum possible harvest in the extrapolation period. Primary land
+#' is then converted to secondary land so the total reduction equals the area
+#' that was harvested.
 #'
-#' @param target name of the target dataset, options are: luh2, luh2mod
-#' luh2mod will split secdf into forestry and secdf
-#' @return extrapolated land target data
+#' @param input character, name of the input data set, currently only "magpie"
+#' @param target character, name of the target data set, currently only "luh2mod"
+#' @return extrapolated land target data, if calcOutput is called with
+#' supplementary = TRUE wood harvest area is also returned
 #' @author Pascal Sauer
 calcLandTargetExtrapolated <- function(input = "magpie", target = "luh2mod",
                                        transitionYears = seq(2020, 2045, 5)) {
@@ -17,8 +27,6 @@ calcLandTargetExtrapolated <- function(input = "magpie", target = "luh2mod",
   # ---------- extrapolate -------------
   exTarget <- toolExtrapolate(xTarget, transitionYears)
   exTarget[exTarget < 0] <- 0
-
-  # TODO describe what happens from here in documentation
 
   # ---------- normalize -------------
   # normalize exTarget so that its total sum over all layers agrees for all time steps
@@ -105,13 +113,4 @@ calcLandTargetExtrapolated <- function(input = "magpie", target = "luh2mod",
               min = 0,
               description = "Extrapolated land target data for harmonization",
               woodHarvestArea = harvest))
-}
-
-toolNegativeToZero <- function(x, warnThreshold = -10^-5, status = "note") {
-  m <- min(x, na.rm = TRUE)
-  if (m < warnThreshold) {
-    toolStatusMessage(status, paste("Replacing negative values with zero. Minimum value:", m), level = 1)
-  }
-  x[x < 0] <- 0
-  return(x)
 }

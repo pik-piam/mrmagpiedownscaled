@@ -1,4 +1,12 @@
-# TODO documentation
+#' calcLandTargetLowRes
+#'
+#' Aggregate target land data to the spatial resolution of the input data in
+#' preparation for harmonization.
+#'
+#' @param input name of an input dataset, currently only "magpie"
+#' @param target name of a target dataset, currently only "luh2mod"
+#' @return low resolution target land data
+#' @author Pascal Sauer
 calcLandTargetLowRes <- function(input = "magpie", target = "luh2mod") {
   xInput <- calcOutput("LandInputRecategorized", input = input,
                        target = target, aggregate = FALSE)

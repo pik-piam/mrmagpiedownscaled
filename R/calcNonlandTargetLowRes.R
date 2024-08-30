@@ -1,4 +1,12 @@
-# TODO documentation
+#' calcNonlandTargetLowRes
+#'
+#' Aggregate target nonland data to the spatial resolution of the input data in
+#' preparation for harmonization.
+#'
+#' @param input name of an input dataset, currently only "magpie"
+#' @param target name of a target dataset, currently only "luh2mod"
+#' @return low resolution target nonland data
+#' @author Pascal Sauer
 calcNonlandTargetLowRes <- function(input = "magpie", target = "luh2mod") {
   xInput <- calcOutput("NonlandInputRecategorized", input = input, aggregate = FALSE)
 
