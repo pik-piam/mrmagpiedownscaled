@@ -55,3 +55,6 @@ fullESM <- function(rev = NULL, ..., scenario = "", harmonizationPeriod = c(2015
 
 # TODO switch to from-semantics for wood harvest (just like LUH), so harvest[2000] actually harvests
 # land[2000] instead of land[1995]
+
+# TODO bioh & wood harvest area consistency checks, e.g. no bioh without harvest area,
+# check for implausible kg/Mha harvest rates

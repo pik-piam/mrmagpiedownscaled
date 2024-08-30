@@ -33,7 +33,9 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
                                                                     sub("wood_harvest_area$", "bioh",
                                                                         woodHarvestAreaCategories()))
   kgCPerMhaTarget[is.nan(kgCPerMhaTarget)] <- 0
-  kgCPerMhaTarget[is.infinite(kgCPerMhaTarget)] <- max(kgCPerMhaTarget[is.finite(kgCPerMhaTarget)]) # TODO!
+  # TODO investigate and prevent bioh without harvest area before this point, so
+  # the following line is no longer necessary
+  kgCPerMhaTarget[is.infinite(kgCPerMhaTarget)] <- max(kgCPerMhaTarget[is.finite(kgCPerMhaTarget)])
   stopifnot(is.finite(kgCPerMhaTarget), kgCPerMhaTarget >= 0)
   getItems(kgCPerMhaTarget, 3) <- sub("bioh$", "kg_per_mha", getItems(kgCPerMhaTarget, 3))
 
