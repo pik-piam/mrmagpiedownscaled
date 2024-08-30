@@ -30,6 +30,8 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   stopifnot(is.finite(kgPerMhaInput), kgPerMhaInput >= 0)
   getItems(kgPerMhaInput, 3) <- sub("bioh$", "kg_per_mha", getItems(kgPerMhaInput, 3))
 
+  inputYears <- getYears(xInput, as.integer = TRUE)
+  transitionYears <- inputYears[inputYears > harmonizationPeriod[1] & inputYears < harmonizationPeriod[2]]
   xTarget <- calcOutput("NonlandTargetExtrapolated", input = input, target = target,
                         transitionYears = transitionYears, aggregate = FALSE)
 

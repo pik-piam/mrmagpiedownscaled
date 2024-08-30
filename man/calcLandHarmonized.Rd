@@ -8,7 +8,7 @@ calcLandHarmonized(
   input = "magpie",
   target = "luh2mod",
   harmonizationPeriod = c(2015, 2050),
-  method = "extrapolateFade"
+  method = "fade"
 )
 }
 \arguments{

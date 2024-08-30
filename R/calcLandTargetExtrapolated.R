@@ -14,6 +14,7 @@
 #'
 #' @param input character, name of the input data set, currently only "magpie"
 #' @param target character, name of the target data set, currently only "luh2mod"
+#' @param transitionYears years to which the target data is extrapolated
 #' @return extrapolated land target data, if calcOutput is called with
 #' supplementary = TRUE wood harvest area is also returned
 #' @author Pascal Sauer

@@ -4,29 +4,26 @@
 \alias{toolHarmonizeFade}
 \title{toolHarmonizeFade}
 \usage{
-toolHarmonizeFade(input, target, harmonizationPeriod)
+toolHarmonizeFade(xInput, xTarget, harmonizationPeriod)
 }
 \arguments{
-\item{input}{magpie object to fade to, usually model projections}
+\item{xInput}{input data as magpie object}
 
-\item{target}{magpie object to fade from, usually historical data, this argument is called "target"
-for consistency with argument names of other functions, it is somewhat misleading here,
-because data after the harmonizationEnd will not be taken from target, but from input}
+\item{xTarget}{target data as magpie object}
 
 \item{harmonizationPeriod}{Two integer values, before the first given
 year the target dataset is used, after the second given year the input
 dataset is used, in between harmonize between the two datasets}
 }
 \value{
-magpie object with harmonized data
+harmonized data set as magpie object with data from input for years
+before the harmonization period, data from target for years after the
+harmonization period and a smooth transition in between.
 }
 \description{
-Harmonize two datasets by fading from one to the other, using the following formula:
-.inputFactor(year) * input[, year, ] + (1 - .inputFactor(year)) * target[, year, ]
-where .inputFactor is (year - harmonizationStart) / (harmonizationEnd - harmonizationStart).
-Requires both datasets to have all years including and between harmonizationStart and harmonizationEnd,
-so it is not suitable for harmonization periods in the future if historical data is used.
+Tool function for creating a harmonized data set with a smooth s-shaped
+transition from historic target data to simulated input data.
 }
 \author{
-Pascal Sauer
+Jan Philipp Dietrich, Pascal Sauer
 }

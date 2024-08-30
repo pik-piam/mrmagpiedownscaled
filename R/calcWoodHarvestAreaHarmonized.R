@@ -22,6 +22,9 @@ calcWoodHarvestAreaHarmonized <- function(input = "magpie", target = "luh2mod",
   # calculate raw (inconsistent with land) harmonized wood harvest area
   xInput <- calcOutput("NonlandInputRecategorized", input = input, target = target, aggregate = FALSE)
   xInput <- xInput[, , woodHarvestAreaCategories()]
+
+  inputYears <- getYears(xInput, as.integer = TRUE)
+  transitionYears <- inputYears[inputYears > harmonizationPeriod[1] & inputYears < harmonizationPeriod[2]]
   xTarget <- calcOutput("NonlandTargetExtrapolated", input = input, target = target,
                         transitionYears = transitionYears, aggregate = FALSE)
   xTarget <- xTarget[, , woodHarvestAreaCategories()]

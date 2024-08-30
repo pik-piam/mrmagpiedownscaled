@@ -8,7 +8,7 @@ calcNonlandHarmonized(
   input = "magpie",
   target = "luh2mod",
   harmonizationPeriod = c(2015, 2050),
-  method = "extrapolateFade"
+  method = "fade"
 )
 }
 \arguments{
@@ -28,6 +28,12 @@ harmonized nonland data
 \description{
 Harmonize nonland input data to target data using the specified method, checking
 data for consistency before returning.
+}
+\details{
+Wood harvest biomass (bioh) is adapted to the harmonized wood harvest area
+by calculating kg C per mega hectare for input and target data and
+harmonizing it. This is then multiplied by the harmonized wood harvest area
+and scaled so the total harmonized bioh is reached.
 }
 \author{
 Pascal Sauer

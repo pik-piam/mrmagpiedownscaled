@@ -7,7 +7,7 @@
 toolGetHarmonizer(harmonizerName)
 }
 \arguments{
-\item{harmonizerName}{name of a harmonizer function, currently offset, fade, extrapolateFade}
+\item{harmonizerName}{name of a harmonizer function, currently offset, fade}
 }
 \value{
 harmonizer function

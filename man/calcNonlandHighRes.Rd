@@ -23,8 +23,16 @@ dataset is used, in between harmonize between the two datasets}
 downscaled nonland data
 }
 \description{
-This function performs the downscaling: It calculates a high resolution dataset
-from the low resolution input dataset and the high resolution target dataset.
+Calculate a high resolution dataset from the low resolution input dataset
+and high resolution data.
+}
+\details{
+Wood harvest area is disaggregated using the maximum possible harvest per
+year which is based on the downscaled land data. Bioh
+is disaggregated using the just disaggregated wood harvest area as weight.
+Fertilizer is disaggregated using the downscaled land data. Harvest weight
+type is disaggregated using the nonland target data in the first year of
+the harmonization period as weight.
 }
 \author{
 Pascal Sauer
