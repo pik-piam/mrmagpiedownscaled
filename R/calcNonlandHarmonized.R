@@ -3,6 +3,11 @@
 #' Harmonize nonland input data to target data using the specified method, checking
 #' data for consistency before returning.
 #'
+#' Wood harvest biomass (bioh) is adapted to the harmonized wood harvest area
+#' by calculating kg C per mega hectare for input and target data and
+#' harmonizing it. This is then multiplied by the harmonized wood harvest area
+#' and scaled so the total harmonized bioh is reached.
+#'
 #' @param input name of the input dataset, currently only "magpie"
 #' @param target name of the target dataset, currently only "luh2"
 #' @param harmonizationPeriod Two integer values, before the first given
@@ -17,7 +22,6 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   geometry <- attr(xInput, "geometry")
   crs <- attr(xInput, "crs")
 
-  # TODO describe how bioh is adapted to harmonized wood harvest area
   biohMap <- toolBiohMapping()
   kgPerMhaInput <- xInput[, , biohMap$bioh] / magclass::setNames(xInput[, , woodHarvestAreaCategories()],
                                                                  sub("wood_harvest_area$", "bioh",
@@ -33,8 +37,7 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
                                                                     sub("wood_harvest_area$", "bioh",
                                                                         woodHarvestAreaCategories()))
   kgCPerMhaTarget[is.nan(kgCPerMhaTarget)] <- 0
-  # TODO investigate and prevent bioh without harvest area before this point, so
-  # the following line is no longer necessary
+  # should we prevent bioh without harvest area before this point, so the following line is no longer necessary?
   kgCPerMhaTarget[is.infinite(kgCPerMhaTarget)] <- max(kgCPerMhaTarget[is.finite(kgCPerMhaTarget)])
   stopifnot(is.finite(kgCPerMhaTarget), kgCPerMhaTarget >= 0)
   getItems(kgCPerMhaTarget, 3) <- sub("bioh$", "kg_per_mha", getItems(kgCPerMhaTarget, 3))
@@ -51,8 +54,7 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
 
   # adapt bioh to harmonized harvest area
   kgCPerMhaHarmonized <- out[, , getItems(kgCPerMhaTarget, 3)]
-  # TODO investigate and prevent harvest area without bioh before this point, so
-  # the following line is no longer necessary
+  # should we prevent harvest area  without bioh before this point, so the following line is no longer necessary?
   kgCPerMhaHarmonized[kgCPerMhaHarmonized == 0] <- min(kgCPerMhaHarmonized[kgCPerMhaHarmonized > 0])
   stopifnot(is.finite(kgCPerMhaHarmonized), kgCPerMhaHarmonized >= 0)
   biohCalculated <- kgCPerMhaHarmonized * magclass::setNames(harvestArea,
