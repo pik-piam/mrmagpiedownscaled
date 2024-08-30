@@ -58,3 +58,6 @@ fullESM <- function(rev = NULL, ..., scenario = "", harmonizationPeriod = c(2015
 
 # TODO bioh & wood harvest area consistency checks, e.g. no bioh without harvest area,
 # check for implausible kg/Mha harvest rates
+
+# TODO ? switch from harmonizationPeriod to transition years or at least something more explicit,
+# e.g. c(2015, 2050) has implicit timestepLength of 5 years, which is not clear

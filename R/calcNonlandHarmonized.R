@@ -51,6 +51,8 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
 
   # adapt bioh to harmonized harvest area
   kgCPerMhaHarmonized <- out[, , getItems(kgCPerMhaTarget, 3)]
+  # TODO investigate and prevent harvest area without bioh before this point, so
+  # the following line is no longer necessary
   kgCPerMhaHarmonized[kgCPerMhaHarmonized == 0] <- min(kgCPerMhaHarmonized[kgCPerMhaHarmonized > 0])
   stopifnot(is.finite(kgCPerMhaHarmonized), kgCPerMhaHarmonized >= 0)
   biohCalculated <- kgCPerMhaHarmonized * magclass::setNames(harvestArea,
