@@ -13,19 +13,19 @@ calcWoodHarvestAreaHarmonized <- function(input = "magpie", target = "luh2mod",
   timestepLength <- new.magpie(years = getYears(landHarmonized)[-1],
                                fill = diff(getYears(landHarmonized, as.integer = TRUE)))
   stopifnot(timestepLength > 0)
-  # - 10^-10 to ensure timestepLength * primHarv <= primDiff
   primHarv <- primDiff / timestepLength
   stopifnot(primHarv >= 0)
+  # - 10^-10 to ensure timestepLength * primHarv <= primDiff
   primHarv <- pmax(primHarv - 10^-10, 0)
   stopifnot(timestepLength * primHarv <= primDiff)
 
   # calculate raw (inconsistent with land) harmonized wood harvest area
-  harmonizer <- toolGetHarmonizer(method)
   xInput <- calcOutput("NonlandInputRecategorized", input = input, target = target, aggregate = FALSE)
   xInput <- xInput[, , woodHarvestAreaCategories()]
   xTarget <- calcOutput("NonlandTargetExtrapolated", input = input, target = target,
                         transitionYears = transitionYears, aggregate = FALSE)
   xTarget <- xTarget[, , woodHarvestAreaCategories()]
+  harmonizer <- toolGetHarmonizer(method)
   rawHarvestHarmonized <- harmonizer(xInput, xTarget, harmonizationPeriod = harmonizationPeriod)
 
   afterHarmonization <- getYears(xInput, as.integer = TRUE)

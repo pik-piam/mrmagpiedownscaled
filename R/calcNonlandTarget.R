@@ -42,28 +42,6 @@ calcNonlandTarget <- function(target = "luh2mod", years = seq(1995, 2015, 5), ti
     names(woodHarvestArea) <- paste0(sub("_harv", "", names(woodHarvestArea)), "_wood_harvest_area")
     woodHarvestArea <- toolAverageOverYears(woodHarvestArea, years, timestepLength, unit = "Mha yr-1")
 
-    # check wood harvest area is smaller than corresponding land area
-    land <- calcOutput("LandTarget", target = target, aggregate = FALSE)
-    # TODO! aggregate secdf + forestry
-    stopifnot(all(diff(unique(terra::time(land))) == timestepLength),
-              all(diff(unique(terra::time(woodHarvestArea))) == timestepLength))
-    for (category in list(c("primf", "primf"),
-                          c("secmf", "secdf"),
-                          c("secyf", "secdf"),
-                          c("primn", "primn"),
-                          c("secnf", "secdn"))) {
-      # TODO! need to compare harvest to land in previous timestep
-      violations <- terra::as.data.frame(land[category[2]] < timestepLength * woodHarvestArea[category[1]],
-                                         na.rm = NA)
-      relativeViolations <- colSums(violations) / nrow(violations)
-      if (max(relativeViolations) > 0) {
-        toolStatusMessage("note", paste0("share of land cells where wood harvest area (", category[1], ")",
-                                         " > land (", category[2], ") - ",
-                                         paste0(years, ": ", round(100 * relativeViolations, 2), "%",
-                                                collapse = ", ")))
-      }
-    }
-
     ### wood harvest weight (bioh) in kg C yr-1
     woodHarvestWeight <- transitions["bioh"]
     minWoodHarvestWeight <- min(terra::minmax(woodHarvestWeight, compute = TRUE))

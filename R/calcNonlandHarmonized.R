@@ -17,18 +17,59 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   geometry <- attr(xInput, "geometry")
   crs <- attr(xInput, "crs")
 
+  # TODO describe how bioh is adapted to harmonized wood harvest area
+  biohMap <- toolBiohMapping()
+  kgPerMhaInput <- xInput[, , biohMap$bioh] / magclass::setNames(xInput[, , woodHarvestAreaCategories()],
+                                                                 sub("wood_harvest_area$", "bioh",
+                                                                     woodHarvestAreaCategories()))
+  kgPerMhaInput[is.nan(kgPerMhaInput)] <- 0
+  stopifnot(is.finite(kgPerMhaInput), kgPerMhaInput >= 0)
+  getItems(kgPerMhaInput, 3) <- sub("bioh$", "kg_per_mha", getItems(kgPerMhaInput, 3))
+
   xTarget <- calcOutput("NonlandTargetExtrapolated", input = input, target = target,
                         transitionYears = transitionYears, aggregate = FALSE)
 
+  kgCPerMhaTarget <- xTarget[, , biohMap$bioh] / magclass::setNames(xTarget[, , woodHarvestAreaCategories()],
+                                                                    sub("wood_harvest_area$", "bioh",
+                                                                        woodHarvestAreaCategories()))
+  kgCPerMhaTarget[is.nan(kgCPerMhaTarget)] <- 0
+  kgCPerMhaTarget[is.infinite(kgCPerMhaTarget)] <- max(kgCPerMhaTarget[is.finite(kgCPerMhaTarget)]) # TODO!
+  stopifnot(is.finite(kgCPerMhaTarget), kgCPerMhaTarget >= 0)
+  getItems(kgCPerMhaTarget, 3) <- sub("bioh$", "kg_per_mha", getItems(kgCPerMhaTarget, 3))
+
   harmonizer <- toolGetHarmonizer(method)
-  out <- harmonizer(xInput[, , woodHarvestAreaCategories(), invert = TRUE],
-                    xTarget[, , woodHarvestAreaCategories(), invert = TRUE],
+  out <- harmonizer(mbind(xInput[, , woodHarvestAreaCategories(), invert = TRUE],
+                          kgPerMhaInput),
+                    mbind(xTarget[, , woodHarvestAreaCategories(), invert = TRUE],
+                          kgCPerMhaTarget),
                     harmonizationPeriod = harmonizationPeriod)
 
   harvestArea <- calcOutput("WoodHarvestAreaHarmonized", input = input, target = target,
                             harmonizationPeriod = harmonizationPeriod, method = method, aggregate = FALSE)
-  # TODO! adapt bioh and harvest_weight_type to match the harmonized harvest area
+
+  # adapt bioh to harmonized harvest area
+  kgCPerMhaHarmonized <- out[, , getItems(kgCPerMhaTarget, 3)]
+  kgCPerMhaHarmonized[kgCPerMhaHarmonized == 0] <- min(kgCPerMhaHarmonized[kgCPerMhaHarmonized > 0])
+  stopifnot(is.finite(kgCPerMhaHarmonized), kgCPerMhaHarmonized >= 0)
+  biohCalculated <- kgCPerMhaHarmonized * magclass::setNames(harvestArea,
+                                                             sub("wood_harvest_area$", "kg_per_mha",
+                                                                 getItems(harvestArea, 3)))
+  getItems(biohCalculated, 3) <- sub("kg_per_mha$", "bioh", getItems(biohCalculated, 3))
+  stopifnot(0 <= biohCalculated, is.finite(biohCalculated))
+
+  biohNormalization <- dimSums(out[, , biohMap$bioh], 3) / dimSums(biohCalculated, 3)
+  biohNormalization[is.nan(biohNormalization)] <- 0
+  stopifnot(0 <= biohNormalization, is.finite(biohNormalization))
+
+  biohAdapted <- biohNormalization * biohCalculated
+
+  toolExpectLessDiff(dimSums(out[, , biohMap$bioh], 3),
+                     dimSums(biohAdapted, 3),
+                     10^-4, "Adapting bioh to harmonized wood harvest area does not change total bioh")
+
+  out[, , biohMap$bioh] <- biohAdapted
   out <- mbind(out, harvestArea)
+  out <- out[, , getItems(kgCPerMhaTarget, 3), invert = TRUE]
 
   attr(out, "geometry") <- geometry
   attr(out, "crs")      <- crs
