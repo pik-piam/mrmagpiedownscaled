@@ -103,13 +103,21 @@ calcNonlandInputRecategorized <- function(input = "magpie", target = "luh2mod",
   # check data for consistency
   toolExpectTrue(identical(unname(getSets(x)), c("region", "id", "year", "data")),
                  "Dimensions are named correctly")
+  biohCategories <- paste0(c("primf", "primn", "secmf", "secyf", "secnf"), "_bioh")
   toolExpectTrue(setequal(getNames(x),
                           c(woodHarvestAreaCategories(),
-                            paste0(c("primf", "primn", "secmf", "secyf", "secnf"), "_bioh"),
+                            biohCategories,
                             paste0(c("roundwood", "fuelwood"), "_harvest_weight_type"),
                             paste0(c("c3ann", "c4ann", "c3per", "c4per", "c3nfx"), "_fertilizer"))),
                  "Nonland categories match target definition")
   toolExpectTrue(all(x >= 0), "All values are >= 0")
+
+  harvestAreaRenamed <- x[, , woodHarvestAreaCategories()]
+  getItems(harvestAreaRenamed, 3) <- sub("_wood_harvest_area", "_bioh", getItems(harvestAreaRenamed, 3))
+  toolExpectTrue(all(harvestAreaRenamed > 0 | x[, , biohCategories] == 0),
+                 "If bioh > 0 then wood harvest area > 0")
+  toolExpectTrue(all(harvestAreaRenamed == 0 | x[, , biohCategories] > 0),
+                 "If wood harvest area > 0 then bioh > 0")
 
   return(list(x = x,
               isocountries = FALSE,
