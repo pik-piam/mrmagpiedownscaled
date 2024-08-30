@@ -61,15 +61,8 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
   nonlandTarget <- calcOutput("NonlandTarget", target = target, aggregate = FALSE)
   nonlandTarget <- as.magpie(nonlandTarget)
 
-  weightHarvestArea <- toolWoodland(land)
-  weightHarvestArea <- setYears(weightHarvestArea[, -nyears(weightHarvestArea), ],
-                                getYears(weightHarvestArea)[-1])
-  weightHarvestArea <- toolAggregate(weightHarvestArea, toolWoodHarvestMapping(),
-                                     weight = nonlandTarget[, harmonizationPeriod[1], whaCat] + 10^-30,
-                                     from = "land", to = "harvest", dim = 3)
-  weightHarvestArea <- weightHarvestArea + 10^-30
-
-  harvestAreaDownscaled <- toolAggregate(harvestArea, resmap, weight = weightHarvestArea,
+  harvestAreaDownscaled <- toolAggregate(harvestArea, resmap,
+                                         weight = toolMaxHarvestPerYear(land) + 10^-30,
                                          from = "lowRes", to = "cell", dim = 1)
 
 
