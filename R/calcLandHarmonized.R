@@ -47,18 +47,8 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   # during harmonization primf and primn expansion might be introduced due to
   # primf or primn differences between input and target dataset
   # replace primf and primn expansion with secdf and secdn
-  prePrimFix <- out[, , c("primf", "primn")]
-
   primSecCategories <- c("primf", "primn", "secdf", "secdn")
   out[, , primSecCategories] <- toolPrimFix(out[, , primSecCategories], warnThreshold = 100)
-
-  postPrimFix <- out[, , c("primf", "primn")]
-  stopifnot(all(postPrimFix <= prePrimFix))
-
-  # store how much primf/primn shrank to apply this to wood harvest
-  primfixShares <- postPrimFix / prePrimFix
-  primfixShares[is.na(primfixShares)] <- 0
-  stopifnot(0 <= primfixShares, primfixShares <= 1)
 
   attr(out, "geometry") <- geometry
   attr(out, "crs")      <- crs
@@ -99,6 +89,5 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
               isocountries = FALSE,
               unit = "Mha",
               min = 0,
-              description = "Harmonized land data",
-              primfixShares = primfixShares))
+              description = "Harmonized land data"))
 }
