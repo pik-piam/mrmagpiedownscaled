@@ -3,6 +3,9 @@
 The same REMIND-MAgPIE runs are used for the downscaled land use dataset described here and for the corresponding downscaled emissions dataset. Find the changelog for the general setup including model versions and settings, as well as for the emissions dataset at https://github.com/IAMconsortium/concordia/blob/main/CHANGELOG.md.
 
 ## unreleased
+-
+
+## 2024-08-19
 
 - changed harmonization interpolation function, mostly reduces difference at end of harmonization
 - replace fulwd/rndwd NAs with country shares instead of 0.5
@@ -14,6 +17,8 @@ The same REMIND-MAgPIE runs are used for the downscaled land use dataset describ
 - fixed: primf/primn expansion is no longer happening
 - LUH data on wood harvest and fertilizer is now aggregated over n years to match input data semantics
 - fixed a bug where wrong reference year was used for downscaling
+- wood harvest area is now consistent with land
+- nonland/management data is now downscaled using already downscaled land data as reference
 
 ## 2024-04-25
 
