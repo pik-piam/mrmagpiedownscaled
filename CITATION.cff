@@ -1,11 +1,13 @@
 cff-version: 1.2.0
 message: If you use this software, please cite it using the metadata from this file.
 type: software
-title: 'mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference
-  data'
-version: 0.25.1
-date-released: '2024-08-30'
-abstract: Downscale and harmonize MAgPIE output using LUH2 as reference data.
+title: |-
+  mrdownscale: Downscale and harmonize land use data using high resolution
+      reference data
+version: 0.25.2
+date-released: '2024-10-11'
+abstract: Downscale and harmonize land use data (e.g. MAgPIE) using high resolution
+  reference data (e.g. LUH2v2h).
 authors:
 - family-names: Sauer
   given-names: Pascal

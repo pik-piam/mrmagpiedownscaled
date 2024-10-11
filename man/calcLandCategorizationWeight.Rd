@@ -23,13 +23,13 @@ to the spatial resolution described by the arguments \code{geometry} and \code{c
 }
 \note{
 This calc-function has a rather unusual shape in that sense that the arguments to
-be provided are not simple configuration settings but rather relative complex. For these
+be provided are not simple configuration settings but rather relative complex. For this
 kind of implementation it is typically advised to use tool functions. The reason that a
 calc function is used in this particular case instead is, that the inputs of this
 function usually do not change over a long period of time so that caching of results
 becomes key for the overall performance of the data processing, which is available
-for calc- but not tool-functions. If tool-functions might support cachin in the future
-as well a conversion to a tool function might become a sensible option.
+for calc- but not tool-functions. If tool-functions might support caching in the future
+as well as a conversion to a tool function might become a sensible option.
 }
 \author{
 Jan Philipp Dietrich

@@ -1,13 +1,14 @@
-# Downscale and harmonize MAgPIE output using LUH2 as reference data
+# Downscale and harmonize land use data using high resolution
+    reference data
 
-R package **mrdownscale**, version **0.25.1**
+R package **mrdownscale**, version **0.25.2**
 
 [![CRAN status](https://www.r-pkg.org/badges/version/mrdownscale)](https://cran.r-project.org/package=mrdownscale) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11244475.svg)](https://doi.org/10.5281/zenodo.11244475) [![R build status](https://github.com/pik-piam/mrdownscale/workflows/check/badge.svg)](https://github.com/pik-piam/mrdownscale/actions) [![codecov](https://codecov.io/gh/pik-piam/mrdownscale/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/mrdownscale) 
 
 ## Purpose and Functionality
 
-Downscale and harmonize MAgPIE output using LUH2 as reference
-    data.
+Downscale and harmonize land use data (e.g. MAgPIE) using
+    high resolution reference data (e.g. LUH2v2h).
 
 
 ## Installation
@@ -39,16 +40,17 @@ In case of questions / problems please contact Pascal Sauer <pascal.sauer@pik-po
 
 To cite package **mrdownscale** in publications use:
 
-Sauer P, Dietrich J (2024). _mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference data_. doi:10.5281/zenodo.11244475 <https://doi.org/10.5281/zenodo.11244475>, R package version 0.25.1, <https://github.com/pik-piam/mrdownscale>.
+Sauer P, Dietrich J (2024). _mrdownscale: Downscale and harmonize land use data using high resolution reference data_. doi:10.5281/zenodo.11244475 <https://doi.org/10.5281/zenodo.11244475>, R package version 0.25.2, <https://github.com/pik-piam/mrdownscale>.
 
 A BibTeX entry for LaTeX users is
 
  ```latex
 @Manual{,
-  title = {mrdownscale: Downscale and harmonize MAgPIE output using LUH2 as reference data},
+  title = {mrdownscale: Downscale and harmonize land use data using high resolution
+reference data},
   author = {Pascal Sauer and Jan Philipp Dietrich},
   year = {2024},
-  note = {R package version 0.25.1},
+  note = {R package version 0.25.2},
   url = {https://github.com/pik-piam/mrdownscale},
   doi = {10.5281/zenodo.11244475},
 }
