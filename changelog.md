@@ -1,4 +1,4 @@
-# Land Use Data for RESCUE - Changelog
+# Land Use Data for ESMs - Changelog
 
 The same REMIND-MAgPIE runs are used for the downscaled land use dataset described here and for the corresponding downscaled emissions dataset. Find the changelog for the general setup including model versions and settings, as well as for the emissions dataset at https://github.com/IAMconsortium/concordia/blob/main/CHANGELOG.md.
 
