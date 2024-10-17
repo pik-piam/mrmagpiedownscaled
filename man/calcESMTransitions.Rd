@@ -4,12 +4,14 @@
 \alias{calcESMTransitions}
 \title{calcESMTransitions}
 \usage{
-calcESMTransitions(harmonizationPeriod = c(2015, 2050))
+calcESMTransitions(harmonizationPeriod, yearsSubset)
 }
 \arguments{
 \item{harmonizationPeriod}{Two integer values, before the first given
 year the target dataset is used, after the second given year the input
 dataset is used, in between harmonize between the two datasets}
+
+\item{yearsSubset}{remove years from the returned data which are not in yearsSubset}
 }
 \value{
 ESM compatible transistions information

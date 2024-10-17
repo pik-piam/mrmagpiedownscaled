@@ -11,13 +11,14 @@
 #' @param harmonizationPeriod Two integer values, before the first given
 #' year the target dataset is used, after the second given year the input
 #' dataset is used, in between harmonize between the two datasets
+#' @param yearsSubset remove years from the returned data which are not in yearsSubset
 #' @param compression compression level of the resulting .nc files, possible values are integers from 1-9,
 #' 1 = fastest, 9 = best compression
 #' @param progress boolean defining whether progress should be printed
 #'
 #' @author Pascal Sauer, Jan Philipp Dietrich
 fullESM <- function(rev = NULL, ..., scenario = "", harmonizationPeriod = c(2015, 2050),
-                    compression = 2, progress = TRUE) {
+                    yearsSubset = 2015:2100, compression = 2, progress = TRUE) {
 
   stopifnot(...length() == 0)
 
@@ -25,7 +26,7 @@ fullESM <- function(rev = NULL, ..., scenario = "", harmonizationPeriod = c(2015
 
   fileSuffix <- paste0("_input4MIPs_landState_RESCUE_PIK-MAgPIE-4-7-",
                        scenario, if (scenario != "") "-",
-                       revision, "_gn_2020-2100.nc")
+                       revision, "_gn_", min(yearsSubset), "-", max(yearsSubset), ".nc")
 
   writeArgs <- list(compression = compression, missval = 1e20, progress = progress,
                     gridDefinition = c(-179.875, 179.875, -89.875, 89.875, 0.25))
@@ -34,17 +35,17 @@ fullESM <- function(rev = NULL, ..., scenario = "", harmonizationPeriod = c(2015
                        compression = compression, harmonizationPeriod = harmonizationPeriod)
 
   file <- paste0("multiple-states", fileSuffix)
-  calcOutput("ESMStates", harmonizationPeriod = harmonizationPeriod,
+  calcOutput("ESMStates", harmonizationPeriod = harmonizationPeriod, yearsSubset = yearsSubset,
              aggregate = FALSE, file = file, writeArgs = writeArgs)
   toolAddMetadataESM(file, metadataArgs)
 
   file <- paste0("multiple-management", fileSuffix)
-  calcOutput("ESMManagement", harmonizationPeriod = harmonizationPeriod,
+  calcOutput("ESMManagement", harmonizationPeriod = harmonizationPeriod, yearsSubset = yearsSubset,
              aggregate = FALSE, file = file, writeArgs = writeArgs)
   toolAddMetadataESM(file, metadataArgs)
 
   file <- paste0("multiple-transitions", fileSuffix)
-  calcOutput("ESMTransitions", harmonizationPeriod = harmonizationPeriod,
+  calcOutput("ESMTransitions", harmonizationPeriod = harmonizationPeriod, yearsSubset = yearsSubset,
              aggregate = FALSE, file = file, writeArgs = writeArgs)
   toolAddMetadataESM(file, metadataArgs)
 

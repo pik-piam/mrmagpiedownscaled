@@ -9,6 +9,7 @@ fullESM(
   ...,
   scenario = "",
   harmonizationPeriod = c(2015, 2050),
+  yearsSubset = 2015:2100,
   compression = 2,
   progress = TRUE
 )
@@ -24,6 +25,8 @@ When called via madrat::retrieveData rev will be converted to numeric_version.}
 \item{harmonizationPeriod}{Two integer values, before the first given
 year the target dataset is used, after the second given year the input
 dataset is used, in between harmonize between the two datasets}
+
+\item{yearsSubset}{remove years from the returned data which are not in yearsSubset}
 
 \item{compression}{compression level of the resulting .nc files, possible values are integers from 1-9,
 1 = fastest, 9 = best compression}

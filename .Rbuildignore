@@ -1,5 +1,4 @@
 ^.*\.Rproj$
-^.*\.zenodo.json$
 ^.*CITATION.cff$
 ^.lintr$
 ^\.buildlibrary$
@@ -10,6 +9,6 @@
 ^data-raw$
 ^extdata$
 ^Makefile$
-^runner$
 ^tests/.lintr$
 ^workflow$
+^changelog\.md$

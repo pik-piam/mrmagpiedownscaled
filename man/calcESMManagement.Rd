@@ -4,12 +4,14 @@
 \alias{calcESMManagement}
 \title{calcESMManagement}
 \usage{
-calcESMManagement(harmonizationPeriod = c(2015, 2050))
+calcESMManagement(harmonizationPeriod, yearsSubset)
 }
 \arguments{
 \item{harmonizationPeriod}{Two integer values, before the first given
 year the target dataset is used, after the second given year the input
 dataset is used, in between harmonize between the two datasets}
+
+\item{yearsSubset}{remove years from the returned data which are not in yearsSubset}
 }
 \value{
 ESM compatible management information

@@ -25,7 +25,9 @@ toolAddMetadataESM <- function(ncFile, cfg) {
   ncdf4::ncatt_put(nc, 0, "dataset_version_number", as.character(cfg$revision))
   ncdf4::ncatt_put(nc, 0, "date", dateTime)
   ncdf4::ncatt_put(nc, 0, "frequency", "yr")
-  ncdf4::ncatt_put(nc, 0, "further_info_url", "https://github.com/pik-piam/mrdownscale/blob/main/runner/changelog.md")
+  ncdf4::ncatt_put(nc, 0, "further_info_url",
+                   paste0("https://github.com/pik-piam/mrdownscale/blob/",
+                          "f358ccc1902da769e49c5d52e1085db6b8c797b3/changelog.md"))
   ncdf4::ncatt_put(nc, 0, "grid_label", "gn")
   ncdf4::ncatt_put(nc, 0, "host", "Potsdam Institute for Climate Impact Research")
   ncdf4::ncatt_put(nc, 0, "institution_id", "PIK")

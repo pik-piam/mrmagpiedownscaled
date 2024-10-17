@@ -4,8 +4,8 @@ type: software
 title: |-
   mrdownscale: Downscale and harmonize land use data using high resolution
       reference data
-version: 0.25.2
-date-released: '2024-10-11'
+version: 0.26.0
+date-released: '2024-10-17'
 abstract: Downscale and harmonize land use data (e.g. MAgPIE) using high resolution
   reference data (e.g. LUH2v2h).
 authors:
