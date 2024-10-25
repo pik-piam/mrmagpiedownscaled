@@ -1,3 +1,15 @@
+#' calcNonlandTargetExtrapolated
+#'
+#' Aggregated low resolution target data is extrapolated to the given years
+#' using toolExtrapolate. To extrapolate wood harvest weight (bioh) multiply
+#' wood harvest area already extrapolated by calcLandTargetExtrapolated with
+#' the historical wood harvest rate in kg C per Mha.
+#'
+#' @param input character, name of the input data set, currently only "magpie"
+#' @param target character, name of the target data set, currently only "luh2mod"
+#' @param transitionYears years to which the target data is extrapolated
+#' @return extrapolated nonland target data
+#' @author Pascal Sauer
 calcNonlandTargetExtrapolated <- function(input = "magpie", target = "luh2mod",
                                           transitionYears = seq(2020, 2045, 5)) {
   xTarget <- calcOutput("NonlandTargetLowRes", input = input, target = target, aggregate = FALSE)

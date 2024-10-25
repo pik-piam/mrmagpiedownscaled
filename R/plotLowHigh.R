@@ -19,7 +19,7 @@
 #' @author Pascal Sauer
 #' @export
 plotLowHigh <- function(variable, year, range = c(0, 1), xlim = c(-180, 180), ylim = c(-90, 90)) {
-  cellArea <- readSource("LUH2v2h", "cellArea", convert = FALSE)
+  cellArea <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
 
   landHighRes <- calcOutput("LandHighRes", aggregate = FALSE)
   variables <- grep(variable, getItems(landHighRes, 3), value = TRUE)

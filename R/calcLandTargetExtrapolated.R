@@ -61,7 +61,9 @@ calcLandTargetExtrapolated <- function(input = "magpie", target = "luh2mod",
 
   # calculate wood harvest area, reduce primf and primn so they are consistent with harvest
   harvest <- add_columns(harvestHist, paste0("y", transitionYears), dim = 2)
-  timestepLength <- unique(diff(getYears(out, as.integer = TRUE)))
+
+
+  timestepLength <- unique(diff(transitionYears))
   stopifnot(identical(getYears(harvest), getYears(out)),
             length(timestepLength) == 1, timestepLength > 0)
   for (i in match(transitionYears, getYears(out, as.integer = TRUE))) {

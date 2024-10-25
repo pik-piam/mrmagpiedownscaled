@@ -6,8 +6,8 @@
 #' match magpie semantics years are shifted by 1 when reading transitions.
 #'
 #' @param subtype one of states, management, transitions, cellArea
-#' @param subset subset of years to read
-readLUH2v2h <- function(subtype = "states", subset = seq(1995, 2015, 5)) {
+readLUH2v2h <- function(subtype) {
+  years <- 1995:2015
   if (subtype == "cellArea") {
     cellArea <- terra::rast("staticData_quarterdeg.nc", "carea")
     return(list(x = cellArea, class = "SpatRaster", cache = FALSE, unit = "km2"))
@@ -15,17 +15,13 @@ readLUH2v2h <- function(subtype = "states", subset = seq(1995, 2015, 5)) {
 
   if (subtype == "states") {
     x <- terra::rast("states.nc")
-    if (!isFALSE(subset)) {
-      x <- x[[terra::time(x) %in% subset]]
-    }
+    x <- x[[terra::time(x) %in% years]]
     # remove secma & secmb
     x <- x[[grep("secm[ab]", names(x), invert = TRUE)]]
     unit <- "1"
   } else if (subtype == "management") {
     x <- terra::rast("management.nc")
-    if (!isFALSE(subset)) {
-      x <- x[[terra::time(x) %in% subset]]
-    }
+    x <- x[[terra::time(x) %in% years]]
 
     # combf is a share of wood harvest like rndwd and fulwd, but we can ignore it as long as it is 0 everywhere
     stopifnot(identical(max(terra::values(max(x["combf"])), na.rm = TRUE), 0))
@@ -39,9 +35,7 @@ readLUH2v2h <- function(subtype = "states", subset = seq(1995, 2015, 5)) {
     # by adding 1 to time we get to-semantics (value for 1994 describes what happens from 1993 to 1994)
     terra::time(x, tstep = "years") <- terra::time(x) + 1
 
-    if (!isFALSE(subset)) {
-      x <- x[[terra::time(x) %in% subset]]
-    }
+    x <- x[[terra::time(x) %in% years]]
     x <- x["bioh|harv"]
     unit <- "*_bioh: kg C yr-1, *_harv: 1"
   } else {
