@@ -57,6 +57,8 @@ readMagpieFulldataGdx <- function(subtype = "land", subset = 1995:2100) {
     stop("Unknown subtype '", subtype, "' in readMagpieFulldataGdx")
   }
 
+  attr(x, "gdxMetadata") <- NULL
+
   x <- x[, getYears(x, as.integer = TRUE) %in% subset, ]
   return(list(x = x, min = 0, unit = unit, description = description))
 }

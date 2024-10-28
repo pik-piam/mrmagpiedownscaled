@@ -33,7 +33,7 @@ calcNonlandInput <- function(input = "magpie") {
 
     # check wood harvest area * time step length (as unit is Mha yr-1) <=
     # land of the correponding type (in the previous timestep)
-    land <- calcOutput("LandInput", aggregate = FALSE)
+    land <- calcOutput("LandInput", input = input, aggregate = FALSE)
     stopifnot(identical(getYears(woodHarvestArea), getYears(land)))
     years <- getYears(land, as.integer = TRUE)
     timestepLengths <- new.magpie(years = years[-1], fill = diff(years))
