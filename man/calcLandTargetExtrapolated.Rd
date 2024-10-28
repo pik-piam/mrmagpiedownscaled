@@ -28,7 +28,7 @@ all land types is unchanged.
 To account for the relationship between wood
 harvest area and primary land (which is no longer primary once it has been
 harvested) wood harvest area is calculated here even though it is otherwise
-considered a nonland variable. The share of primary land that was
+considered a nonland variable. The share of woody land that was
 harvested in the historical period is calculated and then multiplied
 by the maximum possible harvest in the extrapolation period. Primary land
 is then converted to secondary land so the total reduction equals the area

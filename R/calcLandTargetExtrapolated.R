@@ -6,7 +6,7 @@
 #' To account for the relationship between wood
 #' harvest area and primary land (which is no longer primary once it has been
 #' harvested) wood harvest area is calculated here even though it is otherwise
-#' considered a nonland variable. The share of primary land that was
+#' considered a nonland variable. The share of woody land that was
 #' harvested in the historical period is calculated and then multiplied
 #' by the maximum possible harvest in the extrapolation period. Primary land
 #' is then converted to secondary land so the total reduction equals the area
@@ -61,7 +61,6 @@ calcLandTargetExtrapolated <- function(input = "magpie", target = "luh2mod",
 
   # calculate wood harvest area, reduce primf and primn so they are consistent with harvest
   harvest <- add_columns(harvestHist, paste0("y", transitionYears), dim = 2)
-
 
   timestepLength <- unique(diff(transitionYears))
   stopifnot(identical(getYears(harvest), getYears(out)),
