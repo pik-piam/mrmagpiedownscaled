@@ -20,6 +20,11 @@ The same REMIND-MAgPIE runs are used for the downscaled land use dataset describ
 - wood harvest area is now consistent with land
 - nonland/management data is now downscaled using already downscaled land data as reference
 
+### uploaded_2024-10-28
+
+- use yearly LUH data from 1995-2015 as extrapolation base
+- year 2015 is now included in the reported data
+
 ## 2024-04-25
 
 - fixed flipped latitude
