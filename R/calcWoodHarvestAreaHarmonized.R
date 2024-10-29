@@ -1,3 +1,22 @@
+#' calcWoodHarvestAreaHarmonized
+#'
+#' Harmonize wood harvest area based on harmonized land data.
+#' First, wood harvest area is harmonized just like land data.
+#' Then, to ensure consistency, primary harvest is converted to seondary
+#' harvest (or vice versa) to match the primary land reduction from the
+#' harmonized land data. If secondary harvest exceeds the available
+#' secondary land, the excess is shifted to the other secondary land
+#' (secdf to secdn and vice versa). Remaining excess harvest area is reported.
+#'
+#' @param input name of the input dataset, currently only "magpie"
+#' @param target name of the target dataset, currently only "luh2mod"
+#' @param harmonizationPeriod Two integer values, before the first given
+#' year the target dataset is used, after the second given year the input
+#' dataset is used, in between harmonize between the two datasets
+#' @param method harmonization method, see \code{\link{toolGetHarmonizer}} for available methods
+#' @return harmonized wood harvest area data
+#'
+#' @author Pascal Sauer
 calcWoodHarvestAreaHarmonized <- function(input = "magpie", target = "luh2mod",
                                           harmonizationPeriod = c(2015, 2050),
                                           method = "fade") {
