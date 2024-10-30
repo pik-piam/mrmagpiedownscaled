@@ -3,11 +3,11 @@
 #' Prepare the high resolution target land use dataset for
 #' harmonization and downscaling, checking data for consistency before returning.
 #'
-#' @param target name of the target dataset, options are: luh2, luh2mod
+#' @param target name of the target dataset, options are: luh2, luh2mod, landuseinit
 #' luh2mod will split secdf into forestry and secdf
 #' @return land target data
 #' @author Pascal Sauer
-calcLandTarget <- function(target = "luh2mod") {
+calcLandTarget <- function(target) {
   if (target %in% c("luh2", "luh2mod")) {
     cropTypes <- c("c3ann", "c3nfx", "c3per", "c4ann", "c4per")
 
@@ -79,14 +79,18 @@ calcLandTarget <- function(target = "luh2mod") {
       # so write `out` to a tif file to get SpatRaster with a single source (the tif file)
       out <- terra::writeRaster(out, file = tempfile(fileext = ".tif"))
     }
+    expectedCategories <- toolLandCategoriesMapping(input = "magpie", target = target)$dataOutput
+  } else if (target == "landuseinit") {
+    out <- readSource("LanduseInit")
+    out <- as.SpatRaster(out)
+    expectedCategories <- c("crop", "past", "forestry", "primforest", "secdforest", "urban",  "other")
   } else {
     stop("Unsupported output type \"", target, "\"")
   }
 
   # checks
   toolExpectTrue(terra::crs(out) != "", "Data contains CRS information")
-  map <- toolLandCategoriesMapping(input = "magpie", target = target)
-  toolExpectTrue(setequal(sub("y[0-9]+\\.\\.", "", names(out)), map$dataOutput),
+  toolExpectTrue(setequal(sub("y[0-9]+\\.\\.", "", names(out)), expectedCategories),
                  "Land target categories match the corresponding mapping")
   toolExpectTrue(min(terra::minmax(out)) >= 0, "All values are >= 0")
   totalAreas <- vapply(unique(terra::time(out)), function(year) {
