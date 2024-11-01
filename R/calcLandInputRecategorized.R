@@ -11,8 +11,8 @@
 #'
 #' @param input name of the land input source to be used
 #' @param target name of the land target source to be used
-#' @author Jan Philipp Dietrich
-calcLandInputRecategorized <- function(input = "magpie", target = "luh2mod") {
+#' @author Jan Philipp Dietrich, Pascal Sauer
+calcLandInputRecategorized <- function(input, target) {
   map <- toolLandCategoriesMapping(input, target)
   x   <- calcOutput("LandInput", input = input, aggregate = FALSE)
 

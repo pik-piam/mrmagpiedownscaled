@@ -13,7 +13,7 @@
 #' @return a list including a data.frame with columns x, y, lowRes, countrycode
 #'
 #' @author Pascal Sauer
-calcResolutionMapping <- function(input = "magpie", target = "luh2mod") {
+calcResolutionMapping <- function(input, target) {
   if (input == "magpie") {
     mapping <- readSource("MagpieFulldataGdx", subtype = "clustermap")
     coords <- strsplit(mapping$cell, "\\.")
@@ -28,6 +28,9 @@ calcResolutionMapping <- function(input = "magpie", target = "luh2mod") {
 
   if (target == "luh2mod") {
     targetGrid <- readSource("LUH2v2h", subtype = "states")
+  } else if (target == "landuseinit") {
+    targetGrid <- readSource("LanduseInit")
+    targetGrid <- as.SpatRaster(targetGrid)
   } else {
     stop("Unsupported target type \"", target, "\"")
   }
@@ -57,8 +60,11 @@ toolResolutionMapping <- function(mapping, targetGrid) {
   pointsMapping <- terra::vect(mapping, geom = c("x", "y"), crs = terra::crs(targetGrid))
   mappingRes <- guessResolution(mapping[, c("x", "y")])
   targetGridRes <- terra::res(targetGrid)
-  stopifnot(targetGridRes[1] == targetGridRes[2],
-            targetGridRes[1] < mappingRes,
+  stopifnot(targetGridRes[1] == targetGridRes[2])
+  if (targetGridRes[1] == mappingRes) {
+    return(mapping)
+  }
+  stopifnot(targetGridRes[1] < mappingRes,
             mappingRes %% targetGridRes[1] == 0)
   targetGridAggregated <- terra::aggregate(targetGrid, fact = mappingRes / targetGridRes)
   rasterMapping <- terra::rasterize(pointsMapping, targetGridAggregated, field = "cellId")
