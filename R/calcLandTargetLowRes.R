@@ -7,7 +7,7 @@
 #' @param target name of a target dataset, currently only "luh2mod"
 #' @return low resolution target land data
 #' @author Pascal Sauer
-calcLandTargetLowRes <- function(input = "magpie", target = "luh2mod") {
+calcLandTargetLowRes <- function(input, target) {
   xInput <- calcOutput("LandInputRecategorized", input = input,
                        target = target, aggregate = FALSE)
   xTarget <- calcOutput("LandTarget", target = target, aggregate = FALSE)
