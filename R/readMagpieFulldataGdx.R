@@ -6,7 +6,7 @@
 #' land, crop, woodHarvestWeight, woodHarvestArea, fertilizer, clustermap
 #' @param subset Available years (usually timestep is 5+ years) are only returned if they are in subset.
 #' @author Pascal Sauer, Jan Philipp Dietrich
-readMagpieFulldataGdx <- function(subtype = "land", subset = 1995:2100) {
+readMagpieFulldataGdx <- function(subtype, subset = 1995:2100) {
   "!# @monitor magpie4:::land"
   "!# @monitor magpie4:::croparea"
   "!# @monitor magpie4:::woodProduction"
