@@ -35,6 +35,11 @@ calcResolutionMapping <- function(input, target) {
     stop("Unsupported target type \"", target, "\"")
   }
   mapping <- toolResolutionMapping(mapping, targetGrid)
+
+  toolExpectTrue(setequal(colnames(mapping), c("x", "y", "lowRes", "region", "country",
+                                               "global", "cellOriginal", "cell")),
+                 "resolution mapping has the expected columns")
+
   return(list(x = mapping,
               class = "data.frame",
               unit = NA,
@@ -55,17 +60,21 @@ calcResolutionMapping <- function(input, target) {
 #' @export
 toolResolutionMapping <- function(mapping, targetGrid) {
   stopifnot(c("x", "y", "lowRes") %in% colnames(mapping))
-  mappingColumns <- colnames(mapping)
-  mapping$cellId <- seq_len(nrow(mapping))
-  pointsMapping <- terra::vect(mapping, geom = c("x", "y"), crs = terra::crs(targetGrid))
-  mappingRes <- guessResolution(mapping[, c("x", "y")])
+
   targetGridRes <- terra::res(targetGrid)
+  mappingRes <- guessResolution(mapping[, c("x", "y")])
   stopifnot(targetGridRes[1] == targetGridRes[2])
   if (targetGridRes[1] == mappingRes) {
+    mapping$cell <- mapping$cellOriginal
     return(mapping)
   }
   stopifnot(targetGridRes[1] < mappingRes,
             mappingRes %% targetGridRes[1] == 0)
+
+  mappingColumns <- colnames(mapping)
+  mapping$cellId <- seq_len(nrow(mapping))
+  pointsMapping <- terra::vect(mapping, geom = c("x", "y"), crs = terra::crs(targetGrid))
+
   targetGridAggregated <- terra::aggregate(targetGrid, fact = mappingRes / targetGridRes)
   rasterMapping <- terra::rasterize(pointsMapping, targetGridAggregated, field = "cellId")
   names(rasterMapping) <- "cellId"
