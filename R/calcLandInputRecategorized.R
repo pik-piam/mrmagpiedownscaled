@@ -91,5 +91,7 @@ calcLandInputRecategorized <- function(input, target) {
               isocountries = FALSE,
               unit = "Mha",
               min = 0,
-              description = "Input data with land categories remapped to categories of target dataset"))
+              description = "Input data with land categories remapped to categories of target dataset",
+              primn = if (primn == secdn) NA else primn,
+              primf = primf))
 }

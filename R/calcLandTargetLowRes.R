@@ -3,13 +3,16 @@
 #' Aggregate target land data to the spatial resolution of the input data in
 #' preparation for harmonization.
 #'
-#' @param input name of an input dataset, currently only "magpie"
-#' @param target name of a target dataset, currently only "luh2mod"
+#' @param input name of an input dataset, see \code{\link{calcLandInput}}
+#' available input datasets
+#' @param target name of a target dataset, see \code{\link{calcLandTarget}}
+#' available target datasets
 #' @return low resolution target land data
 #' @author Pascal Sauer
 calcLandTargetLowRes <- function(input, target) {
-  xInput <- calcOutput("LandInputRecategorized", input = input,
-                       target = target, aggregate = FALSE)
+  xInputSup <- calcOutput("LandInputRecategorized", input = input,
+                          target = target, aggregate = FALSE, supplementary = TRUE)
+  xInput <- xInputSup$x
   xTarget <- calcOutput("LandTarget", target = target, aggregate = FALSE)
 
   # bring target data to spatial resolution of input data
@@ -27,9 +30,15 @@ calcLandTargetLowRes <- function(input, target) {
   toolExpectTrue(all(out >= 0), "All values are >= 0")
   outSum <- dimSums(out, dim = 3)
   toolExpectLessDiff(outSum, outSum[, 1, ], 10^-5, "Total area is constant over time")
-  toolExpectTrue(all(out[, -1, c("primf", "primn")] <= setYears(out[, -nyears(out), c("primf", "primn")],
-                                                                getYears(out[, -1, ]))),
-                 "primf and primn are never expanding")
+
+  if (!is.na(xInputSup$primn)) {
+    toolExpectTrue(all(out[, -1, xInputSup$primn] <= setYears(out[, -nyears(out), xInputSup$primn],
+                                                              getYears(out[, -1, ]))),
+                   "primn is never expanding", falseStatus = "warn")
+  }
+  toolExpectTrue(all(out[, -1, xInputSup$primf] <= setYears(out[, -nyears(out), xInputSup$primf],
+                                                            getYears(out[, -1, ]))),
+                 "primf is never expanding", falseStatus = "warn")
 
   return(list(x = out,
               isocountries = FALSE,
