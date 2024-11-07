@@ -30,8 +30,8 @@ calcLandHighRes <- function(input = "magpie", target = "luh2mod",
     stop("Unsupported downscaling method \"", downscaling, "\"")
   }
 
-  primSecCategories <- c("primf", "primn", "secdf", "secdn")
-  out[, , primSecCategories] <- toolPrimFix(out[, , primSecCategories])
+  out <- toolPrimFix(out, "primf", "secdf", warnThreshold = 100)
+  out <- toolPrimFix(out, "primn", "secdn", warnThreshold = 100)
 
   toolExpectTrue(identical(unname(getSets(out)), c("x", "y", "year", "data")),
                  "Dimensions are named correctly")

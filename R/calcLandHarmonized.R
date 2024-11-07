@@ -47,8 +47,8 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   # during harmonization primf and primn expansion might be introduced due to
   # primf or primn differences between input and target dataset
   # replace primf and primn expansion with secdf and secdn
-  primSecCategories <- c("primf", "primn", "secdf", "secdn")
-  out[, , primSecCategories] <- toolPrimFix(out[, , primSecCategories], warnThreshold = 100)
+  out <- toolPrimFix(out, "primf", "secdf", warnThreshold = 100)
+  out <- toolPrimFix(out, "primn", "secdn", warnThreshold = 100)
 
   attr(out, "geometry") <- geometry
   attr(out, "crs")      <- crs
@@ -73,7 +73,7 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
 
   outAfterHarmonization <- out[, getYears(out, as.integer = TRUE) >= harmonizationPeriod[2], ]
   inputAfterHarmonization <- xInput[, getYears(xInput, as.integer = TRUE) >= harmonizationPeriod[2], ]
-  nonprimfix <- setdiff(getItems(out, dim = 3), primSecCategories)
+  nonprimfix <- setdiff(getItems(out, dim = 3), c("primf", "primn", "secdf", "secdn"))
   toolExpectLessDiff(outAfterHarmonization[, , nonprimfix],
                      inputAfterHarmonization[, , nonprimfix],
                      10^-5, "Returning input data after harmonization period (not checking primf/primn/secdf/secdn)")

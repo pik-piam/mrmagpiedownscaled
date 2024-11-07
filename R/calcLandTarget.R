@@ -82,6 +82,7 @@ calcLandTarget <- function(target) {
     expectedCategories <- toolLandCategoriesMapping(input = "magpie", target = target)$dataOutput
   } else if (target == "landuseinit") {
     out <- readSource("LanduseInit")
+    out <- toolPrimFix(out, "primforest", "secdforest")
     out <- as.SpatRaster(out)
     expectedCategories <- c("crop", "past", "forestry", "primforest", "secdforest", "urban",  "other")
   } else {

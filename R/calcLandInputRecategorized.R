@@ -40,26 +40,7 @@ calcLandInputRecategorized <- function(input, target) {
     # if totaln shrinks, shrink primn and secdn according to their proportions in the previous timestep
     # if totaln expands, expand only secdn, primn stays constant
     totaln <- dimSums(out[, , c(primn, secdn)], 3)
-    for (i in seq_len(nyears(totaln) - 1)) {
-      dif <- totaln[, i + 1, ] - totaln[, i, ]
-
-      stopifnot(out[, i, c(primn, secdn)] >= 0)
-      expansion <- out[, i, c(primn, secdn)] * 0
-      expansion[, , secdn] <- dif
-      expansion[expansion < 0] <- 0
-
-      shrinking <- out[, i, c(primn, secdn)] * (collapseDim(dif) / totaln[, i, ])
-      shrinking[is.na(shrinking) | shrinking > 0] <- 0
-
-      newValues <- out[, i, c(primn, secdn)] + expansion + shrinking
-      if (!all(is.finite(newValues) & newValues >= -10^-10)) {
-        summ <- summary(newValues)
-        toolExpectTrue(FALSE, paste("Unexpected values while replacing primn expansion with secdn expansion, summary:",
-                                    paste(names(summ), summ, collapse = ", ")))
-      }
-      newValues[newValues < 0] <- 0
-      out[, i + 1, c(primn, secdn)] <- newValues
-    }
+    out <- toolPrimFix(out, primn, secdn, warnThreshold = 20)
 
     toolExpectLessDiff(dimSums(out[, , c(primn, secdn)], 3), totaln, 10^-5,
                        paste("No change in sum of primn and secdn after replacing",
