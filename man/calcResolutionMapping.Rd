@@ -4,7 +4,7 @@
 \alias{calcResolutionMapping}
 \title{calcResolutionMapping}
 \usage{
-calcResolutionMapping(input = "magpie", target = "luh2mod")
+calcResolutionMapping(input, target)
 }
 \arguments{
 \item{input}{character, the input dataset, currently only "magpie" is supported}

@@ -4,7 +4,7 @@
 \alias{readMagpieFulldataGdx}
 \title{readMagpieFulldataGdx}
 \usage{
-readMagpieFulldataGdx(subtype = "land", subset = 1995:2100)
+readMagpieFulldataGdx(subtype, subset = 1995:2100)
 }
 \arguments{
 \item{subtype}{type of data to be read in. Available options are

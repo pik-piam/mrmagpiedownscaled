@@ -4,10 +4,16 @@
 \alias{toolPrimFix}
 \title{toolPrimFix}
 \usage{
-toolPrimFix(x, noteThreshold = 10^-10, warnThreshold = 10^-5)
+toolPrimFix(x, prim, secd, ..., noteThreshold = 10^-10, warnThreshold = 10^-5)
 }
 \arguments{
-\item{x}{a magpie object with categories c("primf", "primn", "secdf", "secdn")}
+\item{x}{a magpie object}
+
+\item{prim}{name of primary land category, e.g. "primf"}
+
+\item{secd}{name of secondary land category, e.g. "secdf"}
+
+\item{...}{not used, will throw an error if supplied}
 
 \item{noteThreshold}{prim expansion greater than this will trigger a note
 that primf/primn expansion was replaced by secdf/secdn expansion}
@@ -19,7 +25,7 @@ that primf/primn are expanding considerably}
 a magpie object with primf/primn expansion replaced by secdf/secdn expansion
 }
 \description{
-Replace primf and primn expansion with secdf and secdn expansion.
+Replace primary land expansion with secondary land expansion.
 }
 \author{
 Pascal Sauer

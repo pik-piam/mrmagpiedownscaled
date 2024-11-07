@@ -4,12 +4,14 @@
 \alias{calcLandTargetLowRes}
 \title{calcLandTargetLowRes}
 \usage{
-calcLandTargetLowRes(input = "magpie", target = "luh2mod")
+calcLandTargetLowRes(input, target)
 }
 \arguments{
-\item{input}{name of an input dataset, currently only "magpie"}
+\item{input}{name of an input dataset, see \code{\link{calcLandInput}}
+available input datasets}
 
-\item{target}{name of a target dataset, currently only "luh2mod"}
+\item{target}{name of a target dataset, see \code{\link{calcLandTarget}}
+available target datasets}
 }
 \value{
 low resolution target land data

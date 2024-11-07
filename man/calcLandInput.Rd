@@ -7,7 +7,7 @@
 calcLandInput(input)
 }
 \arguments{
-\item{input}{name of an input dataset, "magpie" or "magpie7categories"}
+\item{input}{name of an input dataset, options: "magpie"}
 }
 \value{
 land input data
@@ -19,13 +19,10 @@ data such as the amount of applied fertilizer. These are treated differently, be
 data other constraints apply, e.g. the total area must be constant over time.
 }
 \details{
-input = "magpie7categories": includes the 7 land use categories crop,
-past (pasture, including rangeland),
-forestry (managed forest), primforest, secdforest, urban,
-and other (other land, not other crop types).
-
-input = "magpie": deviates from magpie7categories in that crop is
-disaggregated to specific crop types, furthermore 1st gen biofuel is
+input = "magpie": includes the land use categories
+past (pasture, including rangeland), forestry (managed forest),
+primforest, secdforest, urban, other (other land) and many
+specific crop types. Furthermore, 1st gen biofuel is
 added and filled with zeros. 1st gen biofuel is only modeled implicitly in
 magpie via demand, and because of trade it is unclear on what area 1st gen
 biofuel is grown, also 1st gen biofuel is quickly phased out in magpie, so
