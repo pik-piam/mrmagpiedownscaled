@@ -29,7 +29,7 @@ toolPrimFix <- function(x, prim, secd, ..., noteThreshold = 10^-10, warnThreshol
   }
 
   if (maxDiff > warnThreshold) {
-    toolStatusMessage("warn", paste0(prim, " is expanding considerably",
+    toolStatusMessage("warn", paste0(prim, " is expanding considerably ",
                                      "(max expansion: ", maxDiff, ")"), level = 1)
   }
 

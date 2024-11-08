@@ -10,9 +10,8 @@
 #' @return low resolution target land data
 #' @author Pascal Sauer
 calcLandTargetLowRes <- function(input, target) {
-  xInputSup <- calcOutput("LandInputRecategorized", input = input,
-                          target = target, aggregate = FALSE, supplementary = TRUE)
-  xInput <- xInputSup$x
+  xInput <- calcOutput("LandInputRecategorized", input = input,
+                       target = target, aggregate = FALSE)
   xTarget <- calcOutput("LandTarget", target = target, aggregate = FALSE)
 
   # bring target data to spatial resolution of input data
@@ -24,21 +23,12 @@ calcLandTargetLowRes <- function(input, target) {
 
   toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")),
                  "Dimensions are named correctly")
-  map <- toolLandCategoriesMapping(input = input, target = target)
-  toolExpectTrue(setequal(getItems(out, dim = 3), map$dataOutput),
-                 "Land target categories match the corresponding mapping")
+  toolExpectTrue(setequal(getItems(out, dim = 3), getItems(xTarget, 3)),
+                 "Land categories did not change")
   toolExpectTrue(all(out >= 0), "All values are >= 0")
   outSum <- dimSums(out, dim = 3)
   toolExpectLessDiff(outSum, outSum[, 1, ], 10^-5, "Total area is constant over time")
-
-  if (!is.na(xInputSup$primn)) {
-    toolExpectTrue(all(out[, -1, xInputSup$primn] <= setYears(out[, -nyears(out), xInputSup$primn],
-                                                              getYears(out[, -1, ]))),
-                   "primn is never expanding", falseStatus = "warn")
-  }
-  toolExpectTrue(all(out[, -1, xInputSup$primf] <= setYears(out[, -nyears(out), xInputSup$primf],
-                                                            getYears(out[, -1, ]))),
-                 "primf is never expanding", falseStatus = "warn")
+  toolPrimExpansionCheck(out)
 
   return(list(x = out,
               isocountries = FALSE,

@@ -27,22 +27,27 @@ calcLandInputRecategorized <- function(input, target) {
   y   <- toolAggregate(x, map, dim = 3, from = "dataInput", to = "merge", weight = ref)
   out <- toolAggregate(y, map, dim = 3, from = "merge",     to = "dataOutput")
 
-  # get name of category in out that includes primn/secdn/primf
-  primn <- map$dataOutput[map$reference == "primn"]
-  stopifnot(length(primn) == 1, primn %in% getItems(out, dim = 3))
-  secdn <- map$dataOutput[map$reference == "secdn"]
-  stopifnot(length(secdn) == 1, secdn %in% getItems(out, dim = 3))
-  primf <- map$dataOutput[map$reference == "primf"]
-  stopifnot(length(primf) == 1, primf %in% getItems(out, dim = 3))
+  # rename primf/secdf/primn/secdn equivalent dataOutput categories to primf/secdf/primn/secdn
+  # save original names in woodlandMap to rename back in the end
+  woodlandMap <- list()
+  for (name in c("primn", "secdn", "primf", "secdf")) {
+    woodlandMap[name] <- map$dataOutput[map$reference == name]
+    if (sum(map$dataOutput == woodlandMap[name]) == 1) {
+      stopifnot(name == woodlandMap[name] || !name %in% getItems(out, 3))
+      getItems(out, 3) <- sub(woodlandMap[name], name, getItems(out, 3), fixed = TRUE)
+    } else {
+      woodlandMap[name] <- NA_character_
+    }
+  }
 
-  if (primn != secdn) {
+  if ("primn" %in% getItems(out, 3)) {
     # category remapping does not take into account that primn cannot expand, so redistribute:
     # if totaln shrinks, shrink primn and secdn according to their proportions in the previous timestep
     # if totaln expands, expand only secdn, primn stays constant
-    totaln <- dimSums(out[, , c(primn, secdn)], 3)
-    out <- toolPrimFix(out, primn, secdn, warnThreshold = 20)
+    totaln <- dimSums(out[, , c("primn", "secdn")], 3)
+    out <- toolPrimFix(out, "primn", "secdn", warnThreshold = 20)
 
-    toolExpectLessDiff(dimSums(out[, , c(primn, secdn)], 3), totaln, 10^-5,
+    toolExpectLessDiff(dimSums(out[, , c("primn", "secdn")], 3), totaln, 10^-5,
                        paste("No change in sum of primn and secdn after replacing",
                              "primn expansion with secdn expansion"))
   }
@@ -52,27 +57,20 @@ calcLandInputRecategorized <- function(input, target) {
 
   toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")),
                  "Dimensions are named correctly")
-  toolExpectTrue(setequal(getItems(out, dim = 3), map$dataOutput), "Land categories match target definition")
+  expectedCategories <- setdiff(map$dataOutput, woodlandMap)
+  expectedCategories <- c(expectedCategories, names(woodlandMap)[!is.na(woodlandMap)])
+  toolExpectTrue(setequal(getItems(out, dim = 3), expectedCategories), "Land categories match target definition")
   toolExpectTrue(all(out >= 0), "All values are >= 0")
   outSum <- dimSums(out, dim = 3)
   toolExpectLessDiff(outSum, outSum[, 1, ], 10^-6, "Total areas stay constant over time")
   toolExpectLessDiff(outSum, dimSums(x, dim = 3), 10^-6,
                      "Total areas are not affected by recategorization")
-
-  if (primn != secdn) {
-    toolExpectTrue(all(out[, -1, primn] <= setYears(out[, -nyears(out), primn],
-                                                    getYears(out[, -1, ]))),
-                   "primn is never expanding", falseStatus = "warn")
-  }
-  toolExpectTrue(all(out[, -1, primf] <= setYears(out[, -nyears(out), primf],
-                                                  getYears(out[, -1, ]))),
-                 "primf is never expanding", falseStatus = "warn")
+  toolPrimExpansionCheck(out)
 
   return(list(x = out,
               isocountries = FALSE,
               unit = "Mha",
               min = 0,
               description = "Input data with land categories remapped to categories of target dataset",
-              primn = if (primn == secdn) NA else primn,
-              primf = primf))
+              woodlandMap = woodlandMap))
 }

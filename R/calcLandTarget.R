@@ -82,9 +82,14 @@ calcLandTarget <- function(target) {
     expectedCategories <- toolLandCategoriesMapping(input = "magpie", target = target)$dataOutput
   } else if (target == "landuseinit") {
     out <- readSource("LanduseInit")
-    out <- toolPrimFix(out, "primforest", "secdforest")
+    getItems(out, 3) <- sub("primforest", "primf", getItems(out, 3))
+    getItems(out, 3) <- sub("secdforest", "secdf", getItems(out, 3))
+
+    out <- toolScaleConstantArea(out)
+    out <- toolPrimFix(out, "primf", "secdf")
     out <- as.SpatRaster(out)
-    expectedCategories <- c("crop", "past", "forestry", "primforest", "secdforest", "urban",  "other")
+
+    expectedCategories <- c("crop", "past", "forestry", "primf", "secdf", "urban",  "other")
   } else {
     stop("Unsupported output type \"", target, "\"")
   }
@@ -105,7 +110,7 @@ calcLandTarget <- function(target) {
   primfnTime <- terra::time(primfn)
   primfnDiff <- primfn[[primfnTime %in% years[-1]]] - primfn[[primfnTime %in% years[-length(years)]]]
   toolExpectTrue(max(terra::minmax(primfnDiff)) <= 0,
-                 "primf and primn are never expanding", falseStatus = "warn")
+                 "primary land is never expanding", falseStatus = "warn")
 
   return(list(x = out,
               class = "SpatRaster",
