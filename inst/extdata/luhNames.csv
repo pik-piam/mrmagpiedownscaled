@@ -156,4 +156,4 @@ primf_bioh,wood harvest biomass carbon from primary vegetation on LUH2 potential
 primn_bioh,wood harvest biomass carbon from primary vegetation on LUH2 potential non-forest land,wood harvest biomass carbon from primary non forest land,vegetation_carbon_content,,kg C yr-1
 secmf_bioh,wood harvest biomass carbon from secondary mature vegetation on LUH2 potential forest land,wood harvest biomass carbon from secondary mature forest land,vegetation_carbon_content,,kg C yr-1
 secyf_bioh,wood harvest biomass carbon from secondary young vegetation on LUH2 potential forest land,wood harvest biomass carbon from secondary young forest land,vegetation_carbon_content,,kg C yr-1
-secnf_bioh,wood harvest biomass carbon from secondary vegetation on LUH2 potential non-forest land,wood harvest biomass carbon from secondary non forest land,vegetation_carbon_content,kg C yr-1
+secnf_bioh,wood harvest biomass carbon from secondary vegetation on LUH2 potential non-forest land,wood harvest biomass carbon from secondary non forest land,vegetation_carbon_content,,kg C yr-1
