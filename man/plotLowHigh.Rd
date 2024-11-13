@@ -9,7 +9,10 @@ plotLowHigh(
   year,
   range = c(0, 1),
   xlim = c(-180, 180),
-  ylim = c(-90, 90)
+  ylim = c(-90, 90),
+  input = "magpie",
+  target = "luh2mod",
+  harmonizationPeriod = c(2015, 2050)
 )
 }
 \arguments{
@@ -24,6 +27,10 @@ summed up}
 \item{xlim}{min and max x coordinate to plot}
 
 \item{ylim}{min and max y coordinate to plot}
+
+\item{input}{name of the land input source to be used}
+
+\item{target}{name of the land target source to be used}
 }
 \description{
 Plot a land variable in low (after harmonization) and high resolution (after

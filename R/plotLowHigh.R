@@ -10,6 +10,8 @@
 #' @param range range for plot legend
 #' @param xlim min and max x coordinate to plot
 #' @param ylim min and max y coordinate to plot
+#' @param input name of the land input source to be used
+#' @param target name of the land target source to be used
 #' @examples
 #' \dontrun{
 #' plotLowHigh("c3ann", 2040, range = c(0, 0.9),
@@ -18,7 +20,9 @@
 #'
 #' @author Pascal Sauer
 #' @export
-plotLowHigh <- function(variable, year, range = c(0, 1), xlim = c(-180, 180), ylim = c(-90, 90)) {
+plotLowHigh <- function(variable, year,
+                        range = c(0, 1), xlim = c(-180, 180), ylim = c(-90, 90),
+                        input = "magpie", target = "luh2mod", harmonizationPeriod = c(2015, 2050)) {
   cellArea <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
 
   landHighRes <- calcOutput("LandHighRes", aggregate = FALSE)
@@ -34,7 +38,8 @@ plotLowHigh <- function(variable, year, range = c(0, 1), xlim = c(-180, 180), yl
   # multiply by 10000 to convert from Mha to km2, divide to get area share
   highRaster <- highRaster * 10000 / terra::crop(cellArea, highRaster)
 
-  landHarmonized <- calcOutput("LandHarmonized", aggregate = FALSE)
+  landHarmonized <- calcOutput("LandHarmonized", input = input, target = target,
+                               harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
   geometry <- attr(landHarmonized, "geometry")
   stopifnot(setequal(variables, grep(variable, getItems(landHarmonized, 3), value = TRUE)))
   low <- landHarmonized[, year, variables]

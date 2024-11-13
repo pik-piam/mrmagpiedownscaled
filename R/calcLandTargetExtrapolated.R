@@ -12,11 +12,11 @@
 #' is then converted to secondary land so the total reduction equals the area
 #' that was harvested.
 #'
-#' @param input character, name of the input data set, currently only "magpie"
-#' @param target character, name of the target data set, currently only "luh2mod"
+#' @param input character, name of the input data set
+#' @param target character, name of the target data set
 #' @param transitionYears years to which the target data is extrapolated
 #' @return extrapolated land target data, if calcOutput is called with
-#' supplementary = TRUE wood harvest area is also returned
+#' supplementary = TRUE and target is luh2mod wood harvest area is also returned
 #' @author Pascal Sauer
 calcLandTargetExtrapolated <- function(input, target, transitionYears) {
   stopifnot(identical(transitionYears, sort(transitionYears)))
