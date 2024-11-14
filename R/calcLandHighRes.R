@@ -4,16 +4,15 @@
 #' from the low resolution input dataset and the high resolution target dataset
 #' using the given downscaling method.
 #'
-#' @param input name of an input dataset, currently only "magpie"
-#' @param target name of a target dataset, currently only "luh2"
+#' @param input name of an input dataset
+#' @param target name of a target dataset
 #' @param harmonizationPeriod Two integer values, before the first given
 #' year the target dataset is used, after the second given year the input
 #' dataset is used, in between harmonize between the two datasets
 #' @param downscaling name of downscaling method, currently only "magpieClassic"
 #' @return downscaled land use data
 #' @author Jan Philipp Dietrich
-calcLandHighRes <- function(input = "magpie", target = "luh2mod",
-                            harmonizationPeriod = c(2015, 2050), downscaling = "magpieClassic") {
+calcLandHighRes <- function(input, target, harmonizationPeriod, downscaling = "magpieClassic") {
   x <- calcOutput("LandHarmonized", input = input, target = target,
                   harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
 
@@ -31,7 +30,9 @@ calcLandHighRes <- function(input = "magpie", target = "luh2mod",
   }
 
   out <- toolPrimFix(out, "primf", "secdf", warnThreshold = 100)
-  out <- toolPrimFix(out, "primn", "secdn", warnThreshold = 100)
+  if ("primn" %in% getItems(out, 3)) {
+    out <- toolPrimFix(out, "primn", "secdn", warnThreshold = 100)
+  }
 
   toolExpectTrue(identical(unname(getSets(out)), c("x", "y", "year", "data")),
                  "Dimensions are named correctly")
@@ -51,9 +52,7 @@ calcLandHighRes <- function(input = "magpie", target = "luh2mod",
                      "Total global land area remains unchanged")
   toolExpectLessDiff(globalSumIn, globalSumOut, 10^-5,
                      "Global area of each land type remains unchanged")
-  toolExpectTrue(all(out[, -1, c("primf", "primn")] <= setYears(out[, -nyears(out), c("primf", "primn")],
-                                                                getYears(out)[-1])),
-                 "primf and primn are never expanding", falseStatus = "warn")
+  toolPrimExpansionCheck(out)
 
   return(list(x = out,
               class = "magpie",
