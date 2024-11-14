@@ -17,12 +17,12 @@
 #' @param progress boolean defining whether progress should be printed
 #'
 #' @author Pascal Sauer, Jan Philipp Dietrich
-fullESM <- function(rev = NULL, ..., scenario = "", harmonizationPeriod = c(2015, 2050),
+fullESM <- function(rev = numeric_version("0"), ..., scenario = "", harmonizationPeriod = c(2015, 2050),
                     yearsSubset = 2015:2100, compression = 2, progress = TRUE) {
 
   stopifnot(...length() == 0)
 
-  revision <- if (is.null(rev)) format(Sys.time(), "%Y-%m-%d") else rev
+  revision <- if (identical(rev, numeric_version("0"))) format(Sys.time(), "%Y-%m-%d") else rev
 
   fileSuffix <- paste0("_input4MIPs_landState_RESCUE_PIK-MAgPIE-4-7-",
                        scenario, if (scenario != "") "-",
