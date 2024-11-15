@@ -9,22 +9,25 @@
 #' @param harmonizationPeriod Two integer values, before the first given
 #' year the target dataset is used, after the second given year the input
 #' dataset is used, in between harmonize between the two datasets
+#' @param yearsToKeep vector of years to keep in the output dataset
 #' @param downscaling name of downscaling method, currently only "magpieClassic"
 #' @return downscaled land use data
-#' @author Jan Philipp Dietrich
-calcLandHighRes <- function(input, target, harmonizationPeriod, downscaling = "magpieClassic") {
+#' @author Jan Philipp Dietrich, Pascal Sauer
+calcLandHighRes <- function(input, target, harmonizationPeriod, yearsToKeep, downscaling = "magpieClassic") {
   x <- calcOutput("LandHarmonized", input = input, target = target,
                   harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
+  x <- x[, getYears(x, as.integer = TRUE) %in% yearsToKeep, ]
 
   xTarget <- calcOutput("LandTarget", target = target, aggregate = FALSE)
-  stopifnot(harmonizationPeriod[1] %in% terra::time(xTarget))
-  xTarget <- as.magpie(xTarget[[terra::time(xTarget) == harmonizationPeriod[1]]])
+  xTarget <- as.magpie(xTarget[[terra::time(xTarget) %in% yearsToKeep]])
+  stopifnot(harmonizationPeriod[1] %in% getYears(xTarget, as.integer = TRUE))
 
   mapping <- calcOutput("ResolutionMapping", input = input, target = target, aggregate = FALSE)
 
   if (downscaling == "magpieClassic") {
     out <- toolDownscaleMagpieClassic(x[, getYears(x, as.integer = TRUE) >= harmonizationPeriod[1], ],
-                                      xTarget, mapping)
+                                      xTarget[, harmonizationPeriod[1], ], mapping)
+    out <- mbind(xTarget[, getYears(xTarget, as.integer = TRUE) < harmonizationPeriod[1], ], out)
   } else {
     stop("Unsupported downscaling method \"", downscaling, "\"")
   }
@@ -38,7 +41,7 @@ calcLandHighRes <- function(input, target, harmonizationPeriod, downscaling = "m
                  "Dimensions are named correctly")
   toolExpectTrue(setequal(getItems(out, dim = 3), getItems(x, dim = 3)),
                  "Land categories remain unchanged")
-  toolExpectLessDiff(out[, harmonizationPeriod[1], ], xTarget, 10^-5,
+  toolExpectLessDiff(out[, harmonizationPeriod[1], ], xTarget[, harmonizationPeriod[1], ], 10^-5,
                      paste("In", harmonizationPeriod[1], "output equals target"))
   toolExpectTrue(all(out >= 0), "All values are >= 0")
 

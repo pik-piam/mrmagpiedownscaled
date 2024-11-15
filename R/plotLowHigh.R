@@ -25,7 +25,10 @@ plotLowHigh <- function(variable, year,
                         input = "magpie", target = "luh2mod", harmonizationPeriod = c(2015, 2050)) {
   cellArea <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
 
-  landHighRes <- calcOutput("LandHighRes", aggregate = FALSE)
+  landHighRes <- calcOutput("LandHighRes", input = input, target = target,
+                            harmonizationPeriod = harmonizationPeriod,
+                            yearsToKeep = seq(if (target == "luh2mod") 2015 else 1995, 2100, 5),
+                            aggregate = FALSE)
   variables <- grep(variable, getItems(landHighRes, 3), value = TRUE)
   if (length(variables) == 0) {
     stop("No variable matched ", variable, " in LandHighRes. Options are: ",
