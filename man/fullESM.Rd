@@ -5,7 +5,7 @@
 \title{fullESM}
 \usage{
 fullESM(
-  rev = NULL,
+  rev = numeric_version("0"),
   ...,
   scenario = "",
   harmonizationPeriod = c(2015, 2050),
