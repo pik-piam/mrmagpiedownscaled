@@ -86,7 +86,7 @@ calcLandTarget <- function(target) {
     getItems(out, 3) <- sub("secdforest", "secdf", getItems(out, 3))
 
     out <- toolScaleConstantArea(out)
-    out <- toolPrimFix(out, "primf", "secdf")
+    out <- toolReplaceExpansion(out, "primf", "secdf")
     out <- as.SpatRaster(out)
 
     expectedCategories <- c("crop", "past", "forestry", "primf", "secdf", "urban",  "other")

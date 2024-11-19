@@ -32,10 +32,8 @@ calcLandHighRes <- function(input, target, harmonizationPeriod, yearsToKeep, dow
     stop("Unsupported downscaling method \"", downscaling, "\"")
   }
 
-  out <- toolPrimFix(out, "primf", "secdf", warnThreshold = 100)
-  if ("primn" %in% getItems(out, 3)) {
-    out <- toolPrimFix(out, "primn", "secdn", warnThreshold = 100)
-  }
+  out <- toolReplaceExpansion(out, "primf", "secdf", warnThreshold = 100)
+  out <- toolReplaceExpansion(out, "primn", "secdn", warnThreshold = 100)
 
   toolExpectTrue(identical(unname(getSets(out)), c("x", "y", "year", "data")),
                  "Dimensions are named correctly")

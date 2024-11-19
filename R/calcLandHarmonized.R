@@ -46,10 +46,8 @@ calcLandHarmonized <- function(input, target, harmonizationPeriod,
   # during harmonization primf and primn expansion might be introduced due to
   # primf or primn differences between input and target dataset
   # replace primf and primn expansion with secdf and secdn
-  out <- toolPrimFix(out, "primf", "secdf", warnThreshold = 100)
-  if ("primn" %in% getItems(out, 3)) {
-    out <- toolPrimFix(out, "primn", "secdn", warnThreshold = 100)
-  }
+  out <- toolReplaceExpansion(out, "primf", "secdf", warnThreshold = 100)
+  out <- toolReplaceExpansion(out, "primn", "secdn", warnThreshold = 100)
 
   attr(out, "geometry") <- geometry
   attr(out, "crs")      <- crs
