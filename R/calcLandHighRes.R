@@ -27,7 +27,11 @@ calcLandHighRes <- function(input, target, harmonizationPeriod, yearsToKeep, dow
   if (downscaling == "magpieClassic") {
     out <- toolDownscaleMagpieClassic(x[, getYears(x, as.integer = TRUE) >= harmonizationPeriod[1], ],
                                       xTarget[, harmonizationPeriod[1], ], mapping)
-    out <- mbind(xTarget[, getYears(xTarget, as.integer = TRUE) < harmonizationPeriod[1], ], out)
+    histYears <- getYears(x, as.integer = TRUE)
+    histYears <- histYears[histYears < harmonizationPeriod[1]]
+    if (length(histYears) > 0) {
+      out <- mbind(xTarget[, histYears, ], out)
+    }
   } else {
     stop("Unsupported downscaling method \"", downscaling, "\"")
   }

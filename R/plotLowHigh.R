@@ -12,6 +12,8 @@
 #' @param ylim min and max y coordinate to plot
 #' @param input name of the land input source to be used
 #' @param target name of the land target source to be used
+#' @param harmonizationPeriod Two integer values defining start and end of
+#' the harmonization
 #' @examples
 #' \dontrun{
 #' plotLowHigh("c3ann", 2040, range = c(0, 0.9),

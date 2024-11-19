@@ -37,7 +37,7 @@ toolReplaceExpansion <- function(x, from, to, ..., noteThreshold = 10^-10, warnT
 
   if (maxDiff > warnThreshold) {
     toolStatusMessage("warn", paste0(from, " is expanding considerably ",
-                                     "(max expansion: ", maxDiff, ")"), level = 1)
+                                     "(max expansion: ", signif(maxDiff, 3), ")"), level = 1)
   }
 
   if (maxDiff > noteThreshold) {

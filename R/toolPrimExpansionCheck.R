@@ -1,26 +1,19 @@
+#' toolPrimExpansionCheck
+#'
+#' Check that primary forest (primf) and primary nature/nonland (primf) are
+#' never expanding using toolExpectTrue. If they are expanding, a warning
+#' including the maximum expansion is thrown. Categories not present
+#' in x are skipped.
+#'
+#' @param x A magclass object
+#'
+#' @author Pascal Sauer
 toolPrimExpansionCheck <- function(x) {
-  if ("primn" %in% getItems(x, 3)) {
-    toolExpectTrue(toolMaxExpansion(x, "primn") <= 0,
-                   "primn is never expanding", falseStatus = "warn", level = 1)
-  }
-  toolExpectTrue(toolMaxExpansion(x, "primf") <= 0,
-                 "primf is never expanding", falseStatus = "warn", level = 1)
-}
-
-toolMaxExpansion <- function(x, variable,
-                             na.rm = FALSE) { # nolint: object_name_linter.
-  return(max(x[, -1, variable] - setYears(x[, -nyears(x), variable],
-                                          getYears(x[, -1, ])), na.rm = na.rm))
-}
-
-toolStopIfExpansion <- function(x, variable) {
-  maxExpansion <- vapply(intersect(variable, getItems(x, 3)),
-                         function(v) toolMaxExpansion(x, v),
-                         numeric(1))
-  maxExpansion <- maxExpansion[maxExpansion > 0]
-  if (length(maxExpansion) >= 1) {
-    stop(paste0("Expansion of ", names(maxExpansion),
-                " detected, max expansion: ", signif(maxExpansion, 3),
-                collapse = "\n  "))
+  for (v in intersect(getItems(x, 3), c("primf", "primn"))) {
+    maxExpansion <- toolMaxExpansion(x, v)
+    toolExpectTrue(maxExpansion <= 0,
+                   paste0(v, " is never expanding",
+                          if (maxExpansion > 0) paste0(", max expansion: ", signif(maxExpansion, 3))),
+                   falseStatus = "warn", level = 1)
   }
 }

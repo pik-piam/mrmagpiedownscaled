@@ -77,7 +77,7 @@ calcLandHarmonized <- function(input, target, harmonizationPeriod,
   toolExpectLessDiff(dimSums(outAfterHarmonization[, , c("primf", "secdf")], 3),
                      dimSums(inputAfterHarmonization[, , c("primf", "secdf")], 3),
                      10^-5, "Returning input data after harmonization period (checking primf + secdf)")
-  if ("primn" %in% getItems(out, 3)){
+  if ("primn" %in% getItems(out, 3)) {
     toolExpectLessDiff(dimSums(outAfterHarmonization[, , c("primn", "secdn")], 3),
                        dimSums(inputAfterHarmonization[, , c("primn", "secdn")], 3),
                        10^-5, "Returning input data after harmonization period (checking primn + secdn)")

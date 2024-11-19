@@ -26,7 +26,7 @@ calcLandTargetExtrapolated <- function(input, target, transitionYears) {
 
   # ---------- extrapolate -------------
   exTarget <- toolExtrapolate(xTarget, transitionYears)
-  toolStopIfExpansion(exTarget, c("primf", "primn"))
+  toolWarnIfExpansion(exTarget, c("primf", "primn"))
   exTarget[exTarget < 0] <- 0
 
   # ---------- normalize -------------

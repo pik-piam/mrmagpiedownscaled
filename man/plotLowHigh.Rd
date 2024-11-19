@@ -31,6 +31,9 @@ summed up}
 \item{input}{name of the land input source to be used}
 
 \item{target}{name of the land target source to be used}
+
+\item{harmonizationPeriod}{Two integer values defining start and end of
+the harmonization}
 }
 \description{
 Plot a land variable in low (after harmonization) and high resolution (after
