@@ -26,6 +26,7 @@ calcLandTargetExtrapolated <- function(input, target, transitionYears) {
 
   # ---------- extrapolate -------------
   exTarget <- toolExtrapolate(xTarget, transitionYears)
+  toolStopIfExpansion(exTarget, c("primf", "primn"))
   exTarget[exTarget < 0] <- 0
 
   # ---------- normalize -------------
@@ -36,6 +37,9 @@ calcLandTargetExtrapolated <- function(input, target, transitionYears) {
   exTarget <- exTarget * targetArea / dimSums(exTarget, dim = 3)
   exTarget[is.na(exTarget)] <- 0
   out <- mbind(xTarget, exTarget)
+
+  # normalization can introduce prim expansion
+  out <- toolPrimFix(out, "primf", "secdf", noteThreshold = 100, warnThreshold = 100)
 
   harvest <- NULL
   if (target == "luh2mod") {
