@@ -4,40 +4,46 @@
 #' from the low resolution input dataset and the high resolution target dataset
 #' using the given downscaling method.
 #'
-#' @param input name of an input dataset, currently only "magpie"
-#' @param target name of a target dataset, currently only "luh2"
+#' @param input name of an input dataset
+#' @param target name of a target dataset
 #' @param harmonizationPeriod Two integer values, before the first given
 #' year the target dataset is used, after the second given year the input
 #' dataset is used, in between harmonize between the two datasets
+#' @param yearsToKeep vector of years to keep in the output dataset
 #' @param downscaling name of downscaling method, currently only "magpieClassic"
 #' @return downscaled land use data
-#' @author Jan Philipp Dietrich
-calcLandHighRes <- function(input = "magpie", target = "luh2mod",
-                            harmonizationPeriod = c(2015, 2050), downscaling = "magpieClassic") {
+#' @author Jan Philipp Dietrich, Pascal Sauer
+calcLandHighRes <- function(input, target, harmonizationPeriod, yearsToKeep, downscaling = "magpieClassic") {
   x <- calcOutput("LandHarmonized", input = input, target = target,
                   harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
+  x <- x[, getYears(x, as.integer = TRUE) %in% yearsToKeep, ]
 
   xTarget <- calcOutput("LandTarget", target = target, aggregate = FALSE)
-  stopifnot(harmonizationPeriod[1] %in% terra::time(xTarget))
-  xTarget <- as.magpie(xTarget[[terra::time(xTarget) == harmonizationPeriod[1]]])
+  xTarget <- as.magpie(xTarget[[terra::time(xTarget) %in% yearsToKeep]])
+  stopifnot(harmonizationPeriod[1] %in% getYears(xTarget, as.integer = TRUE))
 
   mapping <- calcOutput("ResolutionMapping", input = input, target = target, aggregate = FALSE)
 
   if (downscaling == "magpieClassic") {
     out <- toolDownscaleMagpieClassic(x[, getYears(x, as.integer = TRUE) >= harmonizationPeriod[1], ],
-                                      xTarget, mapping)
+                                      xTarget[, harmonizationPeriod[1], ], mapping)
+    histYears <- getYears(x, as.integer = TRUE)
+    histYears <- histYears[histYears < harmonizationPeriod[1]]
+    if (length(histYears) > 0) {
+      out <- mbind(xTarget[, histYears, ], out)
+    }
   } else {
     stop("Unsupported downscaling method \"", downscaling, "\"")
   }
 
-  primSecCategories <- c("primf", "primn", "secdf", "secdn")
-  out[, , primSecCategories] <- toolPrimFix(out[, , primSecCategories])
+  out <- toolReplaceExpansion(out, "primf", "secdf", warnThreshold = 100)
+  out <- toolReplaceExpansion(out, "primn", "secdn", warnThreshold = 100)
 
   toolExpectTrue(identical(unname(getSets(out)), c("x", "y", "year", "data")),
                  "Dimensions are named correctly")
   toolExpectTrue(setequal(getItems(out, dim = 3), getItems(x, dim = 3)),
                  "Land categories remain unchanged")
-  toolExpectLessDiff(out[, harmonizationPeriod[1], ], xTarget, 10^-5,
+  toolExpectLessDiff(out[, harmonizationPeriod[1], ], xTarget[, harmonizationPeriod[1], ], 10^-5,
                      paste("In", harmonizationPeriod[1], "output equals target"))
   toolExpectTrue(all(out >= 0), "All values are >= 0")
 
@@ -51,9 +57,7 @@ calcLandHighRes <- function(input = "magpie", target = "luh2mod",
                      "Total global land area remains unchanged")
   toolExpectLessDiff(globalSumIn, globalSumOut, 10^-5,
                      "Global area of each land type remains unchanged")
-  toolExpectTrue(all(out[, -1, c("primf", "primn")] <= setYears(out[, -nyears(out), c("primf", "primn")],
-                                                                getYears(out)[-1])),
-                 "primf and primn are never expanding", falseStatus = "warn")
+  toolPrimExpansionCheck(out)
 
   return(list(x = out,
               class = "magpie",

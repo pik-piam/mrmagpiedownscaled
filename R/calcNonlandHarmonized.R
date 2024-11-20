@@ -23,14 +23,14 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   crs <- attr(xInput, "crs")
 
   biohMap <- toolBiohMapping()
-  kgPerMhaInput <- xInput[, , biohMap$bioh] / magclass::setNames(xInput[, , woodHarvestAreaCategories()],
-                                                                 sub("wood_harvest_area$", "bioh",
-                                                                     woodHarvestAreaCategories()))
-  kgPerMhaInput[is.nan(kgPerMhaInput)] <- 0
+  kgCPerMhaInput <- xInput[, , biohMap$bioh] / magclass::setNames(xInput[, , woodHarvestAreaCategories()],
+                                                                  sub("wood_harvest_area$", "bioh",
+                                                                      woodHarvestAreaCategories()))
+  kgCPerMhaInput[is.nan(kgCPerMhaInput)] <- 0
   # should we prevent bioh without harvest area before this point, so the following line is no longer necessary?
-  kgPerMhaInput[is.infinite(kgPerMhaInput)] <- max(kgPerMhaInput[is.finite(kgPerMhaInput)])
-  stopifnot(is.finite(kgPerMhaInput), kgPerMhaInput >= 0)
-  getItems(kgPerMhaInput, 3) <- sub("bioh$", "kg_per_mha", getItems(kgPerMhaInput, 3))
+  kgCPerMhaInput[is.infinite(kgCPerMhaInput)] <- max(kgCPerMhaInput[is.finite(kgCPerMhaInput)])
+  stopifnot(is.finite(kgCPerMhaInput), kgCPerMhaInput >= 0)
+  getItems(kgCPerMhaInput, 3) <- sub("bioh$", "kgC_per_Mha", getItems(kgCPerMhaInput, 3))
 
   inputYears <- getYears(xInput, as.integer = TRUE)
   transitionYears <- inputYears[inputYears > harmonizationPeriod[1] & inputYears < harmonizationPeriod[2]]
@@ -44,11 +44,11 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
   # should we prevent bioh without harvest area before this point, so the following line is no longer necessary?
   kgCPerMhaTarget[is.infinite(kgCPerMhaTarget)] <- max(kgCPerMhaTarget[is.finite(kgCPerMhaTarget)])
   stopifnot(is.finite(kgCPerMhaTarget), kgCPerMhaTarget >= 0)
-  getItems(kgCPerMhaTarget, 3) <- sub("bioh$", "kg_per_mha", getItems(kgCPerMhaTarget, 3))
+  getItems(kgCPerMhaTarget, 3) <- sub("bioh$", "kgC_per_Mha", getItems(kgCPerMhaTarget, 3))
 
   harmonizer <- toolGetHarmonizer(method)
   out <- harmonizer(mbind(xInput[, , woodHarvestAreaCategories(), invert = TRUE],
-                          kgPerMhaInput),
+                          kgCPerMhaInput),
                     mbind(xTarget[, , woodHarvestAreaCategories(), invert = TRUE],
                           kgCPerMhaTarget),
                     harmonizationPeriod = harmonizationPeriod)
@@ -58,13 +58,13 @@ calcNonlandHarmonized <- function(input = "magpie", target = "luh2mod",
 
   # adapt bioh to harmonized harvest area
   kgCPerMhaHarmonized <- out[, , getItems(kgCPerMhaTarget, 3)]
-  # should we prevent harvest area  without bioh before this point, so the following line is no longer necessary?
+  # should we prevent harvest area without bioh before this point, so the following line is no longer necessary?
   kgCPerMhaHarmonized[kgCPerMhaHarmonized == 0] <- min(kgCPerMhaHarmonized[kgCPerMhaHarmonized > 0])
   stopifnot(is.finite(kgCPerMhaHarmonized), kgCPerMhaHarmonized >= 0)
   biohCalculated <- kgCPerMhaHarmonized * magclass::setNames(harvestArea,
-                                                             sub("wood_harvest_area$", "kg_per_mha",
+                                                             sub("wood_harvest_area$", "kgC_per_Mha",
                                                                  getItems(harvestArea, 3)))
-  getItems(biohCalculated, 3) <- sub("kg_per_mha$", "bioh", getItems(biohCalculated, 3))
+  getItems(biohCalculated, 3) <- sub("kgC_per_Mha$", "bioh", getItems(biohCalculated, 3))
   stopifnot(0 <= biohCalculated, is.finite(biohCalculated))
 
   biohNormalization <- dimSums(out[, , biohMap$bioh], 3) / dimSums(biohCalculated, 3)

@@ -4,10 +4,10 @@
 \alias{calcLandInput}
 \title{calcLandInput}
 \usage{
-calcLandInput(input = "magpie")
+calcLandInput(input)
 }
 \arguments{
-\item{input}{name of an input dataset, currently only "magpie"}
+\item{input}{name of an input dataset, options: "magpie"}
 }
 \value{
 land input data
@@ -17,6 +17,17 @@ Prepare the land input data for the category mapping, checking data for consiste
 All "Land" functions deal with area data, as opposed to "Nonland" functions which deal with non-area
 data such as the amount of applied fertilizer. These are treated differently, because for area
 data other constraints apply, e.g. the total area must be constant over time.
+}
+\details{
+input = "magpie": includes the land use categories
+past (pasture, including rangeland), forestry (managed forest),
+primforest, secdforest, urban, other (other land) and many
+specific crop types. Furthermore, 1st gen biofuel is
+added and filled with zeros. 1st gen biofuel is only modeled implicitly in
+magpie via demand, and because of trade it is unclear on what area 1st gen
+biofuel is grown, also 1st gen biofuel is quickly phased out in magpie, so
+we fill biofuel_1st_gen with zeros and rely on the harmonization to produce
+a plausible 1st gen biofuel time series.
 }
 \author{
 Jan Philipp Dietrich, Pascal Sauer

@@ -5,20 +5,23 @@
 \title{calcLandHighRes}
 \usage{
 calcLandHighRes(
-  input = "magpie",
-  target = "luh2mod",
-  harmonizationPeriod = c(2015, 2050),
+  input,
+  target,
+  harmonizationPeriod,
+  yearsToKeep,
   downscaling = "magpieClassic"
 )
 }
 \arguments{
-\item{input}{name of an input dataset, currently only "magpie"}
+\item{input}{name of an input dataset}
 
-\item{target}{name of a target dataset, currently only "luh2"}
+\item{target}{name of a target dataset}
 
 \item{harmonizationPeriod}{Two integer values, before the first given
 year the target dataset is used, after the second given year the input
 dataset is used, in between harmonize between the two datasets}
+
+\item{yearsToKeep}{vector of years to keep in the output dataset}
 
 \item{downscaling}{name of downscaling method, currently only "magpieClassic"}
 }
@@ -31,5 +34,5 @@ from the low resolution input dataset and the high resolution target dataset
 using the given downscaling method.
 }
 \author{
-Jan Philipp Dietrich
+Jan Philipp Dietrich, Pascal Sauer
 }

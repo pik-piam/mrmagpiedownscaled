@@ -4,12 +4,7 @@
 \alias{calcLandHarmonized}
 \title{calcLandHarmonized}
 \usage{
-calcLandHarmonized(
-  input = "magpie",
-  target = "luh2mod",
-  harmonizationPeriod = c(2015, 2050),
-  method = "fade"
-)
+calcLandHarmonized(input, target, harmonizationPeriod, method = "fade")
 }
 \arguments{
 \item{input}{name of the land input source to be used}

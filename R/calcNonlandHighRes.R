@@ -27,7 +27,8 @@ calcNonlandHighRes <- function(input = "magpie", target = "luh2mod", harmonizati
   resmap <- calcOutput("ResolutionMapping", input = input, target = target, aggregate = FALSE)
 
   landHighRes <- calcOutput("LandHighRes", input = input, target = target,
-                            harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
+                            harmonizationPeriod = harmonizationPeriod, yearsToKeep = seq(2015, 2100, 5),
+                            aggregate = FALSE)
   land <- landHighRes[, , c("urban", "pastr", "range"), invert = TRUE]
   map <- as.data.frame(rbind(c("primf", "primf"),
                              c("forestry", "forestry"),

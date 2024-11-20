@@ -3,11 +3,13 @@
 #' Aggregate target land data to the spatial resolution of the input data in
 #' preparation for harmonization.
 #'
-#' @param input name of an input dataset, currently only "magpie"
-#' @param target name of a target dataset, currently only "luh2mod"
+#' @param input name of an input dataset, see \code{\link{calcLandInput}}
+#' available input datasets
+#' @param target name of a target dataset, see \code{\link{calcLandTarget}}
+#' available target datasets
 #' @return low resolution target land data
 #' @author Pascal Sauer
-calcLandTargetLowRes <- function(input = "magpie", target = "luh2mod") {
+calcLandTargetLowRes <- function(input, target) {
   xInput <- calcOutput("LandInputRecategorized", input = input,
                        target = target, aggregate = FALSE)
   xTarget <- calcOutput("LandTarget", target = target, aggregate = FALSE)
@@ -21,15 +23,12 @@ calcLandTargetLowRes <- function(input = "magpie", target = "luh2mod") {
 
   toolExpectTrue(identical(unname(getSets(out)), c("region", "id", "year", "data")),
                  "Dimensions are named correctly")
-  map <- toolLandCategoriesMapping(input = input, target = target)
-  toolExpectTrue(setequal(getItems(out, dim = 3), map$dataOutput),
-                 "Land target categories match the corresponding mapping")
+  toolExpectTrue(setequal(getItems(out, dim = 3), getItems(xTarget, 3)),
+                 "Land categories did not change")
   toolExpectTrue(all(out >= 0), "All values are >= 0")
   outSum <- dimSums(out, dim = 3)
   toolExpectLessDiff(outSum, outSum[, 1, ], 10^-5, "Total area is constant over time")
-  toolExpectTrue(all(out[, -1, c("primf", "primn")] <= setYears(out[, -nyears(out), c("primf", "primn")],
-                                                                getYears(out[, -1, ]))),
-                 "primf and primn are never expanding")
+  toolPrimExpansionCheck(out)
 
   return(list(x = out,
               isocountries = FALSE,

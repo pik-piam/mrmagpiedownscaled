@@ -4,12 +4,10 @@
 \alias{readLUH2v2h}
 \title{readLUH2v2h}
 \usage{
-readLUH2v2h(subtype = "states", subset = seq(1995, 2015, 5))
+readLUH2v2h(subtype)
 }
 \arguments{
 \item{subtype}{one of states, management, transitions, cellArea}
-
-\item{subset}{subset of years to read}
 }
 \description{
 Read LUH2v2h data. For the states subtype, the secma and secmb categories are removed.

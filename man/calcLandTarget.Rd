@@ -4,10 +4,10 @@
 \alias{calcLandTarget}
 \title{calcLandTarget}
 \usage{
-calcLandTarget(target = "luh2mod")
+calcLandTarget(target)
 }
 \arguments{
-\item{target}{name of the target dataset, options are: luh2, luh2mod
+\item{target}{name of the target dataset, options are: luh2, luh2mod, landuseinit
 luh2mod will split secdf into forestry and secdf}
 }
 \value{

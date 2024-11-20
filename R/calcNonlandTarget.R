@@ -2,17 +2,11 @@
 #'
 #' Prepare the high resolution nonland target dataset for
 #' harmonization and downscaling, checking data for consistency before returning.
-#' Reads in yearly data and aggregates according to the given timestep length.
 #'
 #' @param target name of the target dataset, currently only "luh2" and "luh2mod" are supported
-#' @param years years to aggregate to/to return
-#' @param timestepLength length of the timestep in years, determines the
-#' first year that is read: min(years) - timestepLength + 1
 #' @return nonland target data
 #' @author Pascal Sauer
-calcNonlandTarget <- function(target = "luh2mod", years = seq(1995, 2015, 5), timestepLength = years[2] - years[1]) {
-  stopifnot(diff(years) == timestepLength)
-
+calcNonlandTarget <- function(target) {
   if (target %in% c("luh2", "luh2mod")) {
     cellAreaKm2 <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
     # convert from km2 to ha
@@ -20,17 +14,15 @@ calcNonlandTarget <- function(target = "luh2mod", years = seq(1995, 2015, 5), ti
     # convert from km2 to Mha
     cellAreaMha <- cellAreaKm2 / 10000
 
-    yearsToRead <- (min(years) - timestepLength + 1):max(years)
-
-    management <- readSource("LUH2v2h", subtype = "management", subset = yearsToRead, convert = FALSE)
+    management <- readSource("LUH2v2h", subtype = "management", convert = FALSE)
 
     ### fertilizer in kg yr-1
     # need absolute values for downscaling, fertl_* is in kg ha-1 yr-1, convert to kg yr-1
     fertilizer <- management["fertl"] * cellAreaHa
     names(fertilizer) <- paste0(sub("fertl_", "", names(fertilizer)), "_fertilizer")
-    fertilizer <- toolAverageOverYears(fertilizer, years, timestepLength, unit = "kg yr-1")
+    terra::units(fertilizer) <- "kg yr-1"
 
-    transitions <- readSource("LUH2v2h", subtype = "transitions", subset = yearsToRead, convert = FALSE)
+    transitions <- readSource("LUH2v2h", subtype = "transitions", convert = FALSE)
 
     ### wood harvest area in Mha yr-1
     # convert from shares to Mha yr-1
@@ -40,7 +32,7 @@ calcNonlandTarget <- function(target = "luh2mod", years = seq(1995, 2015, 5), ti
                          transitions["secyf_harv"] * cellAreaMha,
                          transitions["secnf_harv"] * cellAreaMha)
     names(woodHarvestArea) <- paste0(sub("_harv", "", names(woodHarvestArea)), "_wood_harvest_area")
-    woodHarvestArea <- toolAverageOverYears(woodHarvestArea, years, timestepLength, unit = "Mha yr-1")
+    terra::units(woodHarvestArea) <- "Mha yr-1"
 
     ### wood harvest weight (bioh) in kg C yr-1
     woodHarvestWeight <- transitions["bioh"]
@@ -51,9 +43,10 @@ calcNonlandTarget <- function(target = "luh2mod", years = seq(1995, 2015, 5), ti
                                        round(minWoodHarvestWeight, 3), " kg C yr-1)"))
       woodHarvestWeight <- terra::classify(woodHarvestWeight, cbind(-Inf, 0, 0))
     }
-    woodHarvestWeight <- toolAverageOverYears(woodHarvestWeight, years, timestepLength, unit = "kg C yr-1")
+    terra::units(woodHarvestWeight) <- "kg C yr-1"
 
     ### wood harvest weight type (fuelwood/roundwood) in kg C yr-1
+    years <- unique(terra::time(woodHarvestWeight))
     woodHarvestWeightType <- do.call(c, lapply(years, function(year) {
       total <- sum(woodHarvestWeight[[terra::time(woodHarvestWeight) == year]])
       roundwood <- total * management[[paste0("y", year, "..rndwd")]]
@@ -67,6 +60,10 @@ calcNonlandTarget <- function(target = "luh2mod", years = seq(1995, 2015, 5), ti
     out <- c(woodHarvestArea, woodHarvestWeight, woodHarvestWeightType, fertilizer)
     terra::time(out, tstep = "years") <- as.integer(sub("^y([0-9]+).+", "\\1", names(out)))
 
+    # cannot cache SpatRaster with both in-memory and on-disk/file sources,
+    # so write `out` to a tif file to get SpatRaster with a single source (the tif file)
+    out <- terra::writeRaster(out, file = tempfile(fileext = ".tif"))
+
     toolExpectTrue(min(terra::minmax(out)) >= 0, "All values are >= 0")
 
     return(list(x = out,
@@ -76,15 +73,4 @@ calcNonlandTarget <- function(target = "luh2mod", years = seq(1995, 2015, 5), ti
   } else {
     stop("Unsupported output type \"", target, "\"")
   }
-}
-
-toolAverageOverYears <- function(x, years, timestepLength, unit) {
-  yearCategory <- expand.grid(years, unique(sub("^.+\\.\\.", "", names(x))), stringsAsFactors = FALSE)
-  return(do.call(c, Map(yearCategory[[1]], yearCategory[[2]], f = function(year, category) {
-    layer <- terra::mean(x[[paste0("y", (year - timestepLength + 1):year, "..", category)]])
-    names(layer) <- paste0("y", year, "..", category)
-    terra::time(layer, tstep = "years") <- year
-    terra::units(layer) <- unit
-    return(layer)
-  })))
 }

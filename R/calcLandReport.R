@@ -12,7 +12,8 @@
 calcLandReport <- function(outputFormat = "ESM", harmonizationPeriod = c(2015, 2050)) {
   if (outputFormat == "ESM") {
     native <- calcOutput("LandHighRes", input = "magpie", target = "luh2mod",
-                         harmonizationPeriod = harmonizationPeriod, aggregate = FALSE)
+                         harmonizationPeriod = harmonizationPeriod, yearsToKeep = seq(2015, 2100, 5),
+                         aggregate = FALSE)
     cellArea <- readSource("LUH2v2h", subtype = "cellArea", convert = FALSE)
     cellArea <- collapseDim(as.magpie(cellArea), 3)
 

@@ -12,8 +12,7 @@
 #' dataset is used, in between harmonize between the two datasets
 #' @param method transitioning method
 #' @author Pascal Sauer, Jan Philipp Dietrich
-calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
-                               harmonizationPeriod = c(2015, 2050),
+calcLandHarmonized <- function(input, target, harmonizationPeriod,
                                method = "fade") {
   xInput    <- calcOutput("LandInputRecategorized", input = input,
                           target = target, aggregate = FALSE)
@@ -47,8 +46,8 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   # during harmonization primf and primn expansion might be introduced due to
   # primf or primn differences between input and target dataset
   # replace primf and primn expansion with secdf and secdn
-  primSecCategories <- c("primf", "primn", "secdf", "secdn")
-  out[, , primSecCategories] <- toolPrimFix(out[, , primSecCategories], warnThreshold = 100)
+  out <- toolReplaceExpansion(out, "primf", "secdf", warnThreshold = 100)
+  out <- toolReplaceExpansion(out, "primn", "secdn", warnThreshold = 100)
 
   attr(out, "geometry") <- geometry
   attr(out, "crs")      <- crs
@@ -64,25 +63,25 @@ calcLandHarmonized <- function(input = "magpie", target = "luh2mod",
   outSum <- dimSums(out, dim = 3)
   toolExpectLessDiff(outSum, outSum[, 1, ], 10^-5, "Total areas in output stay constant over time")
   toolExpectLessDiff(outSum, dimSums(xInput, dim = 3), 10^-5, "Total areas remain unchanged")
-  toolExpectTrue(all(out[, -1, c("primf", "primn")] <= setYears(out[, -nyears(out), c("primf", "primn")],
-                                                                getYears(out[, -1, ]))),
-                 "primf and primn are never expanding", falseStatus = "warn")
+  toolPrimExpansionCheck(out)
   toolExpectLessDiff(out[, getYears(out, as.integer = TRUE) <= harmonizationPeriod[1], ],
                      xTarget[, getYears(xTarget, as.integer = TRUE) <= harmonizationPeriod[1], ],
                      10^-5, "Returning reference data before harmonization period")
 
   outAfterHarmonization <- out[, getYears(out, as.integer = TRUE) >= harmonizationPeriod[2], ]
   inputAfterHarmonization <- xInput[, getYears(xInput, as.integer = TRUE) >= harmonizationPeriod[2], ]
-  nonprimfix <- setdiff(getItems(out, dim = 3), primSecCategories)
+  nonprimfix <- setdiff(getItems(out, dim = 3), c("primf", "primn", "secdf", "secdn"))
   toolExpectLessDiff(outAfterHarmonization[, , nonprimfix],
                      inputAfterHarmonization[, , nonprimfix],
                      10^-5, "Returning input data after harmonization period (not checking primf/primn/secdf/secdn)")
   toolExpectLessDiff(dimSums(outAfterHarmonization[, , c("primf", "secdf")], 3),
                      dimSums(inputAfterHarmonization[, , c("primf", "secdf")], 3),
                      10^-5, "Returning input data after harmonization period (checking primf + secdf)")
-  toolExpectLessDiff(dimSums(outAfterHarmonization[, , c("primn", "secdn")], 3),
-                     dimSums(inputAfterHarmonization[, , c("primn", "secdn")], 3),
-                     10^-5, "Returning input data after harmonization period (checking primn + secdn)")
+  if ("primn" %in% getItems(out, 3)) {
+    toolExpectLessDiff(dimSums(outAfterHarmonization[, , c("primn", "secdn")], 3),
+                       dimSums(inputAfterHarmonization[, , c("primn", "secdn")], 3),
+                       10^-5, "Returning input data after harmonization period (checking primn + secdn)")
+  }
 
   return(list(x = out,
               class = "magpie",

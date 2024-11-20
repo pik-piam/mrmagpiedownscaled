@@ -4,7 +4,7 @@
 \alias{calcLandInputRecategorized}
 \title{calcLandInputRecategorized}
 \usage{
-calcLandInputRecategorized(input = "magpie", target = "luh2mod")
+calcLandInputRecategorized(input, target)
 }
 \arguments{
 \item{input}{name of the land input source to be used}
@@ -23,5 +23,5 @@ the same reference categories. Thereby a new source or new target can be support
 by supplying a map of that new input and/or target to the reference categories.
 }
 \author{
-Jan Philipp Dietrich
+Jan Philipp Dietrich, Pascal Sauer
 }

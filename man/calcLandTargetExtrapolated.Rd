@@ -4,22 +4,18 @@
 \alias{calcLandTargetExtrapolated}
 \title{calcLandTargetExtrapolated}
 \usage{
-calcLandTargetExtrapolated(
-  input = "magpie",
-  target = "luh2mod",
-  transitionYears = seq(2020, 2045, 5)
-)
+calcLandTargetExtrapolated(input, target, transitionYears)
 }
 \arguments{
-\item{input}{character, name of the input data set, currently only "magpie"}
+\item{input}{character, name of the input data set}
 
-\item{target}{character, name of the target data set, currently only "luh2mod"}
+\item{target}{character, name of the target data set}
 
 \item{transitionYears}{years to which the target data is extrapolated}
 }
 \value{
 extrapolated land target data, if calcOutput is called with
-supplementary = TRUE wood harvest area is also returned
+supplementary = TRUE and target is luh2mod wood harvest area is also returned
 }
 \description{
 Aggregated low resolution target data is extrapolated to the given years
@@ -28,7 +24,7 @@ all land types is unchanged.
 To account for the relationship between wood
 harvest area and primary land (which is no longer primary once it has been
 harvested) wood harvest area is calculated here even though it is otherwise
-considered a nonland variable. The share of primary land that was
+considered a nonland variable. The share of woody land that was
 harvested in the historical period is calculated and then multiplied
 by the maximum possible harvest in the extrapolation period. Primary land
 is then converted to secondary land so the total reduction equals the area

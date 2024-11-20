@@ -13,12 +13,6 @@
 #' @author Pascal Sauer
 #' @export
 downscaleRunESM <- function(outputdir, revision = NULL, scenario = NULL, ...) {
-  outputdir <- normalizePath(outputdir)
-
-  clustermap <- Sys.glob(file.path(outputdir, "clustermap_*.rds"))
-  gdx <- file.path(outputdir, "fulldata.gdx")
-  stopifnot(file.exists(gdx), length(clustermap) == 1)
-
   if (is.null(revision)) {
     revision <- format(Sys.time(), "%Y-%m-%d")
   }
@@ -27,8 +21,6 @@ downscaleRunESM <- function(outputdir, revision = NULL, scenario = NULL, ...) {
     scenario <- gsub("_", "-", sub("-mag-[0-9]+$", "", basename(outputdir)))
   }
 
-  redirectSource("MagpieFulldataGdx", c(clustermap, gdx), linkOthers = FALSE)
-  stopifnot(length(getConfig("redirections")) >= 1)
-  retrieveData("ESM", rev = revision, puc = FALSE, scenario = scenario,
-               progress = FALSE, outputfolder = outputdir, ...)
+  downscaleRun(outputdir, "ESM", rev = revision, puc = FALSE, scenario = scenario,
+               progress = FALSE, ...)
 }

@@ -15,6 +15,8 @@ toolLandCategoriesMapping <- function(input, target) {
   .getMap <- function(x) {
     if (x == "magpie") {
       out <- toolGetMapping("magpie2ref.csv", where = "mrdownscale")
+    } else if (x == "landuseinit") {
+      out <- toolGetMapping("landuseinit2ref.csv", where = "mrdownscale")
     } else if (x == "luh2") {
       out <- toolGetMapping("luh2ref.csv", where = "mrdownscale")
     } else if (x == "luh2mod") {
