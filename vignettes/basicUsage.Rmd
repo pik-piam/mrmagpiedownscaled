@@ -13,6 +13,14 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
+The purpose of the mrdownscale package is to harmonize and downscale input spatio-temporal land use data, usually projections created by a model such as MAgPIE, to a high-resolution historical reference dataset, e.g. the LUH2 dataset. First, harmonization is done on low resolution by smoothly over time transitioning from historical reference data to the input data. Then the harmonized low-resolution data is disaggregated using the high-resolution reference data as weight. The output is a high-resolution dataset that is consistent with the historical reference data while over time converging to the input data.
+
+![figure 1](pipeline.png)
+<!-- TODO explain figure/pipeline chart -->
+
+mrdownscale is built upon the madrat framework, a data processing framework that requires clear structure, dividing data processing into distinct steps, while also providing features such as caching and tools for common tasks such as aggregating and disaggregating. More information on madrat can be found [here](https://pik-piam.r-universe.dev/articles/madrat/madrat.html).
+
+
 The mrdownscale harmonization and downscaling can be started by running the following:
 ```{r, echo = TRUE, eval = FALSE}
 library(mrdownscale)
@@ -21,4 +29,14 @@ madrat::retrieveData("DOWNSCALEDMAGPIE", puc = FALSE)
 ```
 mrdownscale is a madrat-package, so it is utilizing madrat's structure and data processing features and it is called via madrat wrappers. The madrat mainfolder is where madrat stores all its data like source and cache files. The output will be written to mainfolder/output in the form of a tgz archive. More information on madrat can be found [here](https://pik-piam.r-universe.dev/articles/madrat/madrat.html). retrieveData is a madrat wrapper that calls the full function according to its first argument, in this case mrdownscale:::fullDOWNSCALEDMAGPIE which triggers a full run of the pipeline, see figure 1.
 
-![figure 1](pipeline.png)
+
+
+
+
+TODO:
+    Sinn uns ZWeck von mrdownscale erläutern
+    madrat als Basis einführen und verlinken
+    Schema anzeigen und erklären (die grafik wird beim rendern der vignette gerade viel zu groß dargestellt)
+    konkretes Beispiel MAgPIE-Daten & Landuseinit einführen
+    code wie man es ausführt
+    erklären was für Daten man erhält
