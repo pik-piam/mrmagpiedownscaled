@@ -19,7 +19,7 @@ The purpose of the mrdownscale package is to harmonize and downscale input spati
 mrdownscale is built upon the madrat framework, a data processing framework that fosters clear structure, dividing data processing into distinct steps, while also providing features such as caching and tools for common tasks such as aggregating and disaggregating. More information on madrat can be found [here](https://pik-piam.r-universe.dev/articles/madrat/madrat.html).
 
 
-![figure 1](pipeline.png)
+<img src="pipeline.png" alt="mrdownscale processing pipeline" width="600"/>
 
 Figure 1: The top row shows the inputs to the pipeline. The resolution mapping should map from low / input data resolution to a grid. Two category mappings should be provided, one mapping the input categories to reference categories (e.g. inst/extdata/magpie2ref.csv) and one mapping the target categories to reference categories (e.g. inst/extdata/luhmod2ref.csv).
 The given resolution mapping is adapted to map from low resolution to the high resolution of the target dataset using a nearest neighbor approach and cropping leftover cells. After each step of the pipeline consistency checks are run to ensure that invariants and constraints are true.
