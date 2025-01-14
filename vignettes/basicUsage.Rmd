@@ -28,7 +28,7 @@ The given resolution mapping is adapted to map from low resolution to the high r
 To harmonize and downscale MAgPIE data using LUH2v2h as target dataset run the following:
 ```{r, echo = TRUE, eval = FALSE}
 library(mrdownscale)
-madrat::setConfig(mainfolder = "~/madrat_mainfolder")
+madrat::setConfig(mainfolder = "./madrat_mainfolder")
 madrat::retrieveData("ESM", puc = FALSE)
 ```
 This will run mrdownscale:::fullESM to generate a harmonized and downscaled dataset in a format compatible with ESM requirements. The output will be written to ~/madrat_mainfolder/output in the form of a tgz archive filled with NetCDF files. This was used to provide land use data to ESMs in RESCUE / OptimESM.
